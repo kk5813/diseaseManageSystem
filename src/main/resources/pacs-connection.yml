@@ -1,0 +1,4 @@
+driver: com.mysql.cj.jdbc.Driver
+url: jdbc:mysql://10.12.5.36:3306/ec_pacs?useAffectedRows=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+username: eyecode
+password: s851228R
