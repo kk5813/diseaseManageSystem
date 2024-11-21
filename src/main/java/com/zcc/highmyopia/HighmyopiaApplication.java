@@ -10,6 +10,7 @@ public class HighmyopiaApplication {
         /**
          * 爱尔眼科医院项目程序入口
          * date: 2024年9月23日
+         * test: kk
          * data: 2024年9月23日
          */
         SpringApplication.run(HighmyopiaApplication.class, args);
