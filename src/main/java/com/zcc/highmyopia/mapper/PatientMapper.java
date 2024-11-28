@@ -1,6 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
-import com.zcc.highmyopia.entity.Patient;
+import com.zcc.highmyopia.entity.Patients;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
-public interface PatientMapper extends BaseMapper<Patient> {
+public interface PatientMapper extends BaseMapper<Patients> {
 
     @Select("select * from patient where patient_id = #{id}")
-    Patient selectPatientByPId(@Param("id") String id);
+    Patients selectPatientByPId(@Param("id") String id);
 
     @Select("Select telephone from patient where patient_id = #{id}")
     String selectTelephoneByPatientId(@Param("id") String id);

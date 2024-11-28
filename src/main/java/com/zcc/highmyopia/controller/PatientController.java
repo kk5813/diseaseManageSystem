@@ -2,7 +2,7 @@ package com.zcc.highmyopia.controller;
 
 
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.Patient;
+import com.zcc.highmyopia.entity.Patients;
 import com.zcc.highmyopia.entity.Shortinfo;
 import com.zcc.highmyopia.mapper.PatientMapper;
 import com.zcc.highmyopia.mapper.ShortinfoMapper;
@@ -38,7 +38,7 @@ public class PatientController {
     // 测试用
     @GetMapping("/index")
     public Object index() {
-        Patient patient = patientService.getById(1L);
+        Patients patient = patientService.getById(1L);
         return Result.succ(patient);
     }
 
@@ -46,14 +46,14 @@ public class PatientController {
     @GetMapping("/list")
     @RequiresAuthentication
     public Result list() {
-        List<Patient> patientList = patientService.list();
+        List<Patients> patientList = patientService.list();
         return Result.succ(patientList);
     }
 
     //          编辑患者
     @PostMapping("/edit")
     @RequiresAuthentication
-    public Result editUser( @RequestBody Patient patient) {
+    public Result editUser( @RequestBody Patients patient) {
         patientService.saveOrUpdate(patient);
         return Result.succ(null);
     }

@@ -138,6 +138,14 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
+        <!--onnxruntime依赖-->
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <!-- 根据最新版本号替换 -->
+            <version>1.12.0</version>
+        </dependency>
+
 
     </dependencies>
 
