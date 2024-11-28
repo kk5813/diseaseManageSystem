@@ -4,9 +4,6 @@ import cn.hutool.crypto.SecureUtil;
 import com.zcc.highmyopia.entity.User;
 import com.zcc.highmyopia.mapper.UserMapper;
 import com.zcc.highmyopia.service.UserService;
-import com.zcc.highmyopia.util.*;
-import com.zcc.highmyopia.util.ConnectOCT;
-import com.zcc.highmyopia.util.ConnectPacs;
 import com.zcc.highmyopia.util.JwtUtils;
 import io.jsonwebtoken.*;
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -15,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import redis.clients.jedis.Jedis;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -82,17 +78,6 @@ class HighmyopiaApplicationTests {
         System.out.println(claims.getExpiration());
     }
 
-    @Autowired
-    private ConnectPacs connectPacs;
-    private ConnectOCT connectOCT;
-    private com.zcc.highmyopia.util.lianjie lianjie;
-
-    @Test
-    public void LianJieTest() throws SQLException {
-        System.out.println("开始测试能否连接");
-        //connectOCT.connnectOct();
-        lianjie.lianjiePatient();
-    }
 
 
     //测试jedis
@@ -137,12 +122,17 @@ class HighmyopiaApplicationTests {
 
         // 4.完成登录
     }
-
     @Test
-    public void test(){
-        int i = 0;
-        i = i++;           
-        System.out.println(i);
+    void contextLoads() {
+
+        //1. 获取连接
+        Jedis jedis = new Jedis("localhost", 6379);
+        jedis.auth("2287996531");
+        //2. 执行操作关闭连接
+        jedis.set("name", "mannor");
+
+        //3. 关闭连接
+        jedis.close();
     }
 
 }

@@ -1,4 +1,0 @@
-driver: oracle.jdbc.driver.OracleDriver
-url: jdbc:oracle:thin:@10.12.5.70:1521/dbm
-username: his_aeyk
-password: 123456
