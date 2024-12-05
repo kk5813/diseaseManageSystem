@@ -31,7 +31,7 @@
 
         Map<String,String> querys = new HashMap<>();
         querys.put("diagBdate","20240520");
-        querys.put("diagEdate","20240529");
+        querys.put("diagEdate","20240529");	
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
@@ -512,7 +512,7 @@
 >
 > 请求方式：POST
 >
-> 接口描述：该接口用于查询患者的检验结果
+> 接口描述：该接口用于查询患者门诊病历
 
 
 #### 1.5.2 请求参数
@@ -521,11 +521,11 @@
 
 参数说明：
 
-| 参数代码    | 参数名称 | 参数类型 | 参数长度 | 代码标识 | 是否必填 |
-| ----------- | -------- | -------- | -------- | -------- | -------- |
-| aemrBdate   | 开始日期 | 日期型   |          |          | Y        |
-| aemrEdate   | 结束日期 | 日期型   |          |          | Y        |
-| visitNumber | 就诊号   | 字符型   | 20       |          |          |
+| 参数代码     | 参数名称 | 参数类型 | 参数长度 | 代码标识 | 是否必填 |
+| ------------ | -------- | -------- | -------- | -------- | -------- |
+| aemr_bdate   | 开始日期 | 日期型   |          |          | Y        |
+| aemr_edate   | 结束日期 | 日期型   |          |          | Y        |
+| Visit_number | 就诊号   | 字符型   | 20       |          |          |
 
 请求参数代码：
 
@@ -536,9 +536,10 @@
         String appSecret = "ywgp.lbol";
 
         Map<String,String> querys = new HashMap<>();
-        querys.put("aemrBdate","20241101");
-        querys.put("aemrEdate","20241101");
-        String reqJson ="";
+        querys.put("aemr_bdate","2024-06-26");
+        querys.put("aemr_edate","20240725");
+        querys.put("Visit_number","MZ202407071064");
+        String reqJson = JsonUtil.toJson(querys);
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
         Response resp = HttpClientUtils.httpPostJson(host, path, connectTimeout, headers, querys, reqJson,signHeaderPrefixList,appKey,appSecret,hospId);
@@ -550,12 +551,44 @@
 
 参数说明：
 
-
+| 字段名称        | 类型   | 描述           |
+| --------------- | :----- | :------------- |
+| MAIN_APPEAL     | string | 主诉           |
+| PAST_HISTORY    | string | 既往史         |
+| PRESENT_ILLNESS | string | 现病史         |
+| ALLERGY         | string | 过敏史         |
+| SPECIAL_OS      | string | 左眼科专科检查 |
+| SPECIAL_OD      | string | 右眼科专科检查 |
+| Visit_number    | string | 就诊编号       |
+| patient_id      | long   | 患者ID         |
+| patient_name    | string | 患者姓名       |
+| PHYSICAL_EXAM   | string | 体格检查       |
+| ID              | string | 病历ID         |
+| DISPOSE         | string | 处理意见       |
 
 响应数据样例：
 
 ```json
-
+{
+    "data": [
+        {
+            "MAIN_APPEAL": "左眼进异物5小时",
+            "PAST_HISTORY": null,
+            "PRESENT_ILLNESS": "左眼进异物5小时，出现眼痛，眼异物感，无视力下降",
+            "ALLERGY": null,
+            "SPECIAL_OS": null,
+            "SPECIAL_OD": null,
+            "Visit_number": "MZ202407071064",
+            "patient_id": 1809970417345020000,
+            "patient_name": "林柔汐",
+            "PHYSICAL_EXAM": null,
+            "ID": "1809971108367556610",
+            "DISPOSE": "左氧氟沙星滴眼液 1.0滴 左眼 滴眼 每日三次,重组牛碱性成纤维细胞生长因子眼用凝胶 1.0滴 左眼 滴眼 每日四次；"
+        }
+    ],
+    "resultCode": "1",
+    "resultMsg": "成功！"
+}
 ```
 
 
@@ -636,6 +669,47 @@
     "resultCode": "1",
     "resultMsg": "成功！"
 }
+```
+
+
+
+
+
+### 1.7 患者敏感信息（电话）查询
+
+#### 1.7.1 基本信息
+
+> 请求host: http://sit.aierchina.com:8710/external-api
+>
+> 请求path：
+>
+> 请求方式：POST
+>
+> 接口描述：该接口用于获取患者的体查信息（视力和眼压）
+
+
+#### 1.7.2 请求参数
+
+格式：application/json
+
+参数说明：
+
+请求参数代码：
+
+```java
+
+```
+
+#### 1.7.3 响应数据
+
+参数格式：application/json
+
+参数说明：
+
+响应数据样例：
+
+```json
+
 ```
 
 
