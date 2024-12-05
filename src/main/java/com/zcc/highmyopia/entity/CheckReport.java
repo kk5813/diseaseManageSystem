@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("check_reports")
-public class CheckReport implements Serializable {
+public class  CheckReport implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;  // 报告表ID
@@ -29,4 +29,5 @@ public class CheckReport implements Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkTime;  // 检查时间
+
 }

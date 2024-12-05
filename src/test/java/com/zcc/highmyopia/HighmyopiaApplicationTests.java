@@ -3,15 +3,19 @@ package com.zcc.highmyopia;
 import cn.hutool.crypto.SecureUtil;
 import com.zcc.highmyopia.entity.User;
 import com.zcc.highmyopia.mapper.UserMapper;
+import com.zcc.highmyopia.service.IRedisService;
 import com.zcc.highmyopia.service.UserService;
+import com.zcc.highmyopia.service.impl.RedissonService;
 import com.zcc.highmyopia.util.JwtUtils;
 import io.jsonwebtoken.*;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +25,8 @@ class HighmyopiaApplicationTests {
 
     @Autowired(required = false)
     private UserMapper userMapper;
+    @Resource
+    private IRedisService redissonService;
 
     @Test
     public void list() {
@@ -133,6 +139,13 @@ class HighmyopiaApplicationTests {
 
         //3. 关闭连接
         jedis.close();
+    }
+
+    @Test
+    void test_redisson(){
+        redissonService.setValue("name", "zcc");
+        String name = redissonService.getValue("name");
+        System.out.println(name);
     }
 
 }

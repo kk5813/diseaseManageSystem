@@ -26,7 +26,7 @@ public class FollowupController {
 
     @Autowired
     FollowupService followupService;
-    @Autowired(required = false)
+    @Autowired
     FollowupMapper followupMapper;
 
     /**
@@ -76,7 +76,7 @@ public class FollowupController {
         followup.setVisitRemark(listFollowup.getVisitRemark());
         followup.setVisitDate(LocalDateTime.now());
         followupService.saveOrUpdate(followup);
-        if(listFollowup.getVisitResult() == false) {
+        if(!listFollowup.getVisitResult()) {
             Followup temp = new Followup();
             temp.setPlanVisitDate(listFollowup.getNextVisitDate());
             temp.setCaseId(listFollowup.getCaseId());

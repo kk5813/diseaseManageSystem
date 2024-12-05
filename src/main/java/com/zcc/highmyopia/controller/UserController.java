@@ -30,13 +30,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/${app.config.api-version}/user")
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    //          测试用
+    // 测试用
     @GetMapping("/index")
     public Object index() {
         User user = userService.getById(1L);
@@ -49,7 +49,7 @@ public class UserController {
     }
 
 
-    //          测试保存
+    // 测试保存
     @PostMapping("/save")
     @RequiresAuthentication
     public Object testUser(@Validated @RequestBody User user) {
@@ -57,7 +57,7 @@ public class UserController {
     }
 
 
-    //          添加用户
+    // 添加用户
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addUser(@Validated @RequestBody User user) {
@@ -76,7 +76,7 @@ public class UserController {
     }
 
 
-    //          编辑用户
+    // 编辑用户
     @PostMapping("/edit")
     @RequiresAuthentication
     public Result editUser( @RequestBody User user) {
@@ -93,7 +93,7 @@ public class UserController {
         return Result.succ(null);
     }
 
-    //          失效某用户
+    // 失效某用户
     @GetMapping("/invalid/{userId}")
     @RequiresAuthentication
     public Result invalidUser(@PathVariable(name = "userId") Long userId) {
@@ -114,7 +114,7 @@ public class UserController {
         return Result.succ(temp);
     }
 
-    //          用户列表
+    // 用户列表
     @GetMapping("/list")
     @RequiresAuthentication
     public Result list() {

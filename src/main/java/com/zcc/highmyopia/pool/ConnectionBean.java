@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 public interface ConnectionBean {
 
-     Integer maxConnect = 5;
+    Integer maxConnect = 5;
     
     Integer normalConnect = 3;
 
@@ -12,7 +12,7 @@ public interface ConnectionBean {
 
     Connection getConnection(long timeout);
 
-    void closeConncetion(Connection con);
+    void closeConnection(Connection con);
 
     void release();
 }

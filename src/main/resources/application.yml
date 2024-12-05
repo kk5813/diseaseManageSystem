@@ -1,4 +1,7 @@
 # DataSource Config
+server:
+  port: 8081
+
 spring:
   redis:
     host: 43.136.178.202
@@ -11,23 +14,41 @@ spring:
     username: root
     password: mysql9344!
 
+# 应用配置
+app:
+  config:
+    # 版本，方便通过接口版本升级
+    api-version: v1
+    # 跨域，开发阶段可以设置为 * 不限制
+    cross:
+      origin: '*'
+
+# Redis客户端Redisson配置信息
+redis:
+  sdk:
+    config:
+      host: 43.136.178.202
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true
+      password: 93449344
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
 #  configuration:
 #    map-underscore-to-camel-case: false
 
-
-server:
-  port: 8081
-
-
 shiro-redis:
   enabled: true
   redis-manager:
     host: 43.136.178.202:6379
     password: 93449344       # 用redis-manager的时候也要给到redis的password
-
 
 highmyopia:
   jwt:

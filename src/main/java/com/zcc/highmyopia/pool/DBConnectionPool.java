@@ -114,7 +114,7 @@ public class DBConnectionPool implements ConnectionBean{
     }
 
     @Override
-    public synchronized void closeConncetion(Connection con) {
+    public synchronized void closeConnection(Connection con) {
         freeConnections.add(con);
         num++;
         useNum--;
