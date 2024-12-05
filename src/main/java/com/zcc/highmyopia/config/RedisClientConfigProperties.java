@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @Author zcc
- * @Date 2024/11/17
+ * @Date 2024/12/04
  * @Description Redis连接配置
  */
 @Data
