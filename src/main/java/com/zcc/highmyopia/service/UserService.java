@@ -1,7 +1,6 @@
 package com.zcc.highmyopia.service;
 
 import com.zcc.highmyopia.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -11,6 +10,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author liangyue
  * @since 2021-02-01
  */
-public interface UserService extends IService<User> {
+public interface UserService{
 
 }

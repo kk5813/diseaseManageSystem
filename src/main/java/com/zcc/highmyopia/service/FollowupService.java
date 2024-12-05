@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author liangyue
  * @since 2021-03-04
  */
-public interface FollowupService extends IService<Followup> {
+public interface FollowupService{
 
 
 

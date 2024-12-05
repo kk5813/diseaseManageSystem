@@ -3,7 +3,6 @@ package com.zcc.highmyopia.service.impl;
 import com.zcc.highmyopia.entity.User;
 import com.zcc.highmyopia.mapper.UserMapper;
 import com.zcc.highmyopia.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +14,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-02-01
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl implements UserService {
 
 }

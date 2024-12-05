@@ -1,7 +1,6 @@
 package com.zcc.highmyopia.service;
 
 import com.zcc.highmyopia.entity.Patients;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -11,6 +10,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author liangyue
  * @since 2021-02-05
  */
-public interface PatientService extends IService<Patients> {
+public interface PatientService{
 
 }

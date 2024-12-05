@@ -2,7 +2,6 @@ package com.zcc.highmyopia.mapper;
 
 import com.zcc.highmyopia.common.dto.ListFollowup;
 import com.zcc.highmyopia.entity.Followup;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author liangyue
  * @since 2021-03-04
  */
-public interface FollowupMapper extends BaseMapper<Followup> {
+public interface FollowupMapper{
 
 //    @Select("select * from followup " +
 //            "where TO_DAYS(followup.plan_visit_date) = TO_DAYS(NOW()) " +
