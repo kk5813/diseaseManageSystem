@@ -26,14 +26,15 @@ public class JwtUtils {
     /**
      * 生成jwt token
      */
-    public String generateToken(long userId) {
+    public String generateToken(long userId, Integer status) {
         Date nowDate = new Date();
         //过期时间
         Date expireDate = new Date(nowDate.getTime() + expire * 1000);
 
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(userId+"")
+                .setSubject(String.valueOf(userId))
+                .claim("status", status)  // 用户状态，使用自定义的 claim
                 .setIssuedAt(nowDate)
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
