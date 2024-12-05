@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -19,8 +21,11 @@ import org.springframework.stereotype.Component;
 @Component
 public interface PatientMapper extends BaseMapper<Patients> {
 
-    @Select("select * from patient where patient_id = #{id}")
     Patients selectPatientByPId(@Param("id") String id);
+
+    int updatePatients(Patients patients);
+
+    int batchInsert(@Param("list") List<Patients> list);
 
     @Select("Select telephone from patient where patient_id = #{id}")
     String selectTelephoneByPatientId(@Param("id") String id);
