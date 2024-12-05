@@ -3,7 +3,7 @@ package com.zcc.highmyopia.service.impl;
 import com.zcc.highmyopia.entity.Patients;
 import com.zcc.highmyopia.mapper.PatientMapper;
 import com.zcc.highmyopia.service.PatientService;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-02-05
  */
 @Service
-public class PatientServiceImpl implements PatientService {
+public class PatientServiceImpl extends ServiceImpl<PatientMapper, Patients> implements PatientService {
 
 }
