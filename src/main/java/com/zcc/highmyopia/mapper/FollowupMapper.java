@@ -2,7 +2,11 @@ package com.zcc.highmyopia.mapper;
 
 import com.zcc.highmyopia.common.dto.ListFollowup;
 import com.zcc.highmyopia.entity.Followup;
+<<<<<<< HEAD
 import org.apache.ibatis.annotations.Mapper;
+=======
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+>>>>>>> 00f6132b2a1b9fd95e996bc640b344f9432b0b40
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +20,13 @@ import java.util.List;
  * @author liangyue
  * @since 2021-03-04
  */
+<<<<<<< HEAD
 @Mapper
 @Component
 public interface FollowupMapper{
+=======
+public interface FollowupMapper extends BaseMapper<Followup> {
+>>>>>>> 00f6132b2a1b9fd95e996bc640b344f9432b0b40
 
 //    @Select("select * from followup " +
 //            "where TO_DAYS(followup.plan_visit_date) = TO_DAYS(NOW()) " +
