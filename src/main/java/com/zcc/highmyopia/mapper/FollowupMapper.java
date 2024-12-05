@@ -2,7 +2,9 @@ package com.zcc.highmyopia.mapper;
 
 import com.zcc.highmyopia.common.dto.ListFollowup;
 import com.zcc.highmyopia.entity.Followup;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  * @author liangyue
  * @since 2021-03-04
  */
+@Mapper
+@Component
 public interface FollowupMapper{
 
 //    @Select("select * from followup " +
