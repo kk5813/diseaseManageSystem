@@ -20,19 +20,19 @@
     </update>
 
     <insert id="batchInsert" useGeneratedKeys="false" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=",">
         insert into patients
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null and id != ''"> id, </if>
-            <if test="name != null and name != ''"> `name`, </if>
-            <if test="sex != null and sex != ''"> sex,</if>
-            <if test="sexName != null and sexName != ''"> sexName,</if>
-            <if test="birthday != null and birthday != '' ">birthday,</if>
-            <if test="idNumber != null and idNumber != ''">id_number,</if>
-            <if test="phone != null and phone != ''">phone,</if>
-            <if test="status != null and status != ''">`status`,</if>
+            <if test="item.id != null and item.id != ''"> id, </if>
+            <if test="item.name != null and item.name != ''"> `name`, </if>
+            <if test="item.sex != null and item.sex != ''"> sex,</if>
+            <if test="item.sexName != null and item.sexName != ''"> sexName,</if>
+            <if test="item.birthday != null and item.birthday != '' ">birthday,</if>
+            <if test="item.idNumber != null and item.idNumber != ''">id_number,</if>
+            <if test="item.phone != null and item.phone != ''">phone,</if>
+<!--             <if test="item.status != null and item.status != ''">`status`,</if>-->
         </trim>
         VALUES
-        <foreach collection="list" item="item" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="item.id != null and item.id != ''"> id = #{item.id}, </if>
                 <if test="item.name != null and item.name != ''"> `name` = #{item.name}, </if>
@@ -41,7 +41,7 @@
                 <if test="item.birthday != null and item.birthday != '' ">birthday = #{item.birthday},</if>
                 <if test="item.idNumber != null and item.idNumber != ''">id_number = #{item.idNumber},</if>
                 <if test="item.phone != null and item.phone != ''">phone = #{item.phone},</if>
-                <if test="item.status != null and item.status != ''">`status` = #{item.status},</if>
+<!--               <if test="item.status != null and item.status != ''">`status` = #{item.status},</if>-->
             </trim>
         </foreach>
     </insert>
