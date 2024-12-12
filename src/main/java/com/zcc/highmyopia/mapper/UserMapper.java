@@ -23,5 +23,4 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user")
     public List<User> list();
 
-    Page<User> findAll(Pageable pageable);
 }

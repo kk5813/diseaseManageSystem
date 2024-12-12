@@ -40,9 +40,8 @@ public class Patient implements Serializable {
 
     private String unit;
 
-    private String idcard;
+    private String idCard;
 
     private String onlyId;
-
 
 }
