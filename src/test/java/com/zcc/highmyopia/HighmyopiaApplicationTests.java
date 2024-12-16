@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zcc.highmyopia.entity.User;
+import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.mapper.UserMapper;
 import com.zcc.highmyopia.service.IRedisService;
 import com.zcc.highmyopia.service.UserService;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
@@ -148,6 +151,27 @@ class HighmyopiaApplicationTests {
         redissonService.setValue("name", "zcc");
         String name = redissonService.getValue("name");
         System.out.println(name);
+    }
+
+    @Test
+    void test_httpClientUtils() {
+        String host = "http://10.0.225.6:8083";
+        String path = "/api/report/getList";
+
+        // 创建 RestTemplate 实例
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 正确的目标 URL，URL 中使用占位符
+        String url = host + path + "?physc_bdate={bdata}&physc_edate={edata}";
+
+        // 发送 GET 请求，返回 ResponseEntity 对象
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, "20241112", "20241112");
+
+        // 输出响应状态码
+        System.out.println("Response Status Code: " + response.getStatusCodeValue());
+
+        // 输出响应体
+        System.out.println("Response Body: " + response.getBody());
     }
 
 }

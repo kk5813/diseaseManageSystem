@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class PatientMapperTest {
     @Autowired
-    PatientMapper patientMapper;
+    PatientsMapper patientMapper;
     @Test
     void selectPatientByID(){
         Patients patients = patientMapper.selectPatientByPId("1");

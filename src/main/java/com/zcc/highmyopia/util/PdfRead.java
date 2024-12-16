@@ -1,10 +1,10 @@
 package com.zcc.highmyopia.util;
 
 
-import com.zcc.highmyopia.mapper.CaselistMapper;
-import com.zcc.highmyopia.mapper.ExamdetailMapper;
-import com.zcc.highmyopia.service.CaselistService;
-import com.zcc.highmyopia.service.ExamdetailService;
+import com.zcc.highmyopia.mapper.old.CaselistMapper;
+import com.zcc.highmyopia.mapper.old.ExamdetailMapper;
+import com.zcc.highmyopia.service.old.CaselistService;
+import com.zcc.highmyopia.service.old.ExamdetailService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;

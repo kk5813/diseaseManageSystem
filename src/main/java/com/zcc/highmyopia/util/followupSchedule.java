@@ -2,7 +2,7 @@ package com.zcc.highmyopia.util;
 
 import com.zcc.highmyopia.common.dto.ListFollowup;
 import com.zcc.highmyopia.mapper.FollowupMapper;
-import com.zcc.highmyopia.mapper.PatientMapper;
+import com.zcc.highmyopia.mapper.PatientsMapper;
 import com.zcc.highmyopia.service.FollowupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class followupSchedule {
     @Autowired
     FollowupMapper followupMapper;
     @Autowired
-    PatientMapper patientMapper;
+    PatientsMapper patientMapper;
 
     //3.添加定时任务
     @Scheduled(cron = "0 0 8 * * ?")

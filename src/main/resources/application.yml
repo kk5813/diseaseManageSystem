@@ -40,7 +40,9 @@ redis:
       password: 93449344
 
 mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
+  mapper-locations:
+    classpath:/mapper/*.xml
+    classpath:/mapper/old/*.xml
 #  configuration:
 #    map-underscore-to-camel-case: false
 
@@ -57,3 +59,10 @@ highmyopia:
     # token有效时长， 7天， 单位秒
     expire: 604800
     header: Authorization
+
+hospital:
+  hospId: 1824
+  appKey: Cdm_1824
+  appSecret: ywgp.lbol
+  AHisHost: http://sit.aierchina.com:8710/external-api
+  APacsHost: http://10.0.225.6:8083
