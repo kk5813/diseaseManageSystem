@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * @since 2021-03-04
  */
 @RestController
-@RequestMapping("/followup")
+@RequestMapping("/api/${app.config.api-version}/followup")
 public class FollowupController {
 
     @Autowired

@@ -1,7 +1,7 @@
 package com.zcc.highmyopia.Service;
 
 import com.zcc.highmyopia.entity.Patients;
-import com.zcc.highmyopia.service.PatientService;
+import com.zcc.highmyopia.service.old.PatientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
