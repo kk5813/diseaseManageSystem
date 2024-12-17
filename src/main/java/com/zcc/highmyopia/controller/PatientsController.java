@@ -2,9 +2,9 @@ package com.zcc.highmyopia.controller;
 
 
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.Patients;
-import com.zcc.highmyopia.mapper.PatientsMapper;
-import com.zcc.highmyopia.service.old.PatientService;
+import com.zcc.highmyopia.po.Patients;
+import com.zcc.highmyopia.mapper.IPatientsMapper;
+import com.zcc.highmyopia.service.IPatientsService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +24,10 @@ import java.util.List;
 public class PatientsController {
 
     @Autowired
-    PatientService patientService;
+    IPatientsService patientService;
 
     @Autowired
-    PatientsMapper patientMapper;
-
-    // 测试用
-    @GetMapping("/index")
-    public Object index() {
-        Patients patient = patientService.getById(1L);
-        return Result.succ(patient);
-    }
+    IPatientsMapper patientMapper;
 
     // 患者列表
     @GetMapping("/list")

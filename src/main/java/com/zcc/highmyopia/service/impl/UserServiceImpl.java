@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.User;
-import com.zcc.highmyopia.mapper.UserMapper;
-import com.zcc.highmyopia.service.UserService;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.mapper.IUserMapper;
+import com.zcc.highmyopia.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<IUserMapper, User> implements IUserService {
 
-    private final UserMapper userMapper;
+    private final IUserMapper userMapper;
 
     @Override
     public Result getUsersPage(int page, int size) {

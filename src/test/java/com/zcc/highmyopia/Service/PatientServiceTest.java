@@ -1,7 +1,7 @@
 package com.zcc.highmyopia.Service;
 
-import com.zcc.highmyopia.entity.Patients;
-import com.zcc.highmyopia.service.old.PatientService;
+import com.zcc.highmyopia.po.Patients;
+import com.zcc.highmyopia.service.IPatientsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +18,7 @@ import java.util.List;
 @SpringBootTest
 public class PatientServiceTest {
     @Autowired
-    PatientService patientService;
+    IPatientsService patientService;
     @Test
     void pageQuery(){
         List<Patients> patients = patientService.pageQuery(2, 1);

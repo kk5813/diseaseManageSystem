@@ -1,8 +1,16 @@
 package com.zcc.highmyopia.service.impl;
 
-import com.zcc.highmyopia.common.dto.MedicalRecordDTO;
-import com.zcc.highmyopia.common.vo.MedicalRecordVO;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.zcc.highmyopia.common.dto.ElementDTO;
+import com.zcc.highmyopia.hospital.entity.ElementEntity;
+import com.zcc.highmyopia.mapper.IElementMapper;
+import com.zcc.highmyopia.po.Element;
+import com.zcc.highmyopia.service.IElementService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author zcc
@@ -10,24 +18,42 @@ import org.springframework.stereotype.Service;
  * @Description
  */
 @Service
-public class ElementService implements com.zcc.highmyopia.service.ElementService {
+@RequiredArgsConstructor
+public class ElementService implements IElementService {
 
+    private final IElementMapper elementMapper;
 
+    // 新增
     @Override
-    public MedicalRecordVO queryMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecordVO medicalRecordVO = new MedicalRecordVO();
-        // 查询数据库
-        // 拼装
-        // 返回
-        return medicalRecordVO;
+    public void addElement(ElementEntity elementEntity) {
+
+        Element element = ElementEntity.entityToPo(elementEntity);
+        elementMapper.insert(element);
 
     }
 
     @Override
-    public void addMedicalRecord(MedicalRecordVO medicalRecordVO) {
-        // 校验
+    public void editElement(ElementEntity elementEntity) {
+        Element element = ElementEntity.entityToPo(elementEntity);
+        LambdaUpdateWrapper<Element> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Element::getId, element.getId());
+        wrapper.set(element.getPatientId() != null, Element::getPatientId, element.getPatientId());
+        wrapper.set(element.getPastHistory() != null, Element::getPastHistory, element.getPastHistory());
+        wrapper.set(element.getDispose() != null, Element::getDispose, element.getDispose());
+        wrapper.set(element.getMainAppeal() != null, Element::getMainAppeal, element.getMainAppeal());
+        wrapper.set(element.getAllergy() != null, Element::getAllergy, element.getAllergy());
+        wrapper.set(element.getSpecialOd() != null, Element::getSpecialOd, element.getSpecialOd());
+        wrapper.set(element.getSpecialOs() != null, Element::getSpecialOs, element.getSpecialOs());
+        wrapper.set(element.getPhysicalExam() != null, Element::getPhysicalExam, element.getPhysicalExam());
+        wrapper.set(element.getVisitNumber() != null, Element::getVisitNumber, element.getVisitNumber());
+        wrapper.set(element.getPresentIllness() != null, Element::getPresentIllness, element.getPresentIllness());
+        wrapper.set(Element::getUpdateTime, new Date());
+        elementMapper.update(element, wrapper);
+    }
 
-        // 拆分封装并存储数据库中
+    @Override
+    public List<Element> queryElement(ElementDTO elementDto) {
 
+        return elementMapper.queryElementOnCondition(elementDto);
     }
 }

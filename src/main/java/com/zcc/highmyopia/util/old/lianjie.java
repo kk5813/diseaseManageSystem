@@ -1,7 +1,7 @@
 package com.zcc.highmyopia.util.old;
 
-import com.zcc.highmyopia.entity.old.Caselist;
-import com.zcc.highmyopia.entity.old.Examdetail;
+import com.zcc.highmyopia.po.old.Caselist;
+import com.zcc.highmyopia.po.old.Examdetail;
 import com.zcc.highmyopia.mapper.old.CaselistMapper;
 import com.zcc.highmyopia.mapper.old.ExamdetailMapper;
 import com.zcc.highmyopia.pool.ConnectionBean;

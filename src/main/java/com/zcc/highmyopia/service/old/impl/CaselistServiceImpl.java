@@ -2,7 +2,7 @@ package com.zcc.highmyopia.service.old.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zcc.highmyopia.entity.old.Caselist;
+import com.zcc.highmyopia.po.old.Caselist;
 import com.zcc.highmyopia.mapper.old.CaselistMapper;
 import com.zcc.highmyopia.service.old.CaselistService;
 import org.springframework.stereotype.Service;

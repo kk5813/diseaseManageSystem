@@ -4,14 +4,10 @@ package com.zcc.highmyopia.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
-import com.zcc.highmyopia.entity.User;
-import com.zcc.highmyopia.service.UserService;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.shiro.AccountProfile;
 import com.zcc.highmyopia.util.JwtUtils;
 import com.zcc.highmyopia.util.SaltUtil;
@@ -20,10 +16,6 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,23 +39,11 @@ import java.util.List;
 public class UserController {
 
 
-    private final UserService userService;
+    private final IUserService userService;
 
     private final JwtUtils jwtUtils;
 
-    // 测试用
-    @GetMapping("/index")
-    public Object index() {
-        User user = userService.getById(1L);
-        return Result.succ(MapUtil.builder()
-                .put("userId", user.getUserId())
-                .put("userLoginName", user.getUserLoginName())
-                .put("userName", user.getUserName())
-                .map()
-        );
-    }
-
-    // 添加用户
+    // 用户注册
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addUser(@Validated @RequestBody User user) {
@@ -107,13 +87,6 @@ public class UserController {
         return Result.succ(null);
     }
 
-    // 测试保存
-    @PostMapping("/save")
-    @RequiresAuthentication
-    public Object testUser(@Validated @RequestBody User user) {
-        return user.toString();
-    }
-
     // 失效某用户
     @GetMapping("/invalid/{userId}")
     @RequiresAuthentication
@@ -137,30 +110,13 @@ public class UserController {
     @GetMapping("/find/{userId}")
     @RequiresAuthentication
     public Result FindUser(@PathVariable(name = "userId") Long userId) {
-        User temp = userService.getById(userId);
-        log.info("用户" + temp);
-        return Result.succ(temp);
+        User user = userService.getById(userId);
+        return Result.succ(user);
     }
 
-    // 用户列表
-    @GetMapping("/list")
-    @RequiresAuthentication
-    public Result list() {
-        log.info("userController的list方法");
-        System.out.println("userController的list方法");
-        List<User> userList = userService.list();
-        List<AccountProfile> resList = new ArrayList<>();
-        for(User user : userList) {
-            AccountProfile profile = new AccountProfile();
-            BeanUtil.copyProperties(user, profile);
-            resList.add(profile);
-        }
-        log.info("查询成功" + userList);
-        System.out.println("查询成功" + userList);
-        return Result.succ(resList);
-    }
-
+    // 分页查询
     @GetMapping("/listPage")
+    @RequiresAuthentication
     public Result getUsersPage(@RequestParam(defaultValue = "0") int page,  // 页码默认 0
                                @RequestParam(defaultValue = "10") int size) {  // 每页大小默认 10
         return userService.getUsersPage(page, size);

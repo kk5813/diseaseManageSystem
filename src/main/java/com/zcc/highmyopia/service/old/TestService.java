@@ -2,7 +2,7 @@ package com.zcc.highmyopia.service.old;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zcc.highmyopia.entity.old.Test;
+import com.zcc.highmyopia.po.old.Test;
 import org.springframework.stereotype.Service;
 
 /**

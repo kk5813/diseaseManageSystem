@@ -1,0 +1,69 @@
+# DataSource Config
+server:
+  port: 8081
+
+spring:
+  redis:
+    host: 43.136.178.202
+    port: 6379
+    password: 93449344
+    database: 0
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://43.136.178.202:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: mysql9344!
+
+# 应用配置
+app:
+  config:
+    # 版本，方便通过接口版本升级
+    api-version: v1
+    # 跨域，开发阶段可以设置为 * 不限制
+    cross:
+      origin: '*'
+
+# Redis客户端Redisson配置信息
+redis:
+  sdk:
+    config:
+      host: 43.136.178.202
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true
+      password: 93449344
+
+mybatis-plus:
+  mapper-locations:
+    - classpath:/mapper/*.xml
+    - classpath:/mapper/old/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: false
+
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: 43.136.178.202:6379
+    password: 93449344       # 用redis-manager的时候也要给到redis的password
+
+highmyopia:
+  jwt:
+    # 加密密钥
+    secret: f4e2e52034348f86b67cde581c0f9eb5
+    # token有效时长， 7天， 单位秒
+    expire: 604800
+    header: Authorization
+
+hospital:
+  hospId: 1824
+  appKey: Cdm_1824
+  appSecret: ywgp.lbol
+  AHisHost: http://sit.aierchina.com:8710/external-api
+  APacsHost: http://10.0.225.6:8083
+  filePath: E:\Download\project

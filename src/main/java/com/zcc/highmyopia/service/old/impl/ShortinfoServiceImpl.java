@@ -2,7 +2,7 @@ package com.zcc.highmyopia.service.old.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zcc.highmyopia.entity.old.Shortinfo;
+import com.zcc.highmyopia.po.old.Shortinfo;
 import com.zcc.highmyopia.mapper.old.ShortinfoMapper;
 import com.zcc.highmyopia.service.old.ShortinfoService;
 import org.springframework.stereotype.Service;

@@ -6,14 +6,13 @@ import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zcc.highmyopia.common.dto.LoginDto;
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.User;
-import com.zcc.highmyopia.service.UserService;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public class AccountController {
 
     private final JwtUtils jwtUtils;  // JWT 工具类，用于生成和解析 JWT Token
 
-    private final UserService userService;  // 用户服务，用于用户相关操作
+    private final IUserService userService;  // 用户服务，用于用户相关操作
 
     /**
      * 用户登录接口
@@ -40,7 +39,8 @@ public class AccountController {
     @PostMapping("/login")
     public Result login(@Validated @RequestBody LoginDto loginDto, HttpServletResponse response) {
         // 查询用户信息
-        User user = null ;//userService.getOne(new QueryWrapper<User>().eq("user_login_name", loginDto.getUserLoginName()));
+        User user = null ;
+        userService.getOne(new QueryWrapper<User>().eq("user_login_name", loginDto.getUserLoginName()));
         Assert.notNull(user, "用户不存在");  // 确保用户存在
 
         // todo: 模拟前端MD5加密过程

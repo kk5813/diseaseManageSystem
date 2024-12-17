@@ -1,8 +1,8 @@
 package com.zcc.highmyopia.service.impl;
 
-import com.zcc.highmyopia.entity.Followup;
-import com.zcc.highmyopia.mapper.FollowupMapper;
-import com.zcc.highmyopia.service.FollowupService;
+import com.zcc.highmyopia.po.Followup;
+import com.zcc.highmyopia.mapper.IFollowupMapper;
+import com.zcc.highmyopia.service.IFollowupService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-03-04
  */
 @Service
-public class FollowupServiceImpl extends ServiceImpl<FollowupMapper, Followup> implements FollowupService {
+public class FollowupServiceImpl extends ServiceImpl<IFollowupMapper, Followup> implements IFollowupService {
 
 }

@@ -25,7 +25,7 @@
 请求参数代码：
 
 ```java
-		String hospId ="1824";
+	    String hospId ="1824";
         String appKey = "Cdm_1824";
         String appSecret="ywgp.lbol";
 
@@ -33,7 +33,7 @@
         querys.put("diagBdate","20240520");
         querys.put("diagEdate","20240529");	
         String reqJson ="";
-        Map<String,String>headers =new HashMap<>();
+        Map<String,String> headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
 
         Response resp = HttpClientUtils.httpPostJson(host, path, connectTimeout, headers, querys, reqJson,signHeaderPrefixList, appKey, appSecret, hospId);
@@ -45,24 +45,24 @@
 
 参数说明：
 
-| 参数名称    | 类型   | 必填 | 描述                                       |
-| :---------- | :----- | :--- | :----------------------------------------- |
-| birthday    | string | 是   | 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |
-| patientName | string | 是   | 患者姓名                                   |
-| deptName    | string | 是   | 科室名称                                   |
-| patientId   | long   | 是   | 患者ID                                     |
-| diagTime    | string | 是   | 诊断时间，格式为 "YYYY-MM-DD HH:MM:SS"     |
-| visitNumber | string | 是   | 就诊号                                     |
-| diagOrder   | int    | 是   | 诊断序号                                   |
-| sex         | int    | 是   | 性别标识，1表示男性                        |
-| deptId      | int    | 是   | 科室ID                                     |
-| siteName    | string | 是   | 眼别                                       |
-| diagName    | string | 是   | 诊断名称                                   |
-| diagCode    | string | 是   | 诊断编码                                   |
-| doctorName  | string | 是   | 医生姓名                                   |
-| doctorId    | int    | 是   | 医生ID                                     |
-| sexName     | string | 是   | 性别名称，"男"或"女"                       |
-| siteId      | int    | 是   | 眼别ID                                     |
+| 参数名称              | 类型   | 必填 | 描述                                       |
+| :-------------------- | :----- | :--- | :----------------------------------------- |
+| birthday(patients)    | string | 是   | 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |
+| patientName(patients) | string | 是   | 患者姓名                                   |
+| deptName(dept)        | string | 是   | 科室名称                                   |
+| patientId(patients)   | long   | 是   | 患者ID                                     |
+| diagTime(visits)      | string | 是   | 诊断时间，格式为 "YYYY-MM-DD HH:MM:SS"     |
+| visitNumber(visits)   | string | 是   | 就诊号                                     |
+| diagOrder(visits)     | int    | 是   | 诊断序号                                   |
+| sex(patient)          | int    | 是   | 性别标识，1表示男性                        |
+| deptId(visits)        | int    | 是   | 科室ID                                     |
+| siteName(site)        | string | 是   | 眼别                                       |
+| diagName(visits)      | string | 是   | 诊断名称                                   |
+| diagCode(visits)      | string | 是   | 诊断编码                                   |
+| doctorName(doctor)    | string | 是   | 医生姓名                                   |
+| doctorId(visits)      | int    | 是   | 医生ID                                     |
+| sexName(patients)     | string | 是   | 性别名称，"男"或"女"                       |
+| siteId(visits)        | int    | 是   | 眼别ID                                     |
 
 响应数据样例：
 
@@ -140,18 +140,18 @@
 
 参数说明：
 
-| 字段名称     | 类型   | 描述             | 备注                         |
-| :----------- | :----- | :--------------- | :--------------------------- |
-| patientName  | string | 患者姓名         |                              |
-| deptName     | string | 科室名称         |                              |
-| regNumber    | string | 挂号编号         |                              |
-| doctorName   | string | 医生姓名         |                              |
-| recipeNumber | string | 处方编号         |                              |
-| recipeType   | int    | 处方类型         |                              |
-| patientId    | long   | 患者ID           |                              |
-| billingTime  | string | 开方时间         | 格式为 "YYYY-MM-DD HH:MM:SS" |
-| id           | long   | 处方ID           |                              |
-| orderdetail  | array  | 处方（医嘱）信息 |                              |
+| 字段名称                  | 类型   | 描述             | 备注                         |
+| :------------------------ | :----- | :--------------- | :--------------------------- |
+| patientName(patients)     | string | 患者姓名         |                              |
+| deptName(dept)            | string | 科室名称         |                              |
+| regNumber(recipe)         | string | 挂号编号         |                              |
+| doctorName(doctor)        | string | 医生姓名         |                              |
+| recipeNumber(recipe)      | string | 处方编号         |                              |
+| recipeType(recipe)        | int    | 处方类型         |                              |
+| patientId(recipe)         | long   | 患者ID           |                              |
+| billingTime(recipe)       | string | 开方时间         | 格式为 "YYYY-MM-DD HH:MM:SS" |
+| id(recipe)                | long   | 处方ID           |                              |
+| orderdetail(order_detail) | array  | 处方（医嘱）信息 |                              |
 
 响应数据样例：
 
@@ -320,24 +320,24 @@
 
 参数说明：
 
-|                   |        |                                            |      |
-| :---------------- | :----- | :----------------------------------------- | :--- |
-| 字段名称          | 类型   | 描述                                       | 备注 |
-| patientName       | string | 患者姓名                                   |      |
-| isUrgent          | int    | 是否紧急，0表示非紧急，1表示紧急           |      |
-| labItemName       | string | 检验项目名称                               |      |
-| reportName        | string | 报告名称                                   |      |
-| patientId         | long   | 患者ID                                     |      |
-| labItemCode       | string | 检验项目代码                               |      |
-| refRange          | string | 参考范围                                   |      |
-| labResultSignName | string | 检验结果标识                               |      |
-| labFinalValue     | string | 检验结果                                   |      |
-| visitingNo        | string | 就诊编号                                   |      |
-| sexName           | string | 性别名称，"男"或"女"                       |      |
-| patientBrithday   | string | 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |      |
-| labResultUnitName | string | 检验结果单位名称                           |      |
-| id                | long   | 检验结果ID                                 |      |
-| auditDate         | string | 审核日期，格式为 "YYYY-MM-DD HH:MM:SS"     |      |
+|                                  |        |                                            |      |
+| :------------------------------- | :----- | :----------------------------------------- | :--- |
+| 字段名称                         | 类型   | 描述                                       | 备注 |
+| patientName(patients)            | string | 患者姓名                                   |      |
+| isUrgent(check_results)          | int    | 是否紧急，0表示非紧急，1表示紧急           |      |
+| labItemName(check_results)       | string | 检验项目名称                               |      |
+| reportName(check_results)        | string | 报告名称                                   |      |
+| patientId(check_results)         | long   | 患者ID                                     |      |
+| labItemCode(check_results)       | string | 检验项目代码                               |      |
+| refRange(check_results)          | string | 参考范围                                   |      |
+| labResultSignName(check_results) | string | 检验结果标识                               |      |
+| labFinalValue(check_results)     | string | 检验结果                                   |      |
+| visitingNo                       | string | 就诊编号                                   |      |
+| sexName(patients)                | string | 性别名称，"男"或"女"                       |      |
+| patientBrithday(patients)        | string | 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |      |
+| labResultUnitName(check_results) | string | 检验结果单位名称                           |      |
+| id(check_results)                | long   | 检验结果ID                                 |      |
+| auditDate(check_results)         | string | 审核日期，格式为 "YYYY-MM-DD HH:MM:SS"     |      |
 
 响应数据样例：
 
@@ -440,16 +440,16 @@
 
 **data 数组元素结构**
 
-| 字段名称     | 类型   | 描述             | 备注                         |
-| :----------- | :----- | :--------------- | :--------------------------- |
-| item_code    | string | 检查项目编码     |                              |
-| patient_id   | string | 患者ID           |                              |
-| files        | array  | 相关文件信息数组 | 包含文件类型和下载URL        |
-| item_name    | string | 检查项目名称     |                              |
-| id           | string | 检查ID           | 通常为研究UID                |
-| patient_sid  | null   | string           | 患者SID                      |
-| visit_number | string | 就诊编号         |                              |
-| check_time   | string | 检查时间         | 格式为 "YYYY-MM-DD HH:MM:SS" |
+| 字段名称                    | 类型   | 描述             | 备注                         |
+| :-------------------------- | :----- | :--------------- | :--------------------------- |
+| item_code(check_reports)    | string | 检查项目编码     |                              |
+| patient_id(check_reports)   | string | 患者ID           |                              |
+| files(report_files)         | array  | 相关文件信息数组 | 包含文件类型和下载URL        |
+| item_name(check_reports)    | string | 检查项目名称     |                              |
+| <u>id</u>                   | string | 检查ID           | 通常为研究UID                |
+| <u>patient_sid</u>          | null   | string           | 患者SID                      |
+| visit_number(check_reports) | string | 就诊编号         |                              |
+| check_time(check_reports)   | string | 检查时间         | 格式为 "YYYY-MM-DD HH:MM:SS" |
 
 **files 数组元素结构**
 
@@ -551,20 +551,20 @@
 
 参数说明：
 
-| 字段名称        | 类型   | 描述           |
-| --------------- | :----- | :------------- |
-| MAIN_APPEAL     | string | 主诉           |
-| PAST_HISTORY    | string | 既往史         |
-| PRESENT_ILLNESS | string | 现病史         |
-| ALLERGY         | string | 过敏史         |
-| SPECIAL_OS      | string | 左眼科专科检查 |
-| SPECIAL_OD      | string | 右眼科专科检查 |
-| Visit_number    | string | 就诊编号       |
-| patient_id      | long   | 患者ID         |
-| patient_name    | string | 患者姓名       |
-| PHYSICAL_EXAM   | string | 体格检查       |
-| ID              | string | 病历ID         |
-| DISPOSE         | string | 处理意见       |
+| 字段名称                 | 类型   | 描述           |
+| ------------------------ | :----- | :------------- |
+| MAIN_APPEAL(element)     | string | 主诉           |
+| PAST_HISTORY(element)    | string | 既往史         |
+| PRESENT_ILLNESS(element) | string | 现病史         |
+| ALLERGY(element)         | string | 过敏史         |
+| SPECIAL_OS(element)      | string | 左眼科专科检查 |
+| SPECIAL_OD(element)      | string | 右眼科专科检查 |
+| Visit_number(element)    | string | 就诊编号       |
+| patient_id(element)      | long   | 患者ID         |
+| patient_name(patient)    | string | 患者姓名       |
+| PHYSICAL_EXAM(element)   | string | 体格检查       |
+| ID(element)              | string | 病历ID         |
+| DISPOSE(element)         | string | 处理意见       |
 
 响应数据样例：
 
@@ -641,15 +641,15 @@
 
 参数说明：
 
-| 字段名称 | 类型   | 描述                                   | 备注 |
-| :------- | :----- | :------------------------------------- | :--- |
-| tel1     | string | 电话号码                               |      |
-| birthday | string | 出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |      |
-| sex      | int    | 性别标识，1表示男性，通常0表示女性     |      |
-| sexName  | string | 性别名称，"男"或"女"                   |      |
-| name     | string | 姓名                                   |      |
-| id       | long   | 个人ID                                 |      |
-| idNumber | string | 身份证号码                             |      |
+| 字段名称           | 类型   | 描述                                   | 备注 |
+| :----------------- | :----- | :------------------------------------- | :--- |
+| tel1(patients)     | string | 电话号码                               |      |
+| birthday(patients) | string | 出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |      |
+| sex(patients)      | int    | 性别标识，1表示男性，通常0表示女性     |      |
+| sexName(patients)  | string | 性别名称，"男"或"女"                   |      |
+| name(patients)     | string | 姓名                                   |      |
+| id(patients)       | long   | 个人ID                                 |      |
+| idNumber(patients) | string | 身份证号码                             |      |
 
 响应数据样例：
 
