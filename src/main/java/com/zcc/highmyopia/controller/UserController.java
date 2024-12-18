@@ -15,6 +15,8 @@ import com.zcc.highmyopia.util.JwtUtils;
 import com.zcc.highmyopia.util.SaltUtil;
 import com.zcc.highmyopia.util.ShiroUtil;
 import io.jsonwebtoken.Claims;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -33,6 +35,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Api(tags = "用户管理")
 @RestController
 @RequestMapping("/api/${app.config.api-version}/user")
 public class UserController {
@@ -42,8 +45,8 @@ public class UserController {
 
     private final JwtUtils jwtUtils;
 
-    // 用户注册
     @PostMapping("/add")
+    @ApiOperation(value = "用户注册")
     @RequiresAuthentication
     public Result addUser(@Validated @RequestBody User user) {
         User temp = new User();
@@ -61,8 +64,8 @@ public class UserController {
         return Result.succ(null);
     }
 
-    // 编辑用户
     @PostMapping("/edit")
+    @ApiOperation(value = "编辑用户")
     @RequiresAuthentication
     public Result editUser(@RequestBody User user, HttpServletRequest request) {
         String jwtToken = request.getHeader("Authorization");
@@ -88,8 +91,8 @@ public class UserController {
         return Result.succ(null);
     }
 
-    // 失效某用户
     @GetMapping("/invalid/{userId}")
+    @ApiOperation(value = "失效某用户")
     @RequiresAuthentication
     public Result invalidUser(@PathVariable(name = "userId") Long userId, HttpServletRequest request) {
         // 身份校验:只有管理员才有权限修改
@@ -98,8 +101,9 @@ public class UserController {
 
         Integer status = (Integer) claimByToken.get("status");
         log.info("当前用户的权限是：{}", status);
-        if (status != 0)
+        if (status != 0) {
             return Result.fail(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getInfo(),null);
+        }
 
         User temp = userService.getById(userId);
         temp.setUserStatus(-1);
@@ -107,15 +111,15 @@ public class UserController {
         return Result.succ(null);
     }
 
-    // 精确查找
     @GetMapping("/find/{userId}")
+    @ApiOperation(value = "精确查找用户")
     @RequiresAuthentication
     public Result FindUser(@PathVariable(name = "userId") Long userId) {
         User user = userService.getById(userId);
         return Result.succ(user);
     }
-    // 模糊查找
     @GetMapping("/search")
+    @ApiOperation(value = "模糊查找用户")
     @RequiresAuthentication
     public Result SearchUser(@RequestBody User user) {
         List<User> users = userService.SearchUser(user);
@@ -126,8 +130,8 @@ public class UserController {
         return Result.succ(userVO);
     }
 
-    // 分页查询
     @GetMapping("/page")
+    @ApiOperation(value = "分页查询用户")
     @RequiresAuthentication
     public Result getUsersPage(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
                                @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10

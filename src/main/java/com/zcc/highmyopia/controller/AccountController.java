@@ -9,6 +9,8 @@ import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Api(tags = "登录管理")
 @RequestMapping("/api/${app.config.api-version}/account")
 public class AccountController {
 
@@ -36,6 +39,7 @@ public class AccountController {
      * @return 登录结果
      */
     @CrossOrigin  // 允许跨域请求
+    @ApiOperation(value = "登录")
     @PostMapping("/login")
     public Result login(@Validated @RequestBody LoginDto loginDto, HttpServletResponse response) {
         // todo userLoginName唯一
@@ -47,8 +51,9 @@ public class AccountController {
         // 验证密码：加盐后进行 MD5 加密
         if (!user.getUserPassword().equals(SecureUtil.md5(user.getSalt() +
                 // todo:正式测试需要删掉
-                SecureUtil.md5(loginDto.getUserPassword()))))
+                SecureUtil.md5(loginDto.getUserPassword())))) {
             return Result.fail("密码错误！");
+        }
 
         // 生成 JWT Token
         String jwt = jwtUtils.generateToken(user.getUserId(), user.getUserStatus());
@@ -72,6 +77,7 @@ public class AccountController {
      * @return 退出结果
      */
     @GetMapping("/logout")
+    @ApiOperation(value = "登出")
     @RequiresAuthentication  // 确保用户已认证
     public Result logout() {
         log.info("用户退出");  // 打印用户退出日志

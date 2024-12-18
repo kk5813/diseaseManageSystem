@@ -6,6 +6,8 @@ import com.zcc.highmyopia.po.CheckResults;
 import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.ICheckResultsService;
 import com.zcc.highmyopia.service.IVisitsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -23,6 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Api(tags = "检测结果管理")
 @RestController
 @RequestMapping("/api/${app.config.api-version}/check_result")
 public class CheckResultsController {
@@ -30,6 +33,7 @@ public class CheckResultsController {
     private final ICheckResultsService checkResultsService;
 
     @GetMapping("find/{patientId}")
+    @ApiOperation(value = "获取患者检测结果")
     @RequiresAuthentication
     public Result findVisitsByPatientId(@PathVariable(name = "patientId") Long patientId){
         List<CheckResults> list = checkResultsService.list(new LambdaQueryWrapper<CheckResults>()

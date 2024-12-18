@@ -66,3 +66,15 @@ hospital:
   AHisHost: http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
   filePath: E:\Download\project
+
+# 接口文档配置
+# 访问 http://localhost:8081/doc.html
+knife4j:
+  enable-token: true
+  token-header-name: Authorization
+  # 这里的token是jwt令牌
+  token-value: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MCwiaWF0IjoxNzM0NTI5MTA5LCJleHAiOjE3MzUxMzM5MDl9.0sIR4uV1QeV3MfwuIt7C8EOKRelKhD008FJgR_fMqsU_gr_wSrGsg01B6SzX63Xd6oPvgyYVbcjnYzpThNiJlQ"
+#  basic: #开启密码验证
+#    enable: true
+#    username: root
+#    password: 123456

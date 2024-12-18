@@ -11,6 +11,8 @@ import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.ICheckResultsService;
 import com.zcc.highmyopia.service.IReportFilesService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Api(tags = "检测报告管理")
 @RestController
 @RequestMapping("/api/${app.config.api-version}/check_reports")
 public class CheckReportsController {
@@ -38,6 +41,7 @@ public class CheckReportsController {
     private final IReportFilesService reportFilesService;
 
     @GetMapping("find/{patientId}")
+    @ApiOperation(value = "获取患者检查报告")
     @RequiresAuthentication
     public Result findVisitsByPatientId(@PathVariable(name = "patientId") Long patientId){
         // 查询符合 patientId 的所有记录

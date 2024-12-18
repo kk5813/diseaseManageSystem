@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.po.Site;
 import com.zcc.highmyopia.service.ISiteService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -24,14 +26,15 @@ import java.util.Date;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Api(tags = "网址用户管理")
 @RestController
 @RequestMapping("/api/${app.config.api-version}/site")
 public class SiteController {
     
     private final ISiteService SiteService;
 
-    // 添加用户
     @PostMapping("/add")
+    @ApiOperation(value = "添加用户")
     @RequiresAuthentication
     public Result addSite(@Validated @RequestBody Site site) {
         site.setUpdateTime(new Date());
@@ -40,8 +43,8 @@ public class SiteController {
         return Result.succ(null);
     }
 
-    // 编辑用户
     @PostMapping("/edit")
+    @ApiOperation(value = "编辑用户")
     @RequiresAuthentication
     public Result editSite(@RequestBody Site site) {
         LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
@@ -52,8 +55,8 @@ public class SiteController {
         return Result.succ(null);
     }
 
-    // 失效某用户
     @GetMapping("/invalid/{siteId}")
+    @ApiOperation(value = "失效某用户")
     @RequiresAuthentication
     public Result invalidSite(@PathVariable(name = "siteId") Long siteId) {
         LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
@@ -64,8 +67,8 @@ public class SiteController {
         return Result.succ(null);
     }
 
-    // 查找
     @GetMapping("/find/{siteId}")
+    @ApiOperation(value = "查找用户")
     @RequiresAuthentication
     public Result FindSite(@PathVariable(name = "siteId") Long siteId) {
         LambdaQueryWrapper<Site> wrapper = new LambdaQueryWrapper<>();
@@ -75,8 +78,8 @@ public class SiteController {
     }
 
 
-    // 分页查询
     @GetMapping("page")
+    @ApiOperation(value = "分页查询用户")
     @RequiresAuthentication
     public Result pageSite(@RequestParam(defaultValue = "1") Integer pageNumber,  // 页码默认 0
                              @RequestParam(defaultValue = "10") Integer pageSize) {  // 每页大小默认 10

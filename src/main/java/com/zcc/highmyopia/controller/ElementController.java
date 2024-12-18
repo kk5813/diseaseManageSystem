@@ -8,6 +8,8 @@ import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.po.Element;
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.service.IElementService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Api(tags = "病例报告管理")
 @RequestMapping("/api/${app.config.api-version}/element")
 public class ElementController {
 
@@ -31,19 +34,21 @@ public class ElementController {
 
 
     @PostMapping("add")
+    @ApiOperation(value = "添加病例报告")
     public Result addElement(@RequestBody ElementEntity elementEntity){
         elementService.addElement(elementEntity);
         return Result.succ("病历添加成功");
     }
 
     @PutMapping("edit")
+    @ApiOperation(value = "编辑病例报告")
     public Result editElement(@RequestBody ElementEntity elementEntity){
         elementService.editElement(elementEntity);
         return Result.succ("病历更新成功");
     }
 
-    // 条件查询
     @GetMapping("search")
+    @ApiOperation(value = "条件查询病例报告")
     public Result queryElement(@RequestBody ElementDTO elementDto){
         List<Element> elements = elementService.queryElement(elementDto);
         Long total = (long) elements.size();
@@ -53,15 +58,15 @@ public class ElementController {
         return Result.succ("维护成功", elementVO);
     }
 
-    // 条件查询
     @GetMapping("find/{elementId}")
+    @ApiOperation(value = "ID查询病例报告")
     public Result findElement(@PathVariable(name = "elementId") Long elementId){
         Element elements = elementService.findElement(elementId);
         return Result.succ(elements);
     }
 
-    // 分页查询
     @GetMapping("page")
+    @ApiOperation(value = "分页查询病例报告")
     public Result pageElement(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
                               @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10
         List<Element> elements = elementService.pageQuery(pageNumber, pageSize);

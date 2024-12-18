@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.service.IDeptService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -25,13 +27,14 @@ import java.util.Date;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Api(tags = "科室管理")
 @RequestMapping("/api/${app.config.api-version}/dept")
 public class DeptController {
 
     private final IDeptService deptService;
 
-    // 添加用户
     @PostMapping("/add")
+    @ApiOperation(value = "添加科室")
     @RequiresAuthentication
     public Result addDept(@Validated @RequestBody Dept dept) {
         dept.setCreateTime(new Date());
@@ -40,8 +43,8 @@ public class DeptController {
         return Result.succ(null);
     }
 
-    // 编辑用户
     @PostMapping("/edit")
+    @ApiOperation(value = "编辑科室")
     @RequiresAuthentication
     public Result editDept(@RequestBody Dept dept) {
         LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
@@ -52,8 +55,8 @@ public class DeptController {
         return Result.succ(null);
     }
 
-    // 失效某用户
     @GetMapping("/invalid/{deptId}")
+    @ApiOperation(value = "失效科室")
     @RequiresAuthentication
     public Result invalidDept(@PathVariable(name = "deptId") Long deptId) {
         LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
@@ -64,8 +67,8 @@ public class DeptController {
         return Result.succ(null);
     }
 
-    // 查找
     @GetMapping("/find/{deptId}")
+    @ApiOperation(value = "查找科室")
     @RequiresAuthentication
     public Result FindDept(@PathVariable(name = "deptId") Long deptId) {
         LambdaQueryWrapper<Dept> wrapper = new LambdaQueryWrapper<>();
@@ -75,8 +78,8 @@ public class DeptController {
     }
 
 
-    // 分页查询
     @GetMapping("page")
+    @ApiOperation(value = "分页查询科室")
     @RequiresAuthentication
     public Result pageDept(@RequestParam(defaultValue = "1") Integer pageNumber,  // 页码默认 0
                              @RequestParam(defaultValue = "10") Integer pageSize) {  // 每页大小默认 10

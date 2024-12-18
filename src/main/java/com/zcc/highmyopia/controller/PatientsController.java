@@ -8,6 +8,8 @@ import com.zcc.highmyopia.common.vo.PatientsVO;
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
 import com.zcc.highmyopia.service.IPatientsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -36,6 +38,7 @@ import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
  */
 @RestController
 @Slf4j
+@Api(tags = "患者管理")
 @RequestMapping("/api/${app.config.api-version}/patients")
 public class PatientsController {
 
@@ -45,8 +48,7 @@ public class PatientsController {
     @Autowired
     IPatientsMapper patientMapper;
 
-
-    // 患者列表
+    @ApiOperation(value = "获取患者列表")
     @GetMapping("/list")
     @RequiresAuthentication
     public Result list() {
@@ -56,8 +58,7 @@ public class PatientsController {
         patientsVO.setTotal((long) patientList.size());
         return Result.succ(patientsVO);
     }
-
-    //  编辑患者
+    @ApiOperation(value = " 编辑患者")
     @PostMapping("/edit")
     @RequiresAuthentication
     public Result editUser(@RequestBody Patients patient) {
@@ -65,7 +66,7 @@ public class PatientsController {
         return Result.succ(null);
     }
 
-    //  根据patientId查询患者基本信息
+    @ApiOperation(value = "根据patientId查询患者基本信息")
     @GetMapping("/find/{patientId}")
     @RequiresAuthentication
     public Result patientByPatientId(@PathVariable(name = "patientId") String patientId) {
@@ -73,7 +74,7 @@ public class PatientsController {
         return Result.succ(patientMapper.selectPatientByPId(patientId));
     }
 
-    //  分页查询
+    @ApiOperation(value = "患者信息分页查询")
     @GetMapping("/page")
     @RequiresAuthentication
     public Result getPatientPage(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 1
@@ -84,8 +85,7 @@ public class PatientsController {
         patientsVO.setTotal((long) patients.size());
         return Result.succ(patientsVO);
     }
-
-    // 模糊查找
+    @ApiOperation(value = "患者信息模糊查找")
     @PostMapping("/search")
     @RequiresAuthentication
     public Result SearchPatients(@RequestBody PatientsDTO patientsDTO) {
@@ -97,7 +97,7 @@ public class PatientsController {
         return Result.succ(patientsVO);
     }
 
-    // 批量导出
+    @ApiOperation(value = "患者信息批量导出")
     @GetMapping("/import")
     @RequiresAuthentication
     public Result importPatients(@RequestBody PatientsDTO patientsDTO, HttpServletResponse response) {

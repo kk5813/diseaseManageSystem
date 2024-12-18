@@ -20,6 +20,8 @@ import com.zcc.highmyopia.util.JwtUtils;
 import com.zcc.highmyopia.util.SaltUtil;
 import com.zcc.highmyopia.util.ShiroUtil;
 import io.jsonwebtoken.Claims;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +43,15 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Api(tags = "医生管理")
 @RequestMapping("/api/${app.config.api-version}/doctor")
 public class DoctorController {
 
 
     private final IDoctorService doctorService;
 
-    // 添加用户
     @PostMapping("/add")
+    @ApiOperation(value = "添加医生")
     @RequiresAuthentication
     public Result addDoctor(@Validated @RequestBody Doctor doctor) {
         doctor.setCreateTime(new Date());
@@ -58,8 +61,8 @@ public class DoctorController {
         return Result.succ(null);
     }
 
-    // 编辑用户
     @PostMapping("/edit")
+    @ApiOperation(value = "编辑医生")
     @RequiresAuthentication
     public Result editDoctor(@RequestBody Doctor doctor) {
         LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
@@ -70,8 +73,8 @@ public class DoctorController {
         return Result.succ(null);
     }
 
-    // 失效某用户
     @GetMapping("/invalid/{doctorId}")
+    @ApiOperation(value = "删除失效医生")
     @RequiresAuthentication
     public Result invalidDoctor(@PathVariable(name = "doctorId") Long doctorId) {
         LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
@@ -82,8 +85,8 @@ public class DoctorController {
         return Result.succ(null);
     }
 
-    // 查找
     @GetMapping("/find/{doctorId}")
+    @ApiOperation(value = "查找医生")
     @RequiresAuthentication
     public Result FindDoctor(@PathVariable(name = "doctorId") Long doctorId) {
         LambdaQueryWrapper<Doctor> wrapper = new LambdaQueryWrapper<>();
@@ -93,8 +96,8 @@ public class DoctorController {
     }
 
 
-    // 分页查询
     @GetMapping("page")
+    @ApiOperation(value = "分页查询医生")
     @RequiresAuthentication
     public Result pageDoctor(@RequestParam(defaultValue = "1") Integer pageNumber,  // 页码默认 0
                            @RequestParam(defaultValue = "10") Integer pageSize) {  // 每页大小默认 10

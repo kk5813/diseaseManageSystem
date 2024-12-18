@@ -34,7 +34,6 @@ public class JwtFilter extends AuthenticatingFilter {
         if(StringUtils.isEmpty(jwt)) {
             return null;
         }
-
         return new JwtToken(jwt);
     }
 
@@ -42,6 +41,13 @@ public class JwtFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+        // 允许 Swagger 和 Knife4j 路径放行直接放行
+        // todo 发行时把下面的代码删了，这里是方便测试
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/swagger-ui.html") || requestURI.startsWith("/swagger-resources")
+                || requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/doc.html")) {
+            return true;
+        }
         String jwt = request.getHeader("Authorization");
         if(StringUtils.isEmpty(jwt)) {
             return true;
