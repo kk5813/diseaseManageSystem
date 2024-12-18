@@ -1,8 +1,6 @@
 package com.zcc.highmyopia.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +15,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("visits")
 public class Visits implements Serializable {
-    
+
     @TableId(value = "id", type = IdType.INPUT)
     private Long id;  // 就诊号
 
@@ -32,13 +30,10 @@ public class Visits implements Serializable {
     private Integer diagOrder;  // 诊断序号
     private String diagName;  // 诊断名称
     private String diagCode;  // 诊断编码
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime  updateTime;
 }

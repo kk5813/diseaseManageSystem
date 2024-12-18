@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @Author zcc
@@ -37,7 +38,6 @@ public class CheckResultsEntity {
     private String auditDate;             // 审核日期，格式为 "YYYY-MM-DD HH:MM:SS"
 
     public static CheckResults entityToPo(CheckResultsEntity checkResultEntity) {
-        CheckResults checkResults = new CheckResults();
         CheckResults checkResult = new CheckResults();
         checkResult.setId(checkResultEntity.getId());
         checkResult.setPatientId(checkResultEntity.getPatientId());
@@ -50,7 +50,8 @@ public class CheckResultsEntity {
         checkResult.setLabFinalValue(checkResultEntity.getLabFinalValue());
         checkResult.setVisitingNo(checkResultEntity.getVisitingNo());
         checkResult.setLabResultUnitName(checkResultEntity.getLabResultUnitName());
-        checkResult.setAuditDate(LocalDateTime.parse(checkResultEntity.getAuditDate()));
-        return checkResults;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        checkResult.setAuditDate(LocalDateTime.parse(checkResultEntity.getAuditDate(), formatter));
+        return checkResult;
     }
 }

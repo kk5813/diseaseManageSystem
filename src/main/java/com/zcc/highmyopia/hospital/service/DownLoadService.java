@@ -1,20 +1,25 @@
 package com.zcc.highmyopia.hospital.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.ReportFiles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oracle.security.o5logon.a;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,8 +70,11 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
-        List<VisitEntity> visitEntities = JSON.parseArray(body, VisitEntity.class);
-         // 持久化
+        // 解析 JSON 响应体
+        List<VisitEntity> visitEntities = JSON.parseArray(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                VisitEntity.class);
+        // 持久化
         saveRepository.saveVisits(visitEntities);
         return visitEntities;
     }
@@ -86,15 +94,17 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
-        List<RecipeEntity> recipeEntities = JSON.parseArray(body, RecipeEntity.class);
+        List<RecipeEntity> recipeEntities = JSON.parseArray(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                RecipeEntity.class);
 
-         saveRepository.saveRecipeAndOrderDetail(recipeEntities);
+        saveRepository.saveRecipeAndOrderDetail(recipeEntities);
     }
 
     // 检查结果 CheckResult
     @Override
     public void getReportDetail(String beginData, String endData, String visitNumber) throws Exception {
-        String path = "/alis/interface/ReportDetail/getReportDetail";
+        String path = "/alis/interface/reportDetail/getReportDetail";
         Map<String, String> r = new HashMap<>();
         r.put("auditDateBegin", beginData);
         r.put("auditDateEnd", endData);
@@ -110,8 +120,15 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
-        CheckResultsEntity checkResultEntity = JSON.parseObject(body, CheckResultsEntity.class);
-        saveRepository.saveCheckResult(checkResultEntity);
+        List<CheckResultsEntity> checkResultsEntityList = JSON.parseArray(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                CheckResultsEntity.class);
+        saveRepository.saveCheckResult(checkResultsEntityList);
+    }
+
+    @Override
+    public void getReportDetail(String beginData, String endData) throws Exception {
+        getReportDetail(beginData,endData, "");
     }
 
     @Override
@@ -125,16 +142,17 @@ public class DownLoadService implements IDownLoadService {
         });
     }
 
+    // 门诊病历，visit字段必传
     @Override
     public void getOutElementByCondition(String beginData, String endData, String visitNumber) throws Exception {
         String path = "/api/aemro/outpElement/getOutpElementByCondition";
 
         Map<String, String> query = new HashMap<>();
-        query.put("aemrBdate", beginData);
-        query.put("aemrEdate", endData);
-        query.put("Visit_number",visitNumber);
-        String reqJson = "";
-        Map<String, String> headers = new HashMap<>();
+        query.put("aemr_bdate", beginData);
+        query.put("aemr_edate", endData);
+        query.put("Visit_number", visitNumber);
+        String reqJson = JSON.toJSONString(query);
+        Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
         Response resp = HttpClientUtils.httpPostJson(AHisHost, path, connectTimeOut, headers,
                 query, reqJson, signHeaderPrefixList, appKey, appSecret, hospId);
@@ -142,8 +160,32 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
-        ElementEntity elementEntity = JSON.parseObject(body, ElementEntity.class);
+        ElementEntity elementEntity = JSON.parseObject(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                ElementEntity.class);
         saveRepository.saveElement(elementEntity);
+    }
+
+    @Override
+    public void getPatientInfo(String number) throws Exception {
+        String path = "/api/interface/patientInfo/getById";
+
+        Map<String, String> r = new HashMap<>();
+        r.put("id", "1796786711460069377");
+        String reqJson = JSON.toJSONString(r);
+        Map<String, String> headers = new HashMap<>();
+        Map<String, String> query = null;
+        List<String> signHeaderPrefixList = new ArrayList<>();
+        Response resp = HttpClientUtils.httpPostJson(AHisHost, path, connectTimeOut, headers,
+                query, reqJson, signHeaderPrefixList, appKey, appSecret, hospId);
+        int statusCode = resp.getStatusCode();
+        if (statusCode != 200)
+            throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        String body = resp.getBody();
+        PatientEntity patientEntity = JSON.parseObject(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                PatientEntity.class);
+        saveRepository.savePatientInfo(patientEntity);
     }
 
     @Override
@@ -158,10 +200,30 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResult(String beginData, String endData, List<String> visitNumbers) {
-        visitNumbers.forEach(visitNumber -> {
+    public void getCheckResult(String beginData, String endData) {
+        String path = "/api/report/getList";
+        String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
+                .queryParam("physc_bdate", beginData)
+                .queryParam("physc_edate", endData)
+                .toUriString();
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        int statusCode = response.getStatusCodeValue();
+        if (statusCode != 200)
+            throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        String body = response.getBody();
+        List<CheckReportsEntity> checkReportsEntities = JSON.parseArray(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONArray("data").toString(),
+                CheckReportsEntity.class);
+        saveRepository.saveCheckReportsAndReportFiles(checkReportsEntities);
+    }
+
+    @Override
+    public void getCheckResult(String beginData, String endData, List<String> patientIds) {
+        patientIds.forEach(patientId -> {
             try {
-                getCheckResult(beginData, endData, visitNumber);
+                getCheckResult(beginData, endData, patientId);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -169,25 +231,29 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResult(String beginData, String endData, String visitNumber) {
-        if (visitNumber == null || visitNumber.isEmpty())
-            throw new AppException(500, "就诊号字段为必填字段");
+    public void getCheckResult(String beginData, String endData, String patientId) {
         String path = "/api/report/getList";
-        String param = "beginData=" + beginData + "&"
-                + "endData=" + endData + "&"
-                + "visitNumber=" + visitNumber ;
-        String url = APacsHost + path + "?{param}";
+        String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
+                .queryParam("physc_bdate", beginData)
+                .queryParam("physc_edate", endData)
+                .queryParam("patient_id", patientId)
+                .toUriString();
 
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, param);
+        System.out.println("请求的URL: " + url);
+
+        // 发送GET请求
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
         int statusCode = response.getStatusCodeValue();
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = response.getBody();
-        CheckReportsEntity checkReportsEntity = JSON.parseObject(body, CheckReportsEntity.class);
-        saveRepository.saveCheckReportsAndReportFiles(checkReportsEntity);
-    }
 
+        List<CheckReportsEntity> checkReportsEntities = JSON.parseArray(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONArray("data").toString(),
+                CheckReportsEntity.class);
+        saveRepository.saveCheckReportsAndReportFiles(checkReportsEntities);
+    }
 
 
     @Override
@@ -224,7 +290,7 @@ public class DownLoadService implements IDownLoadService {
                 fos.write(fileBytes);
             }
             // 更新状态为已下载
-            reportFile.setIsDownLoad((short) 1);  // 标记文件已下载
+            reportFile.setIsDownLoad(1);  // 标记文件已下载
             reportFile.setFilePath(targetFile.getAbsolutePath());  // 设置文件路径
             saveRepository.updateReportFiles(reportFile);  // 更新数据库
         } catch (IOException e) {
@@ -233,10 +299,11 @@ public class DownLoadService implements IDownLoadService {
         }
     }
 
-
     @Override
     public void DownLoadReportImageBatch() {
         List<ReportFiles> reportFiles = saveRepository.DownLoadReportImageBatch();
         reportFiles.forEach(this::DownLoadReportImage);
     }
+
+
 }

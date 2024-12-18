@@ -16,5 +16,4 @@ import java.util.List;
 @Component
 public interface IRecipeMapper extends BaseMapper<Recipe> {
 
-    void insertBatch(List<Recipe> recipes);
 }

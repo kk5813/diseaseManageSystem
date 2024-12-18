@@ -2,15 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zcc.highmyopia.mapper.IRecipeMapper">
 
-
-    <insert id="insertBatch" parameterType="com.zcc.highmyopia.po.Recipe">
-        insert into recipe (id, doctor_id, patient_id, dept_id, reg_number, recipe_number,
-                            recipe_type, billing_time, order_detail_id, create_time, update_time)
-        values
-        <foreach item="recipe" index="index" collection="array" open="(" separator=")," close=")">
-            #{recipe.id}, #{recipe.doctorId}, #{recipe.patientId},
-            #{recipe.deptId}, #{recipe.regNumber}, #{recipe.recipeNumber},
-            #{recipe.recipetype}, #{recipe.billingtime}, #{recipe.orderDetailId}, now(), now()
-        </foreach>
-    </insert>
 </mapper>

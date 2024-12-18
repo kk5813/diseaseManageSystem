@@ -11,17 +11,16 @@ import com.zcc.highmyopia.service.IPatientsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
@@ -97,26 +96,17 @@ public class PatientsController {
         return Result.succ(patientsVO);
     }
 
-    // 批量导出
-    @GetMapping("/import")
+    @GetMapping("/export")
     @RequiresAuthentication
-    public Result importPatients(@RequestBody PatientsDTO patientsDTO, HttpServletResponse response) {
-        // 查询患者数据
-        List<Patients> patients = patientService.searchPatients(patientsDTO);
+    public void exportCSV(HttpServletResponse response) {
+        List<Patients> patients = patientService.searchPatients(new PatientsDTO());
 
-        // 设置响应的内容类型和下载文件的头部信息
         response.setContentType("text/csv");
-
         try {
-            // 处理中文文件名的编码问题
-            String fileName = "patients.csv";
-            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            // 创建 Writer 对象，传递给 CSVPrinter 以写出 CSV 内容
-            try (Writer writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
-                 CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                         .withHeader("id", "name", "sexName", "birthday", "idNumber", "phone"))) {
+            try (Writer writer = new OutputStreamWriter(byteArrayOutputStream, StandardCharsets.UTF_8);
+                 CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("id", "name", "sexName", "birthday", "idNumber", "phone"))) {
 
                 // 遍历患者数据并写入 CSV
                 for (Patients patient : patients) {
@@ -129,23 +119,23 @@ public class PatientsController {
                             patient.getPhone()
                     );
                 }
-                // 刷新和关闭打印流
+
                 csvPrinter.flush();
-            } catch (IOException e) {
-                // 记录异常日志
-                log.error("Error while writing CSV file: ", e);
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                return Result.fail("导出失败，服务器内部错误");
+                byte[] fileBytes = byteArrayOutputStream.toByteArray();
+                response.setHeader("Content-Disposition", "attachment; filename=\"patients.csv\"");
+
+                // 将文件流写入响应体
+                response.getOutputStream().write(fileBytes);
+                response.getOutputStream().flush();
             }
-
-        } catch (UnsupportedEncodingException e) {
-            // 记录编码异常
-            log.error("Error while encoding file name: ", e);
+        } catch (IOException e) {
+            // 处理异常
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return Result.fail("导出失败，编码问题");
         }
-
-        return Result.succ("导出成功准备下载");
     }
+
+
+
 
 }

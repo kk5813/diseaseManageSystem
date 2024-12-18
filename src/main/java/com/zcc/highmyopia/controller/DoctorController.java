@@ -51,8 +51,8 @@ public class DoctorController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addDoctor(@Validated @RequestBody Doctor doctor) {
-        doctor.setCreateTime(new Date());
-        doctor.setUpdateTime(new Date());
+        doctor.setCreateTime(LocalDateTime.now());
+        doctor.setUpdateTime(LocalDateTime.now());
         doctor.setStatus(1);
         doctorService.save(doctor);
         return Result.succ(null);

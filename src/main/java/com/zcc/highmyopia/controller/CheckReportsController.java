@@ -5,6 +5,7 @@ import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CheckReportVO;
 import com.zcc.highmyopia.common.vo.ReportFilesVO;
 import com.zcc.highmyopia.mapper.ICheckReportsMapper;
+import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.CheckResults;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -36,6 +37,7 @@ public class CheckReportsController {
 
     private final ICheckReportsService checkReportsService;
     private final IReportFilesService reportFilesService;
+    private final IReportFilesMapper reportFilesMapper;
 
     @GetMapping("find/{patientId}")
     @RequiresAuthentication
@@ -45,7 +47,6 @@ public class CheckReportsController {
                 new LambdaQueryWrapper<CheckReports>()
                         .eq(CheckReports::getPatientId, patientId)
         );
-
         List<CheckReportVO> checkReportVOS = list.stream()
                 .map(checkReport -> {
                     Long reportId = checkReport.getId();
@@ -56,9 +57,10 @@ public class CheckReportsController {
                     checkReportVO.setVisitNumber(checkReport.getVisitNumber());
                     checkReportVO.setCheckTime(String.valueOf(checkReport.getCheckTime()));
                     // 查询文件
-                    List<ReportFiles> reportFilesList = reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
-                            .eq(ReportFiles::getReportId, reportId)
-                    );
+//                    List<ReportFiles> reportFilesList = reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
+//                                    .eq(ReportFiles::getReportId, reportId));
+                    List<ReportFiles> reportFilesList = reportFilesMapper.queryBatch(reportId);
+
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();

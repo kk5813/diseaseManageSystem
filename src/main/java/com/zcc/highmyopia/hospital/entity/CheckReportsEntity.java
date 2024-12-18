@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 /**
@@ -36,8 +38,9 @@ public class CheckReportsEntity {
         checkReports.setPatientId(Long.valueOf(checkReportsEntity.getPatientId())); // 转换为 Long 类型
         checkReports.setItemCode(checkReportsEntity.getItemCode());
         checkReports.setItemName(checkReportsEntity.getItemName());
-        // 转换日期字符串为 LocalDateTime
-        checkReports.setCheckTime(LocalDateTime.parse(checkReportsEntity.getCheckTime()));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        checkReports.setCheckTime(LocalDateTime.parse(checkReportsEntity.getCheckTime(), formatter));
         checkReports.setVisitNumber(checkReportsEntity.getVisitNumber());
         return checkReports;
     }

@@ -34,8 +34,8 @@ public class DeptController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addDept(@Validated @RequestBody Dept dept) {
-        dept.setCreateTime(new Date());
-        dept.setUpdateTime(new Date());
+        dept.setCreateTime(LocalDateTime.now());
+        dept.setUpdateTime(LocalDateTime.now());
         deptService.save(dept);
         return Result.succ(null);
     }

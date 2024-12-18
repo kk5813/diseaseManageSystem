@@ -15,13 +15,16 @@ public interface ISaveRepository {
 
     void saveRecipeAndOrderDetail(List<RecipeEntity> recipeEntity);
 
-    void saveCheckResult(CheckResultsEntity checkResultEntity);
+    void saveCheckResult(List<CheckResultsEntity> checkResultsEntityList);
 
     void saveElement(ElementEntity elementEntity);
 
     void saveCheckReportsAndReportFiles(CheckReportsEntity checkReportsEntity);
+    void saveCheckReportsAndReportFiles(List<CheckReportsEntity> checkReportsEntities);
 
     List<ReportFiles> DownLoadReportImageBatch();
 
     void updateReportFiles(ReportFiles reportFile);
+
+    void savePatientInfo(PatientEntity patientEntity);
 }

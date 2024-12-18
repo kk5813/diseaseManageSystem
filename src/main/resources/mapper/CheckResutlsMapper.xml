@@ -2,13 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zcc.highmyopia.mapper.ICheckResultsMapper">
 
-    <insert id="insert" parameterType="com.zcc.highmyopia.po.CheckResults">
-        insert into check_results
-            (id, patient_id, is_urgent, lab_item_name, report_name, lab_item_code,
-             ref_range, lab_result_sign_name, lab_final_value, visiting_no, lab_result_unit_name,
-             audit_date, create_time, update_time)
-        values (#{id}, #{patientId}, #{isUrgent},#{labItemName},#{reportName},
-                #{labItemCode},#{refRange},#{labResultSignName},#{labFinalValue},#{visitingNo},
-                #{labResultUnitName}, #{auditDate}, now(), now())
-    </insert>
 </mapper>

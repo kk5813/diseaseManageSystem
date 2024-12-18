@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -43,14 +41,10 @@ public class Followup implements Serializable {
     private String visitRemark;
 
     private LocalDateTime visitDate;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime  updateTime;
 
 }

@@ -1,11 +1,14 @@
 package com.zcc.highmyopia.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -19,17 +22,18 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("report_files")
 public class ReportFiles {
+
     private Long id;
-
     private Long reportId;
-
     private String fileType;
-
     private String fileUrl;
+    private Integer isDownLoad;
+    private String filePath; // 确保是 String 类型
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
 
-    private Short isDownLoad;
-    private String filePath;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime  updateTime;
 
-    private Date createTime;
-    private Date updateTime;
+
 }

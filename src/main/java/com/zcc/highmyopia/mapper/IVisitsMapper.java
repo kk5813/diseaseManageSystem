@@ -16,5 +16,4 @@ import java.util.List;
 @Mapper
 @Component
 public interface IVisitsMapper extends BaseMapper<Visits> {
-    void insertBatch(List<VisitEntity> visitEntities);
 }

@@ -34,8 +34,8 @@ public class SiteController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addSite(@Validated @RequestBody Site site) {
-        site.setUpdateTime(new Date());
-        site.setCreateTime(new Date());
+        site.setUpdateTime(LocalDateTime.now());
+        site.setCreateTime(LocalDateTime.now());
         SiteService.save(site);
         return Result.succ(null);
     }

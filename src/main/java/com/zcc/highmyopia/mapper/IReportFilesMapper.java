@@ -20,4 +20,6 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     List<ReportFiles> getNotDownLoad();
 
     void updateReportFiles(ReportFiles reportFile);
+
+    List<ReportFiles> queryBatch(Long reportId);
 }

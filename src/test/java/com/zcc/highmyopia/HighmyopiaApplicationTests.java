@@ -1,12 +1,17 @@
 package com.zcc.highmyopia;
 
 import cn.hutool.crypto.SecureUtil;
-import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.mapper.IUserMapper;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.IRedisService;
 import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -185,5 +190,18 @@ class HighmyopiaApplicationTests {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.println(dateTimeFormatter.format(dateTime));  // 格式化 LocalDateTime
     }
+
+    @Test
+    public void test_entityToPo(){
+        VisitEntity visitEntity = new VisitEntity();
+        visitEntity.setPatientId(111L);
+        visitEntity.setDoctorId(111L);
+        visitEntity.setDeptId(111L);
+        visitEntity.setSiteId(111L);
+        visitEntity.setVisitNumber("123445566");
+        Visits visits = VisitEntity.entityToPo(visitEntity);
+        System.out.println(visits);
+    }
+
 
 }

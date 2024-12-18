@@ -18,7 +18,8 @@ public interface IDownLoadService {
     // 获取处方信息
     void getRecipe(String beginData, String endData) throws Exception;
 
-    // 获取报告信息接口
+    // 获取检验结果接口
+    void getReportDetail(String beginData, String endData) throws Exception;
     void getReportDetail(String beginData, String endData, String visitNumber) throws Exception;
     void getReportDetail(String beginData, String endData, List<String> visitNumbers) throws Exception;
 
@@ -27,10 +28,13 @@ public interface IDownLoadService {
     void getOutElementByCondition(String beginData, String endData, List<String> visitNumbers) throws Exception;
 
     // 患者检验结果 getList
-    void getCheckResult(String beginData, String endData, String visitNumber);
-    void getCheckResult(String beginData, String endData, List<String> visitNumbers);
+    void getCheckResult(String beginData, String endData);
+    void getCheckResult(String beginData, String endData, String patientId);
+    void getCheckResult(String beginData, String endData, List<String> patientIds);
 
     void DownLoadReportImage(ReportFiles reportFiles);
 
     void DownLoadReportImageBatch();
+
+    void getPatientInfo(String number) throws Exception;
 }
