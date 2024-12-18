@@ -186,6 +186,11 @@
             <artifactId>commons-csv</artifactId>
             <version>1.9.0</version> <!-- 使用最新版本 -->
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
