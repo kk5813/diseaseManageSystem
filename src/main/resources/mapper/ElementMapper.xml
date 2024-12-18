@@ -12,15 +12,19 @@
             parameterType="com.zcc.highmyopia.common.dto.ElementDTO">
         select e.*
         from element e
-        left join patients p on e.patient_id = p.patient_id
+        left join patients p on e.patient_id = p.id
         where 1=1
         <if test="patientId != null and patientId != ''">
             and e.patient_id = #{patientId}
         </if>
         <if test="patientName != null and patientName != ''">
-            and p.patient_name like CONCAT(#{patientName}, '%')
+            and p.name like CONCAT(#{patientName}, '%')
         </if>
-        and e.create_time &gt;= #{dateStart}
-        and e.create_time &lt;= #{dateEnd}
+        <if test="dataStart != null and dataStart != ''">
+            and e.create_time &gt;= #{dataStart}
+        </if>
+        <if test="dataEnd != null and dataEnd != ''">
+            and e.create_time &lt; #{dataEnd}
+        </if>
     </select>
 </mapper>

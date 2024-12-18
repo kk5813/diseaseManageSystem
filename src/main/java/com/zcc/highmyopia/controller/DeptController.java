@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @Author zcc
@@ -33,6 +34,8 @@ public class DeptController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addDept(@Validated @RequestBody Dept dept) {
+        dept.setCreateTime(new Date());
+        dept.setUpdateTime(new Date());
         deptService.save(dept);
         return Result.succ(null);
     }

@@ -10,7 +10,7 @@
             and user_login_name like concat(#{userLoginName}, '%')
         </if>
         <if test="userName != null and userName != ''">
-            and user_name like concat(#{userLoginName}, '%')
+            and user_name like concat(#{userName}, '%')
         </if>
     </select>
 </mapper>
