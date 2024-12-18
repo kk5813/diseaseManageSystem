@@ -38,9 +38,9 @@ public class AccountController {
     @CrossOrigin  // 允许跨域请求
     @PostMapping("/login")
     public Result login(@Validated @RequestBody LoginDto loginDto, HttpServletResponse response) {
+        // todo userLoginName唯一
         // 查询用户信息
         User user = userService.getOne(new QueryWrapper<User>().eq("user_login_name", loginDto.getUserLoginName()));
-
         Assert.notNull(user, "用户不存在");  // 确保用户存在
 
         // todo: 模拟前端MD5加密过程

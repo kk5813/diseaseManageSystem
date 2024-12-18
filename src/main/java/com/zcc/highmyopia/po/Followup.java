@@ -30,8 +30,6 @@ public class Followup implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private Integer caseId;
-
     private String patientId;
 
     private LocalDateTime planVisitDate;

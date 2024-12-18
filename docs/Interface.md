@@ -93,15 +93,13 @@ http://localhost:8081/api/v{n}/account
 
 ```json
 {
+    "code": 0,
+    "msg": "string",
     "data": {
-       MapUtil.builder()
-                .put("userId", user.getUserId())
-                .put("userLoginName", user.getUserLoginName())
-                .put("userName", user.getUserName())
-                .map()
-    },
-    "code": 200,
-    "msg": ""
+        "userLoginName": "string",
+        "userName": "string",
+        "userId": 0
+    }
 }
 ```
 
@@ -120,10 +118,9 @@ http://localhost:8081/api/v{n}/account
 
 ```json
 {
-    "data": {
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -159,11 +156,9 @@ http://localhost:8081/api/v{n}/user
 
 ```json
 {
-    "data": {
-       null
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -244,11 +239,20 @@ http://localhost:8081/api/v{n}/user
 
 ```json
 {
-    "data": {
-        User
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "userId": 14,
+        "userLoginName": "zcc",
+        "userName": "朱畅畅",
+        "userPassword": "7ce7070696f2200bd57edb836265f9db",
+        "salt": "bEZ5mLq6SxkSkZHBnZxRfd8dyXGq7vfi",
+        "userStatus": 0,
+        "creator": "系统管理员",
+        "createTime": "2024-09-23 20:00:12",
+        "modifier": "朱医生",
+        "updateTime": "2024-12-18 14:42:10"
+    }
 }
 ```
 
@@ -271,16 +275,37 @@ http://localhost:8081/api/v{n}/user
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            user1,
-            user2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "total": 2,
+        "users": [
+            {
+                "userId": 14,
+                "userLoginName": "zcc",
+                "userName": "朱畅畅",
+                "userPassword": "7ce7070696f2200bd57edb836265f9db",
+                "salt": "bEZ5mLq6SxkSkZHBnZxRfd8dyXGq7vfi",
+                "userStatus": 0,
+                "creator": "系统管理员",
+                "createTime": "2024-09-23 20:00:12",
+                "modifier": "朱医生",
+                "updateTime": "2024-12-18 14:42:10"
+            },
+            {
+                "userId": 15,
+                "userLoginName": "kk",
+                "userName": "朱畅畅",
+                "userPassword": "f17ca78fbcfcf679c0665f3b085e2738",
+                "salt": "ZTgV75IYHSES2t6LwpgYbPBaKiWbt51U",
+                "userStatus": -1,
+                "creator": "朱医生",
+                "createTime": "2024-09-23 20:05:55",
+                "modifier": "朱畅畅",
+                "updateTime": "2024-12-18 14:50:14"
+            }
+        ]
+    }
 }
 ```
 
@@ -294,7 +319,7 @@ http://localhost:8081/api/v{n}/user
 {
     url : "/page",
     method: get,
-    params:{
+    Query:{
         pageSize,     // 默认10
         pageNumber,   // 默认1
     }
@@ -307,16 +332,66 @@ http://localhost:8081/api/v{n}/user
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            user1,
-            user2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "records": [
+            {
+                "userId": 1,
+                "userLoginName": "admin",
+                "userName": "系统管理员",
+                "userPassword": "fc29efa28323abb41c3fa95c49efb693",
+                "salt": "1ck12b13k1jmjxrg1h0129h2lj",
+                "userStatus": 0,
+                "creator": "admin",
+                "createTime": "2021-02-01 10:07:38",
+                "modifier": null,
+                "updateTime": null
+            },
+            {
+                "userId": 14,
+                "userLoginName": "zcc",
+                "userName": "朱畅畅",
+                "userPassword": "7ce7070696f2200bd57edb836265f9db",
+                "salt": "bEZ5mLq6SxkSkZHBnZxRfd8dyXGq7vfi",
+                "userStatus": 0,
+                "creator": "系统管理员",
+                "createTime": "2024-09-23 20:00:12",
+                "modifier": "朱医生",
+                "updateTime": "2024-12-18 14:42:10"
+            },
+            {
+                "userId": 15,
+                "userLoginName": "kk",
+                "userName": "朱畅畅",
+                "userPassword": "f17ca78fbcfcf679c0665f3b085e2738",
+                "salt": "ZTgV75IYHSES2t6LwpgYbPBaKiWbt51U",
+                "userStatus": -1,
+                "creator": "朱医生",
+                "createTime": "2024-09-23 20:05:55",
+                "modifier": "朱畅畅",
+                "updateTime": "2024-12-18 14:50:14"
+            },
+            {
+                "userId": 16,
+                "userLoginName": "zc",
+                "userName": "曾灿",
+                "userPassword": "6f06908988cacdb4dd10d81e4db07a8e",
+                "salt": "IXmpJOzduehRVdBmcFxmlYo2dAmnraU7",
+                "userStatus": 1,
+                "creator": "朱医生",
+                "createTime": "2024-12-18 14:31:24",
+                "modifier": null,
+                "updateTime": null
+            }
+        ],
+        "total": 4,
+        "size": 10,
+        "current": 1,
+        "orders": [],
+        "searchCount": true,
+        "pages": 1
+    }
 }
 ```
 
@@ -357,11 +432,20 @@ http://localhost:8081/api/v{n}/patients
 
 ```json
 {
-    "data": {
-        Patients
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "id": 1,
+        "name": "kk",
+        "sex": 1,
+        "sexName": "男",
+        "birthday": "2024-12-18 14:45:00",
+        "idNumber": "123",
+        "phone": "4321",
+        "status": 1,
+        "createTime": "2024-12-05T07:03:24.000+00:00",
+        "updateTime": "2024-12-18T07:03:27.000+00:00"
+    }
 }
 ```
 
@@ -374,13 +458,13 @@ http://localhost:8081/api/v{n}/patients
     url : "/search",
     method: get,
     body:{
-        "sex": 0,
-        "name": "朱畅畅"
-        "birthdayBegin": "2024-12-17"
-        "birthdayEnd": "2024-12-17"
-        "visitTimeBegin": "2024-12-17"    // begin end成对出现
-        "visitTimeEnd": "2024-12-17"
-    }
+    "sex": 1,
+    "name": "k",
+    "birthdayBegin": "2024-12-17",
+    "birthdayEnd": "2024-12-19",
+    "visitTimeBegin": "",
+    "visitTimeEnd": ""
+}
 }
 ```
 
@@ -388,16 +472,25 @@ http://localhost:8081/api/v{n}/patients
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            patient1,
-            patient2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "total": 1,
+        "patients": [
+            {
+                "id": 1,
+                "name": "kk",
+                "sex": 1,
+                "sexName": "男",
+                "birthday": "2024-12-18 14:45:00",
+                "idNumber": "123",
+                "phone": "4321",
+                "status": 1,
+                "createTime": "2024-12-05T07:03:24.000+00:00",
+                "updateTime": "2024-12-18T07:03:27.000+00:00"
+            }
+        ]
+    }
 }
 ```
 
@@ -411,9 +504,9 @@ http://localhost:8081/api/v{n}/patients
 {
     url : "/page",
     method: get,
-    params:{
-        pageSize,
-        pageNumber,
+    Query:{
+        pageSize : 1,
+        pageNumber: 10
     }
 }
 ```
@@ -424,16 +517,25 @@ http://localhost:8081/api/v{n}/patients
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            patient1,
-            patient2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "total": 1,
+        "patients": [
+            {
+                "id": 1,
+                "name": "kk",
+                "sex": 1,
+                "sexName": "男",
+                "birthday": "2024-12-18 14:45:00",
+                "idNumber": "123",
+                "phone": "4321",
+                "status": 1,
+                "createTime": "2024-12-05T07:03:24.000+00:00",
+                "updateTime": "2024-12-18T07:03:27.000+00:00"
+            }
+        ]
+    }
 }
 ```
 
@@ -448,16 +550,25 @@ http://localhost:8081/api/v{n}/patients
 
 ```json
 {
-    "data": {
-        "total": 3  // 全体成员
-        "users":[
-            patient1,
-            patient2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "total": 1,
+        "patients": [
+            {
+                "id": 1,
+                "name": "朱畅畅",
+                "sex": 0,
+                "sexName": "男",
+                "birthday": "2024-12-18 15:03:13",
+                "idNumber": "123456789",
+                "phone": "15955422050",
+                "status": 1,
+                "createTime": "2024-12-05T07:03:24.000+00:00",
+                "updateTime": "2024-12-18T07:03:27.000+00:00"
+            }
+        ]
+    }
 }
 ```
 
@@ -472,8 +583,15 @@ http://localhost:8081/api/v{n}/patients
     url : "/edit",
     method: put,
     body:{
-       Patients
-    }
+    "id": 1,     //Id为必传字段
+    "name": "kk",
+    "sex": 1,
+    "sexName": "男",
+    "birthday": "2024-12-18 14:45:00",
+    "idNumber": "123",
+    "phone": "4321",
+    "status": 1
+}
 }
 ```
 
@@ -481,10 +599,9 @@ http://localhost:8081/api/v{n}/patients
 
 ```json
 {
-    "data": {
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -523,6 +640,36 @@ http://localhost:8081/api/v{n}/patients
 
 ```
 
+#### 3.2.7 患者信息编辑
+
+```json
+{
+    url : "/edit",
+    method: put,
+    "body":
+{
+    "id": 1,
+    "name": "kk",
+    "sex": 1,
+    "sexName": "男",
+    "birthday": "2024-12-18 14:45:00",
+    "idNumber": "123",
+    "phone": "4321",
+    "status": 1
+}
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "操作成功",
+    "data": null
+}
+```
+
+
+
 ### 4. 病历管理
 
 ```json
@@ -542,10 +689,19 @@ http://localhost:8081/api/v{n}/element
     "url": "/add",
     "method": "post",
     "body": {
-        "patientId": "1809970417345020000",
-        "patientName": "林柔汐",
-   		//数据库中其他字段（參考hospitalInterface.md）
-    }
+    "id": "1",
+    "patientId": 1,
+    "patientName": "式小什物织。",
+    "mainAppeal": "候除理说本些理七。",
+    "pastHistory": "及改流目飞。",
+    "presentIllness": "大则段马。",
+    "allergy": "天日然。",
+    "specialOs": "转步类以需感先在。",
+    "specialOd": "总员题据识式认。",
+    "visitNumber": "业成角花。",
+    "physicalExam": "统总山。",
+    "dispose": "低交如九年。"
+}
 }
 ```
 
@@ -554,10 +710,8 @@ http://localhost:8081/api/v{n}/element
 ```json
 {
     "code": 200,
-    "msg": "病历创建成功",
-    "data": {
-        null
-    }
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -574,9 +728,19 @@ http://localhost:8081/api/v{n}/element
     "url": "/edit",
     "method": "put",
     "body": {
-        "id": "1809971108367556610",
-       	//数据库中其他字段
-    }
+    "id": "1",
+    "patientId": 1,
+    "patientName": "朱畅畅",
+    "mainAppeal": "候除理说本些理七。",
+    "pastHistory": "及改流目飞。",
+    "presentIllness": "大则段马。",
+    "allergy": "天日然。",
+    "specialOs": "转步类以需感先在。",
+    "specialOd": "总员题据识式认。",
+    "visitNumber": "业成角花。",
+    "physicalExam": "统总山。",
+    "dispose": "低交如九年。"
+}
 }
 ```
 
@@ -585,10 +749,8 @@ http://localhost:8081/api/v{n}/element
 ```json
 {
     "code": 200,
-    "msg": "病历更新成功",
-    "data": {
-        null
-    }
+    "msg": "操作成功",
+    "data": "病历更新成功"
 }
 ```
 
@@ -601,11 +763,11 @@ http://localhost:8081/api/v{n}/element
     "url": "/search",
     "method": "get",
     "body": {
-        "patientId": "1809970417345020000",
-        "dateStart": "2024-07-01",           （必传字段）
-        "dateEnd": "2024-07-31",             （必传字段）
-        "patientName": "林柔汐",
-    }
+    "patientId": "1",
+    "dataStart": "2024-07-01",
+    "dataEnd": "2025-01-01",
+    "patientName": "朱畅畅"
+}
 }
 ```
 
@@ -614,17 +776,25 @@ http://localhost:8081/api/v{n}/element
 ```json
 {
     "code": 200,
-    "msg": "病历维护成功",
+    "msg": "维护成功",
     "data": {
-        "total": 3, //总共返回多少数据
+        "total": 1,
         "elements": [
             {
-                "id": "1809971108367556610",
-                "patientId": "1809970417345020000",
-                "patientName": "林柔汐",
-                //病人其他信息
+                "id": "1",
+                "patientId": 1,
+                "mainAppeal": "候除理说本些理七。",
+                "pastHistory": "及改流目飞。",
+                "presentIllness": "大则段马。",
+                "allergy": "天日然。",
+                "specialOs": "转步类以需感先在。",
+                "specialOd": "总员题据识式认。",
+                "visitNumber": "业成角花。",
+                "physicalExam": "统总山。",
+                "dispose": "低交如九年。",
+                "createTime": "2024-12-18T07:36:31.000+00:00",
+                "updateTime": "2024-12-18T07:38:09.000+00:00"
             }
-            // 更多病历记录...
         ]
     }
 }
@@ -641,11 +811,23 @@ http://localhost:8081/api/v{n}/element
 
 ```json
 {
-    "data": {
-        Element
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "id": "1",
+        "patientId": 1,
+        "mainAppeal": "候除理说本些理七。",
+        "pastHistory": "及改流目飞。",
+        "presentIllness": "大则段马。",
+        "allergy": "天日然。",
+        "specialOs": "转步类以需感先在。",
+        "specialOd": "总员题据识式认。",
+        "visitNumber": "业成角花。",
+        "physicalExam": "统总山。",
+        "dispose": "低交如九年。",
+        "createTime": "2024-12-18T07:36:31.000+00:00",
+        "updateTime": "2024-12-18T07:38:09.000+00:00"
+    }
 }
 ```
 
@@ -664,16 +846,28 @@ http://localhost:8081/api/v{n}/element
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            element1,
-            element2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "total": 1,
+        "elements": [
+            {
+                "id": "1",
+                "patientId": 1,
+                "mainAppeal": "候除理说本些理七。",
+                "pastHistory": "及改流目飞。",
+                "presentIllness": "大则段马。",
+                "allergy": "天日然。",
+                "specialOs": "转步类以需感先在。",
+                "specialOd": "总员题据识式认。",
+                "visitNumber": "业成角花。",
+                "physicalExam": "统总山。",
+                "dispose": "低交如九年。",
+                "createTime": "2024-12-18T07:36:31.000+00:00",
+                "updateTime": "2024-12-18T07:38:09.000+00:00"
+            }
+        ]
+    }
 }
 ```
 
@@ -737,7 +931,7 @@ http://localhost:8081/api/v{n}/followup
 
 ```json
 {
-    "url": "/Undo",
+    "url": "/undo",
     "method": "get"
 }
 ```
@@ -796,9 +990,9 @@ http://localhost:8081/api/v{n}/doctor
     url : "/add",
     method: POST,
     body:{
-        "id": 1
-        "doctor_name": "王医生"
-    }
+    "id": "1",
+    "doctorName": "朱畅畅"
+}
 }
 ```
 
@@ -806,11 +1000,9 @@ http://localhost:8081/api/v{n}/doctor
 
 ```json
 {
-    "data": {
-        null
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -821,7 +1013,7 @@ http://localhost:8081/api/v{n}/doctor
 ```json
 {
     url : "/invalid/{doctorId}",
-    method: POST,
+    method: GET,
 }
 ```
 
@@ -829,11 +1021,9 @@ http://localhost:8081/api/v{n}/doctor
 
 ```json
 {
-    "data": {
-        null
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -844,19 +1034,17 @@ http://localhost:8081/api/v{n}/doctor
     "url": "/edit",
     "method": "put",
     "body": {
-        "id": "1809971108367556610",
-        "doctorName": "朱畅畅"              // 字段全有,为null也更新
-    }
+    "id": "1",
+    "doctorName": "朱畅"
+}
 }
 ```
 
 ```json
 {
     "code": 200,
-    "msg": "病历更新成功",
-    "data": {
-        null
-    }
+    "msg": "操作成功",
+    "data": null
 }
 ```
 
@@ -875,16 +1063,25 @@ http://localhost:8081/api/v{n}/doctor
 
 ```json
 {
-    "data": {
-        "total": 3  //总数
-        "users":[
-            doctor1,
-            doctor2
-            ...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "records": [
+            {
+                "id": 1,
+                "doctorName": "朱畅",
+                "status": 0,
+                "createTime": "2024-12-18T07:56:53.000+00:00",
+                "updateTime": "2024-12-18T07:59:38.000+00:00"
+            }
+        ],
+        "total": 1,
+        "size": 10,
+        "current": 1,
+        "orders": [],
+        "searchCount": true,
+        "pages": 1
+    }
 }
 ```
 
@@ -899,11 +1096,15 @@ http://localhost:8081/api/v{n}/doctor
 
 ```json
 {
-    "data": {
-        Doctor
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": {
+        "id": 1,
+        "doctorName": "朱畅",
+        "status": 0,
+        "createTime": "2024-12-18T07:56:53.000+00:00",
+        "updateTime": "2024-12-18T07:59:38.000+00:00"
+    }
 }
 ```
 

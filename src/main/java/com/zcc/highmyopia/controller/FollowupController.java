@@ -44,7 +44,7 @@ public class FollowupController {
      * 超期未随访
      * @return
      */
-    @GetMapping("/Overdue")
+    @GetMapping("/overdue")
     @RequiresAuthentication
     public Result overdueFollowup() {
         return Result.succ(followupMapper.selectOverdueFollowUpList());
@@ -54,7 +54,7 @@ public class FollowupController {
      * 全部未随访
      * @return
      */
-    @GetMapping("/Undo")
+    @GetMapping("/undo")
     @RequiresAuthentication
     public Result undoFollowup() {
         return Result.succ(followupMapper.selectUndoFollowUpList());
@@ -79,7 +79,6 @@ public class FollowupController {
         if(!listFollowup.getVisitResult()) {
             Followup temp = new Followup();
             temp.setPlanVisitDate(listFollowup.getNextVisitDate());
-            temp.setCaseId(listFollowup.getCaseId());
             temp.setPatientId(followup.getPatientId());
             followupService.saveOrUpdate(temp);
         }

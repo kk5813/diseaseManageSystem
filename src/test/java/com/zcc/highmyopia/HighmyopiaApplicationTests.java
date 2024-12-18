@@ -110,19 +110,12 @@ class HighmyopiaApplicationTests {
     @Test
     public void testSaltMD5Verify() {
         // 假设这是存储在数据库中的加密值
-        String storedMd5Hash = "b34ff68e218c15396030c8eb3e5b98e8"; // 假设是 `MD5(salt + 密码)`
         String salt = "bEZ5mLq6SxkSkZHBnZxRfd8dyXGq7vfi"; // 存储的盐值
         String userPassword = "2287996531";  // 用户输入的密码
-
+        //7ce7070696f2200bd57edb836265f9db
         // 对用户输入的密码和盐值进行加盐 MD5 加密
         String userPasswordHash = SecureUtil.md5(salt + SecureUtil.md5(userPassword));
-
-        // 对比加密后的哈希值与存储的哈希值是否匹配
-        if (userPasswordHash.equals(storedMd5Hash)) {
-            System.out.println("密码验证成功");
-        } else {
-            System.out.println("密码验证失败");
-        }
+        System.out.println(userPasswordHash);
     }
 
 

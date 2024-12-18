@@ -33,7 +33,7 @@ public class ElementController {
     @PostMapping("add")
     public Result addElement(@RequestBody ElementEntity elementEntity){
         elementService.addElement(elementEntity);
-        return Result.succ(null);
+        return Result.succ("病历添加成功");
     }
 
     @PutMapping("edit")

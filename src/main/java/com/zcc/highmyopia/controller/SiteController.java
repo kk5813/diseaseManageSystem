@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @Author zcc
@@ -33,6 +34,8 @@ public class SiteController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addSite(@Validated @RequestBody Site site) {
+        site.setUpdateTime(new Date());
+        site.setCreateTime(new Date());
         SiteService.save(site);
         return Result.succ(null);
     }

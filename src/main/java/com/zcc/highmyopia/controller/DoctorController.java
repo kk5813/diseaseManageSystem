@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +51,9 @@ public class DoctorController {
     @PostMapping("/add")
     @RequiresAuthentication
     public Result addDoctor(@Validated @RequestBody Doctor doctor) {
+        doctor.setCreateTime(new Date());
+        doctor.setUpdateTime(new Date());
+        doctor.setStatus(1);
         doctorService.save(doctor);
         return Result.succ(null);
     }

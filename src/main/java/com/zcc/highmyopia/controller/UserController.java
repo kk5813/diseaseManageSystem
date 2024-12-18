@@ -4,6 +4,7 @@ package com.zcc.highmyopia.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.common.vo.UserVO;
@@ -54,7 +55,7 @@ public class UserController {
         temp.setSalt(salt);
         temp.setUserLoginName(user.getUserLoginName());
         temp.setUserName(user.getUserName());
-        temp.setUserStatus(user.getUserStatus());
+        temp.setUserStatus(1);
         log.info("用户注册 user:{}", temp);
         userService.saveOrUpdate(temp);
         return Result.succ(null);
@@ -64,22 +65,24 @@ public class UserController {
     @PostMapping("/edit")
     @RequiresAuthentication
     public Result editUser(@RequestBody User user, HttpServletRequest request) {
-        // 身份校验:只有管理员才有权限修改
-        User temp = userService.getById(user.getUserId());
         String jwtToken = request.getHeader("Authorization");
         Claims claimByToken = jwtUtils.getClaimByToken(jwtToken);
-
         Integer status = (Integer) claimByToken.get("status");
         log.info("当前用户的权限是：{}", status);
+        String userId = claimByToken.getSubject();
+        log.info("当前用户的ID是：{}", userId);
+        // 身份校验:只有管理员才有权限修改
+
         if (status != 0)
             return Result.fail(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getInfo(),null);
-
+        User temp = userService.getOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserLoginName, user.getUserLoginName()));
         temp.setModifier(ShiroUtil.getProfile().getUserName());
         temp.setUpdateTime(LocalDateTime.now());
         temp.setUserLoginName(user.getUserLoginName());
         temp.setUserName(user.getUserName());
         temp.setUserStatus(user.getUserStatus());
-        temp.setUserPassword(user.getUserPassword());
+        temp.setUserPassword(SecureUtil.md5(user.getSalt() + SecureUtil.md5(user.getUserPassword())));
 
         userService.saveOrUpdate(temp);
         return Result.succ(null);
