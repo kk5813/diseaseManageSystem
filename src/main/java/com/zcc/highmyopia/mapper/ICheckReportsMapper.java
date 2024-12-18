@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zcc.highmyopia.po.CheckReports;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
-public interface ICheckReportsMapper {
-    Long insert(CheckReports checkReports);
+public interface ICheckReportsMapper extends BaseMapper<CheckReports> {
+    int insert(CheckReports checkReports);
 }

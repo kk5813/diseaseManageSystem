@@ -23,7 +23,6 @@ public class Doctor implements Serializable {
     @NotBlank(message = "医生姓名不能为空")
     private String doctorName;  // 医生姓名
 
-    private Integer isDelete;  // 逻辑删除标识
     private Integer status;  // 逻辑删除状态
     /**
      * 创建时间

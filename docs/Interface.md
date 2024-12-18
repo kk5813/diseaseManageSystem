@@ -261,7 +261,7 @@ http://localhost:8081/api/v{n}/user
     url : "/search",
     method: get,
     body:{
-        userLoginName: "zcc",
+        userLoginName: "zcc",    //参数都不给即返回所有
         userName: "朱畅畅" 
     }
 }
@@ -294,7 +294,7 @@ http://localhost:8081/api/v{n}/user
 {
     url : "/page",
     method: get,
-    body:{
+    params:{
         pageSize,     // 默认10
         pageNumber,   // 默认1
     }
@@ -374,10 +374,12 @@ http://localhost:8081/api/v{n}/patients
     url : "/search",
     method: get,
     body:{
-        name: "朱畅畅",
-        sex: "男",
-        timeStart: "2024-12-17",  (必传字段，前端用日历表形式)
-        timeEnd: "2024-12-17"     (必传字段，前端用日历表形式)
+        "sex": 0,
+        "name": "朱畅畅"
+        "birthdayBegin": "2024-12-17"
+        "birthdayEnd": "2024-12-17"
+        "visitTimeBegin": "2024-12-17"    // begin end成对出现
+        "visitTimeEnd": "2024-12-17"
     }
 }
 ```
@@ -409,7 +411,7 @@ http://localhost:8081/api/v{n}/patients
 {
     url : "/page",
     method: get,
-    body:{
+    params:{
         pageSize,
         pageNumber,
     }
@@ -435,7 +437,33 @@ http://localhost:8081/api/v{n}/patients
 }
 ```
 
-##### 3.2.4 患者信息更新（补充）
+##### 3.2.4 患者信息整体查询
+
+```json
+{
+    url : "/list",
+    method: get,
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  // 全体成员
+        "users":[
+            patient1,
+            patient2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+
+
+##### 3.2.5 患者信息更新（补充）
 
 **请求：**
 
@@ -460,14 +488,14 @@ http://localhost:8081/api/v{n}/patients
 }
 ```
 
-##### 3.2.5 患者信息批量导出
+##### 3.2.6 患者信息批量导出
 
 **请求：**
 
 ```json
 {
     "url": "/export",
-    "method": "get",
+    "method": "post",
     "body": {
         "sex": "男",
         "name": "朱畅畅"
@@ -476,7 +504,6 @@ http://localhost:8081/api/v{n}/patients
         "visitTimeBegin": "2024-12-17"    // begin end成对出现
         "visitTimeEnd": "2024-12-17"
         // 若无任何条件即所有
-        // 进行模糊查询的条件
     }
 }
 ```
@@ -818,7 +845,7 @@ http://localhost:8081/api/v{n}/doctor
     "method": "put",
     "body": {
         "id": "1809971108367556610",
-       	//数据库中其他字段
+        "doctorName": "朱畅畅"              // 字段全有,为null也更新
     }
 }
 ```
@@ -839,7 +866,7 @@ http://localhost:8081/api/v{n}/doctor
 {
     url : "/page",
     method: get,
-    body:{
+    params:{
         pageSize,
         pageNumber,
     }
@@ -860,6 +887,27 @@ http://localhost:8081/api/v{n}/doctor
     "msg": ""
 }
 ```
+
+#### 6.5精确查找
+
+```json
+{
+    url : "/find/{doctorId}",
+    method: get,
+}
+```
+
+```json
+{
+    "data": {
+        Doctor
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+
 
 ### 7. 科室管理
 
@@ -1158,15 +1206,15 @@ http://localhost:8081/api/v{n}/check_report
         "total": 2
     "data": [
         {
-            "patient_id": "1855597141015232514",
-            "item_code": "310300064A",
-            "item_name": "光学相干断层成像（OCT）",
-            "visit_number": "MZ202411120358",
-            "check_time": "2024-11-12 17:21:29",
+            "patientId": "1855597141015232514",
+            "itemCode": "310300064A",
+            "itemName": "光学相干断层成像（OCT）",
+            "visitNumber": "MZ202411120358",
+            "checkTime": "2024-11-12 17:21:29",
             "files": [    // 一次检查可能有多张图片
                 {
                     "type": "application/pdf",
-                    "url": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
+                    "filePath": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
                 },
                  {
                     "type": "application/pdf",
@@ -1200,7 +1248,7 @@ http://localhost:8081/api/v{n}/check_report
 
 ```json
 {
-    url : "/onlySearch/{patientId}",
+    url : "today/onlySearch/{patientId}",
     method: get
 }
 ```

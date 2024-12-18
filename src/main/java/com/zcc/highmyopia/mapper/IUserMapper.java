@@ -23,4 +23,5 @@ public interface IUserMapper extends BaseMapper<User> {
     @Select("select * from user")
     List<User> list();
 
+    List<User> SearchUser(User user);
 }

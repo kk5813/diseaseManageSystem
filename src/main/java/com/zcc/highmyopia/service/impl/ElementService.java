@@ -1,14 +1,21 @@
 package com.zcc.highmyopia.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zcc.highmyopia.common.dto.ElementDTO;
 import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.mapper.IElementMapper;
 import com.zcc.highmyopia.po.Element;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.service.IElementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +26,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class ElementService implements IElementService {
+public class ElementService extends ServiceImpl<IElementMapper, Element> implements IElementService {
 
     private final IElementMapper elementMapper;
 
@@ -55,5 +62,19 @@ public class ElementService implements IElementService {
     public List<Element> queryElement(ElementDTO elementDto) {
 
         return elementMapper.queryElementOnCondition(elementDto);
+    }
+
+    @Override
+    public Element findElement(Long elementId) {
+        LambdaQueryWrapper<Element> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Element::getId, elementId);
+        return elementMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public List<Element> pageQuery(int pageNumber, int pageSize) {
+        Page<Element> page = new Page<>(pageNumber, pageSize);
+        IPage<Element> pages = this.page(page);
+        return pages.getRecords();
     }
 }

@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zcc.highmyopia.po.ReportFiles;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Mapper
 @Component
-public interface IReportFilesMapper {
+public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     void insertBatch(List<ReportFiles> files);
 
     List<ReportFiles> getNotDownLoad();

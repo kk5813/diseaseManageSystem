@@ -2,4 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zcc.highmyopia.mapper.IUserMapper">
 
+    <select id="SearchUser" resultType="com.zcc.highmyopia.po.User" parameterType="com.zcc.highmyopia.po.User">
+        select *
+        from user
+        where 1=1
+        <if test="userLoginName != null and userLoginName != ''">
+            and user_login_name like concat(#{userLoginName}, '%')
+        </if>
+        <if test="userName != null and userName != ''">
+            and user_name like concat(#{userLoginName}, '%')
+        </if>
+    </select>
 </mapper>

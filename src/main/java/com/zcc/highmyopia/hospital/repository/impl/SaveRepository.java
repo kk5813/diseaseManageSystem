@@ -102,7 +102,7 @@ public class SaveRepository implements ISaveRepository {
     @Override
     public void saveCheckReportsAndReportFiles(CheckReportsEntity checkReportsEntity) {
         CheckReports checkReports = CheckReportsEntity.entityToPo(checkReportsEntity);
-        Long reportId = checkReportsMapper.insert(checkReports);  // 作为文件的字段
+        Long reportId = (long) checkReportsMapper.insert(checkReports);  // 作为文件的字段
         List<ReportFiles> files = checkReportsEntity.getFiles();
         files.forEach(file -> {
             file.setReportId(reportId);

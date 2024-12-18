@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zcc.highmyopia.po.Dept;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
-public interface IDeptMapper {
+public interface IDeptMapper extends BaseMapper<Dept> {
     Dept getDeptByName(String deptName);
 }

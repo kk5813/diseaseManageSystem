@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.service;
 
+import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.po.Patients;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -22,4 +23,5 @@ public interface IPatientsService extends IService<Patients> {
     */
     List<Patients> pageQuery(Integer pageNumber,Integer pageSize);
 
+    List<Patients> searchPatients(PatientsDTO patientsDTO);
 }

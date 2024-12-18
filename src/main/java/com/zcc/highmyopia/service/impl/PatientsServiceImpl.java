@@ -2,6 +2,7 @@ package com.zcc.highmyopia.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
 import com.zcc.highmyopia.service.IPatientsService;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,5 +32,11 @@ public class PatientsServiceImpl extends ServiceImpl<IPatientsMapper, Patients> 
         Page<Patients> page = new Page<>(pageNumber, pageSize);
         IPage<Patients> pages = this.page(page);
         return pages.getRecords();
+    }
+
+    @Override
+    public List<Patients> searchPatients(PatientsDTO patientsDTO) {
+
+        return patientMapper.searchPatients(patientsDTO);
     }
 }

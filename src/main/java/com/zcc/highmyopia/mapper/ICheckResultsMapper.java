@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zcc.highmyopia.po.CheckResults;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
-public interface ICheckResultsMapper {
-    void insert(CheckResults checkResult);
+public interface ICheckResultsMapper extends BaseMapper<CheckResults> {
+    int insert(CheckResults checkResult);
 }

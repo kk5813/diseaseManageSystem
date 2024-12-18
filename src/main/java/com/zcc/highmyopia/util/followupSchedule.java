@@ -22,7 +22,7 @@ public class followupSchedule {
     @Autowired
     IFollowupMapper followupMapper;
     @Autowired
-    IPatientsMapper patientMapper;
+    IPatientsMapper patientsMapper;
 
     //3.添加定时任务
     @Scheduled(cron = "0 0 8 * * ?")
@@ -40,7 +40,7 @@ public class followupSchedule {
         System.out.println("发送短信-------------------------------------------");
         for(ListFollowup listFollowup : followupMapper.selectTomorrowFollowUpList()) {
             System.out.print(listFollowup.getPatientName() + " ");
-            System.out.println(patientMapper.selectTelephoneByPatientId(listFollowup.getPatientId()));
+            System.out.println(patientsMapper.selectTelephoneByPatientId(listFollowup.getPatientId()));
             String str = listFollowup.getPatientName();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM月dd日");
             String planVisitDate = listFollowup.getPlanVisitDate().format(formatter);
@@ -49,7 +49,7 @@ public class followupSchedule {
                     "东区爱尔地址：成华区双林路388号（电视塔对面）。导航：富临大厦\n" +
                     "公交路线：5.6.8.61.76.106.80.237.1004.1009.1033\n" +
                     "地铁路线：3号线和4号线在市二医院站下车（E出口）乘坐公交（2站）至游泳池站或猛追湾站下车.详询028-85075888";
-            p.put("mobile", patientMapper.selectTelephoneByPatientId(listFollowup.getPatientId()));
+            p.put("mobile", patientsMapper.selectTelephoneByPatientId(listFollowup.getPatientId()));
             p.put("content", sstr);
             try {
                 //发短信
