@@ -1,11 +1,14 @@
 package com.zcc.highmyopia.hospital.entity;
 
+import com.zcc.highmyopia.po.CheckReports;
+import com.zcc.highmyopia.po.Visits;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @Author zcc
@@ -16,9 +19,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VisitEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class VisitEntity{
 
     // 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS"
     private String birthday;
@@ -67,4 +68,18 @@ public class VisitEntity implements Serializable {
 
     // 眼别ID
     private Integer siteId;
+
+    public static Visits entityToPo(VisitEntity visitEntity) {
+        Visits visits = new Visits();
+        visits.setPatientId(visitEntity.getPatientId());
+        visits.setDoctorId(Long.valueOf(visitEntity.getDoctorId()));
+        visits.setDeptId(Long.valueOf(visitEntity.getDeptId()));
+        visits.setSiteId(Long.valueOf(visitEntity.getSiteId()));
+        visits.setVisitNumber(visitEntity.getVisitNumber());
+        visits.setDiagTime(LocalDateTime.parse(visitEntity.getDiagTime()));
+        visits.setDiagOrder(visitEntity.getDiagOrder());
+        visits.setDiagName(visitEntity.getDiagName());
+        visits.setDiagCode(visitEntity.getDiagCode());
+        return visits;
+    }
 }

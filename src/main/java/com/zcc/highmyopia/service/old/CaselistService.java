@@ -1,6 +1,6 @@
 package com.zcc.highmyopia.service.old;
 
-import com.zcc.highmyopia.entity.old.Caselist;
+import com.zcc.highmyopia.po.old.Caselist;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -3,11 +3,11 @@ package com.zcc.highmyopia.controller.old;
 
 
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.old.Caselist;
-import com.zcc.highmyopia.entity.Followup;
+import com.zcc.highmyopia.po.old.Caselist;
+import com.zcc.highmyopia.po.Followup;
 import com.zcc.highmyopia.mapper.old.CaselistMapper;
 import com.zcc.highmyopia.service.old.CaselistService;
-import com.zcc.highmyopia.service.FollowupService;
+import com.zcc.highmyopia.service.IFollowupService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +34,7 @@ public class CaselistController {
     @Autowired
     CaselistMapper caselistMapper;
     @Autowired
-    FollowupService followupService;
+    IFollowupService followupService;
 
     @GetMapping("/doPredict")
     @RequiresAuthentication

@@ -1,6 +1,6 @@
 package com.zcc.highmyopia.service.old;
 
-import com.zcc.highmyopia.entity.old.Examdetail;
+import com.zcc.highmyopia.po.old.Examdetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

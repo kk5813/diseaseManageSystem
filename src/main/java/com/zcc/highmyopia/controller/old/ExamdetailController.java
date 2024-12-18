@@ -4,7 +4,7 @@ package com.zcc.highmyopia.controller.old;
 import cn.hutool.core.map.MapUtil;
 
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.old.Examdetail;
+import com.zcc.highmyopia.po.old.Examdetail;
 import com.zcc.highmyopia.mapper.old.CaselistMapper;
 import com.zcc.highmyopia.mapper.old.ExamdetailMapper;
 import com.zcc.highmyopia.service.old.CaselistService;

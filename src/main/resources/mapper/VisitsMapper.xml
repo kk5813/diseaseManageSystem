@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcc.highmyopia.mapper.IVisitsMapper">
+
+
+    <insert id="insertBatch"
+            parameterType="com.zcc.highmyopia.hospital.entity.VisitEntity">
+        insert into visits (patient_id, doctor_id, dept_id, site_id, visit_number,
+                            diag_time, diag_order, diag_name, diag_code, create_time, update_time)
+        values
+        <foreach item="visitEntity" index="index" collection="array" open="(" separator=")," close=")">
+            #{visitEntity.patientId}, #{visitEntity.doctorId}, #{visitEntity.deptId},
+            #{visitEntity.siteId}, #{visitEntity.visitNumber}, #{visitEntity.diagTime},
+            #{visitEntity.diagOrder}, #{visitEntity.diagName}, #{visitEntity.diagCode}, now(), now()
+        </foreach>
+    </insert>
+</mapper>

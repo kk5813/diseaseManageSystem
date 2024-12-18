@@ -1,8 +1,8 @@
 package com.zcc.highmyopia.shiro;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.zcc.highmyopia.entity.User;
-import com.zcc.highmyopia.service.UserService;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -22,7 +22,7 @@ public class AccountRealm extends AuthorizingRealm {
     JwtUtils jwtUtils;
 
     @Autowired
-    UserService userService;
+    IUserService userService;
 
     @Override
     public boolean supports(AuthenticationToken token) {

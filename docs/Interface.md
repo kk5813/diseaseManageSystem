@@ -18,7 +18,7 @@
 GET（SELECT）：从服务器取出资源（一项或多项）。
 POST（CREATE）：在服务器新建一个资源。
 PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。
-DELETE（DELETE）：从服务器删除资源。
+DELETE（DELETE）：从服务器删除资源。                                                 
 ```
 
 ### 3. 返回格式说明：
@@ -32,12 +32,6 @@ DELETE（DELETE）：从服务器删除资源。
     "msg": ""
 }
 ```
-
-其中data中存放返回数据
-
-code 为状态码
-
-msg为提示信息
 
 #### 3.1状态码说明：
 
@@ -76,21 +70,21 @@ msg为提示信息
 
 权限校验
 
-```http
+```
 http://localhost:8081/api/v{n}/account
 ```
 
-#### 1.1 用户登录与权限验证
+#### 1.1 用户登录
 
 **请求：** 
 
 ```json
 {
-    url: "/login",
-    method: POST,
-    body:{
-       userLoginName: "zcc",
-       userPassword: "2287996531",   // 明文密码，经过前端MD5加密一次，后端再salt加密一次
+    "url": "/login",
+    "method": "POST",
+    "body": {
+        "userLoginName": "zcc",
+        "userPassword": "2287996531"  // 前端已用 MD5 加密的密码
     }
 }
 ```
@@ -117,8 +111,8 @@ http://localhost:8081/api/v{n}/account
 
 ```json
 {
-    url: "/logout",
-    method: GET
+    "url": "/logout",
+    "method": GET
 }
 ```
 
@@ -137,7 +131,7 @@ http://localhost:8081/api/v{n}/account
 
 统一接口前缀
 
-```http
+```
 http://localhost:8081/api/v{n}/user
 ```
 
@@ -155,7 +149,6 @@ http://localhost:8081/api/v{n}/user
         userLoginName: "zcc"
         userName: "朱畅畅"
         userPassword: "2287996531"
-        user_status: 1
     }
 }
 ```
@@ -167,7 +160,7 @@ http://localhost:8081/api/v{n}/user
 ```json
 {
     "data": {
-       返回用户的全部信息（除开数据库status字段）
+       null
     },
     "code": 200,
     "msg": ""
@@ -178,9 +171,11 @@ http://localhost:8081/api/v{n}/user
 
 · 管理员可以对系统用户进行增删改查操作，包括修改角色及权限。
 
-· 支持用户状态管理（如启用、禁用、锁定账户）和操作记录审计。
+· 支持用户状态管理
 
 ##### 2.2.1 用户信息更新
+
+- 管理员拥有此权限
 
 **请求：** 
 
@@ -192,7 +187,6 @@ http://localhost:8081/api/v{n}/user
         userLoginName: "zcc"
         userName: "朱畅畅"
         userPassword: "2287996531"
-        user_status: 1
     }
 }
 ```
@@ -210,7 +204,9 @@ http://localhost:8081/api/v{n}/user
 }
 ```
 
-##### 2.2.2 用户信息删除
+##### 2.2.2 用户信息删除(失效)
+
+- 管理员拥有此权限
 
 **请求：** 
 
@@ -223,27 +219,24 @@ http://localhost:8081/api/v{n}/user
 
 **响应：** 
 
-data 为{} ，由code决定成功与失败 和其他信息
-
 ```json
 {
-    "data": {     
+    "data": {
+        null
     },
     "code": 200,
     "msg": ""
 }
 ```
 
-
-
-##### 2.2.3 用户查找（One）
+##### 2.2.3 用户精确查询
 
 **请求：** 
 
 ```json
 {
     url : "/find/{userId}",
-    method: get,
+    method: get
 }
 ```
 
@@ -259,7 +252,39 @@ data 为{} ，由code决定成功与失败 和其他信息
 }
 ```
 
-##### 1.3.5 用户批量查找
+##### 2.2.3 用户模糊查询
+
+**请求：** 
+
+```json
+{
+    url : "/search",
+    method: get,
+    body:{
+        userLoginName: "zcc",
+        userName: "朱畅畅" 
+    }
+}
+```
+
+**响应：** 
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            user1,
+            user2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+##### 2.2.4 用户分页查询
 
 **请求：** 
 
@@ -267,11 +292,11 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 ```json
 {
-    url : "/list",
+    url : "/page",
     method: get,
     body:{
-        pageSize,
-        pageNumber,
+        pageSize,     // 默认10
+        pageNumber,   // 默认1
     }
 }
 ```
@@ -283,9 +308,11 @@ data 为{} ，由code决定成功与失败 和其他信息
 ```json
 {
     "data": {
-        "total":, //总共返回多少数据
-       	"list":[
-          {数据库中用户信息},{数据库中用户信息}
+        "total": 3  //总数
+        "users":[
+            user1,
+            user2
+            ...
         ]
     },
     "code": 200,
@@ -293,9 +320,13 @@ data 为{} ，由code决定成功与失败 和其他信息
 }
 ```
 
-### 2. 患者信息管理
+### 3. 患者信息管理
 
-#### 2.1 患者数据接入
+```json
+http://localhost:8081/api/v{n}/patients
+```
+
+#### 3.1 患者数据接入
 
 · 系统通过数据接口从第三方获取患者信息，包括姓名、性别、年龄、联系方式、病史、过敏史及既往就诊记录等。
 
@@ -303,11 +334,7 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 · 系统设置严格的接口安全控制，防止数据泄露或篡改。
 
-**这个接口前端应该不需要，后端单独的接口**
-
-##### 
-
-#### 2.2 患者档案管理
+#### 3.2 患者档案管理
 
 · 系统使用第三方数据中的患者 ID 作为唯一患者编号，建立患者档案，用于集中存储患者的基本信息、就诊记录及随访计划。
 
@@ -315,16 +342,14 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 · 支持患者数据的批量导入导出功能，便于与其他系统共享或整合数据。
 
-##### 2.2.1 查询患者信息（One）
+##### 3.2.1 患者信息精确查询
 
 **请求：** 
 
 ```json
 {
-    url : "/patient/find/{patientId}",
+    url : "/find/{patientId}",
     method: get,
-    body:{
-    }
 }
 ```
 
@@ -333,14 +358,48 @@ data 为{} ，由code决定成功与失败 和其他信息
 ```json
 {
     "data": {
-        数据库中病人信息
+        Patients
     },
     "code": 200,
     "msg": ""
 }
 ```
 
-##### 2.2.2 分页查询患者信息
+##### 3.2.2 患者信息模糊查询
+
+**请求：**
+
+```json
+{
+    url : "/search",
+    method: get,
+    body:{
+        name: "朱畅畅",
+        sex: "男",
+        timeStart: "2024-12-17",  (必传字段，前端用日历表形式)
+        timeEnd: "2024-12-17"     (必传字段，前端用日历表形式)
+    }
+}
+```
+
+**响应:**
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            patient1,
+            patient2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+##### 3.2.3 分页查询患者信息
 
  后端让 pageSize默认为10， pageNumber默认为1， 如果前端没有传入这二个参数，进行权限判断，权限不够报错，权限够，返回全部信息。
 
@@ -348,7 +407,7 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 ```json
 {
-    url : "/patient/list",
+    url : "/page",
     method: get,
     body:{
         pageSize,
@@ -364,9 +423,11 @@ data 为{} ，由code决定成功与失败 和其他信息
 ```json
 {
     "data": {
-        "total":, //总共返回多少数据
-       	"list":[
-          {数据库中病人信息},{数据库中病人信息}
+        "total": 3  //总数
+        "users":[
+            patient1,
+            patient2
+            ...
         ]
     },
     "code": 200,
@@ -374,16 +435,16 @@ data 为{} ，由code决定成功与失败 和其他信息
 }
 ```
 
-##### 2.2.3 患者信息更新（补充）
+##### 3.2.4 患者信息更新（补充）
 
 **请求：**
 
 ```json
 {
-    url : "/patient/edit",
+    url : "/edit",
     method: put,
     body:{
-       数据库中所有字段，命名规则小驼峰 (为空的话，后端就不更新这个值就可以了 mybatis中有<set> 和<if>)
+       Patients
     }
 }
 ```
@@ -393,86 +454,34 @@ data 为{} ，由code决定成功与失败 和其他信息
 ```json
 {
     "data": {
-         数据库中所有字段，命名规则小驼峰
     },
     "code": 200,
     "msg": ""
 }
 ```
 
-##### 2.2.4 患者信息批量导入
+##### 3.2.5 患者信息批量导出
 
 **请求：**
 
 ```json
 {
-    "url": "/patient/import",
-    "method": "post",
-    "body": [
-        {
-            "patientId": "1",
-            "patientName": "张三",
-            "birthday": "1990-01-01",
-            "sex": "男",
-            // 其他字段...
-        },
-        // 更多患者对象...
-    ]
-}
-```
-
-**响应：** 
-
-```json
-{
-    "code": 200,
-    "msg": "批量导入成功",
-    "data": {
-        "total": 2, //有多少数据导入成功
-        "errors": [// 哪些数据导入失败
-            {
-                "patientId": "3",
-                "errorMessage": "无效的日期格式"
-            }
-            // 更多错误信息...
-        ]
-    }
-}
-```
-
-##### 2.2.5 患者信息批量导出
-
-**请求：**
-
-```json
-{
-    "url": "/patient/export",
+    "url": "/export",
     "method": "get",
     "body": {
         "sex": "男",
-        "ageRange": {
-            "min": 20,
-            "max": 30
-        }
-        // 其他筛选条件...
+        "name": "朱畅畅"
+        "birthdayBegin": "2024-12-17"
+        "birthdayEnd": "2024-12-17"
+        "visitTimeBegin": "2024-12-17"    // begin end成对出现
+        "visitTimeEnd": "2024-12-17"
+        // 若无任何条件即所有
+        // 进行模糊查询的条件
     }
 }
 ```
 
 **响应：** 
-
-两种任选
-
-```json
-//后端响应包含一个下载链接或直接返回文件流，允许前端下载导出的患者信息文件。
-{
-    "code": 200,
-    "msg": "批量导出成功",
-    "data": {
-        "downloadUrl": "https://example.com/downloads/patients.csv"
-    }
-}
-```
 
 ```json
 //后端直接返回文件流：
@@ -487,9 +496,13 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 ```
 
-### 3. 病历管理
+### 4. 病历管理
 
-#### 3.1 病历创建
+```json
+http://localhost:8081/api/v{n}/element
+```
+
+#### 4.1 病历创建
 
 · 医护人员在患者首次就诊时创建电子病历，记录患者基本信息、主诉、体征、诊断结果及初步治疗方案。
 
@@ -499,12 +512,12 @@ data 为{} ，由code决定成功与失败 和其他信息
 
 ```json
 {
-    "url": "/medicalRecord/add",
+    "url": "/add",
     "method": "post",
     "body": {
         "patientId": "1809970417345020000",
         "patientName": "林柔汐",
-   		//数据库中其他字段
+   		//数据库中其他字段（參考hospitalInterface.md）
     }
 }
 ```
@@ -516,27 +529,25 @@ data 为{} ，由code决定成功与失败 和其他信息
     "code": 200,
     "msg": "病历创建成功",
     "data": {
-        //返回创建的该病例
+        null
     }
 }
 ```
 
-#### 3.2 病历更新与维护
+#### 4.2 病历更新
 
 · 医生根据患者后续就诊情况更新病历，包括治疗效果、复诊情况和新检查结果等。
 
 · 支持多次就诊记录按时间线整合，便于查看病程发展及关键事件。
 
-##### 3.2.1 病例更新
-
 **请求：**
 
 ```json
 {
-    "url": "/medicalRecord/edit",
+    "url": "/edit",
     "method": "put",
     "body": {
-        "medicalRecordId": "1809971108367556610",
+        "id": "1809971108367556610",
        	//数据库中其他字段
     }
 }
@@ -549,70 +560,24 @@ data 为{} ，由code决定成功与失败 和其他信息
     "code": 200,
     "msg": "病历更新成功",
     "data": {
-        //返回更新的该病例字段信息
+        null
     }
 }
 ```
 
-##### 3.2.2 病例维护
-
-**请求：**
-
-```json
-{
-    "url": "/medicalRecord/maintenance",
-    "method": "get",
-    "body": {
-        "patientId": "1809970417345020000",
-        "dateStart": "2024-07-01",
-        "dateEnd": "2024-07-31",
-    }
-}
-```
-
-**响应：**
-
-```json
-{
-    "code": 200,
-    "msg": "病历维护成功",
-    "data": {
-        "total":, //总共返回多少数据
-        "list": [
-            {
-                "medicalRecordId": "1809971108367556610",
-                "patientId": "1809970417345020000",
-                "patientName": "林柔汐",
-                //病人其他信息
-            }
-            // 更多病历记录...
-        ]
-    }
-}
-```
-
-#### 3.3 病历检索与共享
+#### 4.3 病历模糊查询
 
 · 医护人员可按患者姓名、编号、诊断类型等条件快速检索病历信息。
 
-<u>系统支持病历共享与打印，用于跨科室协作或患者需求。？？？</u>
-
-##### 3.3.1 病例条件检索
-
-**请求：**
-
-(为空的话，后端就不判断这个值就可以了 mybatis中有<where> 和<if>)
-
 ```json
 {
-    "url": "/medicalRecord/search",
+    "url": "/search",
     "method": "get",
     "body": {
         "patientId": "1809970417345020000",
-        "dateStart": "2024-07-01",
-        "dateEnd": "2024-07-31",
+        "dateStart": "2024-07-01",           （必传字段）
+        "dateEnd": "2024-07-31",             （必传字段）
         "patientName": "林柔汐",
-        "diagnosisType": "眼科"
     }
 }
 ```
@@ -624,10 +589,10 @@ data 为{} ，由code决定成功与失败 和其他信息
     "code": 200,
     "msg": "病历维护成功",
     "data": {
-        "total":, //总共返回多少数据
-        "list": [
+        "total": 3, //总共返回多少数据
+        "elements": [
             {
-                "medicalRecordId": "1809971108367556610",
+                "id": "1809971108367556610",
                 "patientId": "1809970417345020000",
                 "patientName": "林柔汐",
                 //病人其他信息
@@ -638,33 +603,626 @@ data 为{} ，由code决定成功与失败 和其他信息
 }
 ```
 
-### 4. 随访计划管理
+#### 4.4病历精确查询
 
-#### 4.1 随访患者列表
+```json
+{
+    url : "/find/{elementId}",
+    method: get,
+}
+```
 
-· 护士通过随访管理页面查看待随访患者名单：
+```json
+{
+    "data": {
+        Element
+    },
+    "code": 200,
+    "msg": ""
+}
+```
 
-**o** ***\*今日待随访\****：约定随访时间为当天的患者列表。
+#### 4.5 病历分页查询
 
-**o** ***\*超期未随访\****：约定随访时间在当天之前但未完成随访的患者名单。
+```json
+{
+    url : "/page",
+    method: get,
+    body:{
+        pageSize,
+        pageNumber,
+    }
+}
+```
 
-**o** ***\*全部未随访\****：包含约定随访日期在未来的所有未随访患者。
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            element1,
+            element2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 5. 随访计划管理
+
+```json
+http://localhost:8081/api/v{n}/followup
+```
+
+#### 5.1 今日随访
+
+```json
+{
+    "url": "/todayUndo",
+    "method": "get"
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "list":[
+            followup1,
+            followup2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
 
 
 
-#### 4.2 随访执行
+#### 5.2 超时间未随访
 
-· 护士通过电话随访患者，填写随访内容：
+```json
+{
+    "url": "/overdue",
+    "method": "get"
+}
+```
 
-**o** ***\*随访成功\****：记录随访类型、内容及健康状态。
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "list":[
+            followup1,
+            followup2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
 
-**o** ***\*随访未成功\****：填写原因并安排下次随访时间。
+#### 5.3 全部未随访
+
+```json
+{
+    "url": "/Undo",
+    "method": "get"
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "list":[
+            followup1,
+            followup2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 5.4 完成随访
+
+- 如果随访失败，还会自动添加下次随访
+
+```json
+{
+    "url": "/editFollowup",
+    "method": "get",
+    "body":{
+        ListFollowup
+    }
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "",
+    "data": {
+        null
+    }
+}
+```
+
+### 6. 医生管理
+
+```json
+http://localhost:8081/api/v{n}/doctor
+```
+
+#### 6.1 新增医生信息
+
+- 请求参数
+
+```json
+{
+    url : "/add",
+    method: POST,
+    body:{
+        "id": 1
+        "doctor_name": "王医生"
+    }
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 6.2 失效
+
+- 请求参数
+
+```json
+{
+    url : "/invalid/{doctorId}",
+    method: POST,
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 6.3 更新
+
+```json
+{
+    "url": "/edit",
+    "method": "put",
+    "body": {
+        "id": "1809971108367556610",
+       	//数据库中其他字段
+    }
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "病历更新成功",
+    "data": {
+        null
+    }
+}
+```
+
+#### 6.4 分页查询
+
+```json
+{
+    url : "/page",
+    method: get,
+    body:{
+        pageSize,
+        pageNumber,
+    }
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            doctor1,
+            doctor2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 7. 科室管理
+
+```json
+http://localhost:8081/api/v{n}/dept
+```
+
+#### 7.1 新增医生信息
+
+- 请求参数
+
+```json
+{
+    url : "/add",
+    method: POST,
+    body:{
+        "id": 1
+        "doctor_name": "王医生"
+    }
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 7.2 失效
+
+- 请求参数
+
+```json
+{
+    url : "/invalid/{doctorId}",
+    method: POST,
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 7.3 更新
+
+```json
+{
+    "url": "/edit",
+    "method": "put",
+    "body": {
+        "id": "1809971108367556610",
+       	//数据库中其他字段
+    }
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "病历更新成功",
+    "data": {
+        null
+    }
+}
+```
+
+#### 7.4 分页查询
+
+```json
+{
+    url : "/page",
+    method: get,
+    body:{
+        pageSize,
+        pageNumber,
+    }
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            doctor1,
+            doctor2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 8. 眼别管理
+
+```json
+http://localhost:8081/api/v{n}/site
+```
+
+#### 8.1 新增医生信息
+
+- 请求参数
+
+```json
+{
+    url : "/add",
+    method: POST,
+    body:{
+        "id": 1
+        "doctor_name": "王医生"
+    }
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 8.2 失效
+
+- 请求参数
+
+```json
+{
+    url : "/invalid/{doctorId}",
+    method: POST,
+}
+```
+
+- 响应
+
+```json
+{
+    "data": {
+        null
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 8.3 更新
+
+```json
+{
+    "url": "/edit",
+    "method": "put",
+    "body": {
+        "id": "1809971108367556610",
+       	//数据库中其他字段
+    }
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "病历更新成功",
+    "data": {
+        null
+    }
+}
+```
+
+#### 8.4 分页查询
+
+```json
+{
+    url : "/page",
+    method: get,
+    body:{
+        pageSize,
+        pageNumber,
+    }
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            doctor1,
+            doctor2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 9. 就诊信息管理
+
+```json
+http://localhost:8081/api/v{n}/visits
+```
+
+就诊信息展示在用户患者表单页里通过patientId精确查找
+
+```json
+{
+    url : "/find/{patientId}",
+    method: get
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3
+        "list":[
+            visit1,
+        	visit2,
+        	visit3
+        	...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 10 检查结果
+
+```json
+http://localhost:8081/api/v{n}/check_result
+```
+
+检查结果也展示在用户患者表单页里通过patientId精确查找
+
+```json
+{
+    url : "/find/{patientId}",
+    method: get
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3
+        "list":[
+            checkResult1,
+        	checkResult2,
+        	checkResult3
+        	...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 11 检查报告
+
+```json
+http://localhost:8081/api/v{n}/check_report
+```
+
+检查报告仍然是在用户患者表单页中
+
+```json
+{
+    url : "/find/{patientId}",
+    method: get
+}
+```
+
+```json
+{
+    "data": {
+        "total": 2
+    "data": [
+        {
+            "patient_id": "1855597141015232514",
+            "item_code": "310300064A",
+            "item_name": "光学相干断层成像（OCT）",
+            "visit_number": "MZ202411120358",
+            "check_time": "2024-11-12 17:21:29",
+            "files": [    // 一次检查可能有多张图片
+                {
+                    "type": "application/pdf",
+                    "url": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
+                },
+                 {
+                    "type": "application/pdf",
+                    "url": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
+                }
+            ],
+        },
+        {
+            "item_code": "310300064A",
+            "patient_id": "1855597141015232514",
+            "item_name": "光学相干断层成像（OCT）",
+            "visit_number": "MZ202411120358",
+            "check_time": "2024-11-12 17:21:29",
+            "files": [
+                {
+                    "type": "image/jpeg",
+                    "file_path": "E:\Download\project\140a36e0-79ef-420b-adaf-41362093f6ab.jpg"
+                }
+            ]
+        }
+    ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+### 12 当天患者查询
+
+- 此接口只针对当天的来的一位患者进行第三方库的单独查询并保存到本地,剩余信息由凌晨数据库进行补充同步
+
+```json
+{
+    url : "/onlySearch/{patientId}",
+    method: get
+}
+```
+
+```json
+
+```
+
+### 13 深度学习模型
+
+后端逻辑处理调用Flask框架, 不面向前端,在上一个接口中同步进行,预留一个接口以便需要按钮的方式进行诊断
+
+```json
+{
+    url : "http://localhost:8081/api/v{n}/diagnosis",   // 参数还在考虑中
+    method: POST,
+    body:{
+        "id": 1
+        "doctor_name": "王医生"
+    }
+}
+```
 
 
-
-#### 4.3 计划制定与提醒
-
-· 医生根据患者病情和档案制定个性化随访计划。
-
-· 系统根据计划通过短信或 客户端 通知患者和医护人员随访日程。
 

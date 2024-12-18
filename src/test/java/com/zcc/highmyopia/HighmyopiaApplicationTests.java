@@ -1,20 +1,13 @@
 package com.zcc.highmyopia;
 
 import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.zcc.highmyopia.entity.User;
-import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
-import com.zcc.highmyopia.mapper.UserMapper;
+import com.zcc.highmyopia.po.User;
+import com.zcc.highmyopia.mapper.IUserMapper;
 import com.zcc.highmyopia.service.IRedisService;
-import com.zcc.highmyopia.service.UserService;
-import com.zcc.highmyopia.service.impl.RedissonService;
+import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
 import io.jsonwebtoken.*;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +26,7 @@ import java.util.UUID;
 class HighmyopiaApplicationTests {
 
     @Autowired(required = false)
-    private UserMapper userMapper;
+    private IUserMapper userMapper;
     @Resource
     private IRedisService redissonService;
 
@@ -110,7 +106,7 @@ class HighmyopiaApplicationTests {
 
     //MD5测试
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Test
     public void testSaltMD5() {
         String userPassword = "2287996531";    //明文密码
@@ -172,6 +168,21 @@ class HighmyopiaApplicationTests {
 
         // 输出响应体
         System.out.println("Response Body: " + response.getBody());
+    }
+
+    @Test
+    public void a() {
+        // 使用 Date 类输出当前时间
+        System.out.println(new Date());
+
+        // 获取当前的 LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(simpleDateFormat.format(new Date()));  // 格式化当前日期
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        System.out.println(dateTimeFormatter.format(dateTime));  // 格式化 LocalDateTime
     }
 
 }

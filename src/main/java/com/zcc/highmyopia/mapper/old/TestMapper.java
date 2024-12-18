@@ -2,7 +2,7 @@ package com.zcc.highmyopia.mapper.old;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zcc.highmyopia.entity.old.Test;
+import com.zcc.highmyopia.po.old.Test;
 
 /**
  * <p>

@@ -2,7 +2,7 @@ package com.zcc.highmyopia.mapper.old;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zcc.highmyopia.entity.old.Caselist;
+import com.zcc.highmyopia.po.old.Caselist;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

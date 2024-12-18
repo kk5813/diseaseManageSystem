@@ -1,6 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
-import com.zcc.highmyopia.entity.Patients;
+import com.zcc.highmyopia.po.Patients;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class PatientMapperTest {
     @Autowired
-    PatientsMapper patientMapper;
+    IPatientsMapper patientMapper;
     @Test
     void selectPatientByID(){
         Patients patients = patientMapper.selectPatientByPId("1");

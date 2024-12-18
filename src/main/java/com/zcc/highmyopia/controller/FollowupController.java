@@ -3,9 +3,9 @@ package com.zcc.highmyopia.controller;
 
 import com.zcc.highmyopia.common.dto.ListFollowup;
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.entity.Followup;
-import com.zcc.highmyopia.mapper.FollowupMapper;
-import com.zcc.highmyopia.service.FollowupService;
+import com.zcc.highmyopia.po.Followup;
+import com.zcc.highmyopia.mapper.IFollowupMapper;
+import com.zcc.highmyopia.service.IFollowupService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +25,9 @@ import java.time.LocalDateTime;
 public class FollowupController {
 
     @Autowired
-    FollowupService followupService;
+    IFollowupService followupService;
     @Autowired
-    FollowupMapper followupMapper;
+    IFollowupMapper followupMapper;
 
     /**
      * 今日未随访
@@ -66,7 +66,7 @@ public class FollowupController {
      * @param listFollowup
      * @return
      */
-    @PostMapping("editFollowup")
+    @PostMapping("/editFollowup")
     @RequiresAuthentication
     public Result editFollowup(@RequestBody ListFollowup listFollowup) {
         Followup followup = followupService.getById(listFollowup.getId());

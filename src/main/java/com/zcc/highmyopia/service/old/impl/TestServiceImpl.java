@@ -3,7 +3,7 @@ package com.zcc.highmyopia.service.old.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zcc.highmyopia.entity.old.Test;
+import com.zcc.highmyopia.po.old.Test;
 import com.zcc.highmyopia.mapper.old.TestMapper;
 import com.zcc.highmyopia.service.old.TestService;
 import org.springframework.stereotype.Service;

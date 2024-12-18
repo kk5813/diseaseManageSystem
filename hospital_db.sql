@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS hospital_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE hospital_db;
 
+drop table if exists patients;
 -- 1. 患者信息表
 CREATE TABLE patients
 (
@@ -12,11 +13,13 @@ CREATE TABLE patients
     birthday  DATETIME COMMENT '患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS"',
     id_number VARCHAR(18) UNIQUE COMMENT '身份证号',
     phone     VARCHAR(20) DEFAULT NULL COMMENT '电话号码',
-    `status`  TINYINT      DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在'
+    `status`  TINYINT      DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
-
+drop table if exists visits;
 -- 2. 就诊信息表
 CREATE TABLE visits
 (
@@ -29,10 +32,13 @@ CREATE TABLE visits
     diag_time    DATETIME COMMENT '诊断时间，格式为 "YYYY-MM-DD HH:MM:SS"',
     diag_order   INT COMMENT '诊断序号',
     diag_name    VARCHAR(255) COMMENT '诊断名称',
-    diag_code    VARCHAR(50) COMMENT '诊断编码'
+    diag_code    VARCHAR(50) COMMENT '诊断编码',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists recipe;
 -- 3. 处方信息表
 CREATE TABLE recipe
 (
@@ -44,10 +50,13 @@ CREATE TABLE recipe
     recipe_number   VARCHAR(50) UNIQUE COMMENT '处方编号',
     recipe_type     INT COMMENT '处方类型',
     billing_time    DATETIME COMMENT '开方时间格式为 "YYYY-MM-DD HH:MM:SS"',
-    order_detail_id BIGINT COMMENT '处方（医嘱）信息ID'
+    order_detail_id BIGINT COMMENT '处方（医嘱）信息ID',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists order_detail;
 -- 4. 处方医嘱信息
 CREATE TABLE order_detail
 (
@@ -137,10 +146,13 @@ CREATE TABLE order_detail
     herbalRequestName  VARCHAR(255)   DEFAULT NULL COMMENT '中药请求名称',
     execCombiSeq       INT            DEFAULT NULL COMMENT '执行组合顺序',
     dripSpeedName      VARCHAR(255)   DEFAULT NULL COMMENT '滴速名称',
-    remarks            TEXT           DEFAULT NULL COMMENT '备注'
+    remarks            TEXT           DEFAULT NULL COMMENT '备注',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists check_results;
 -- 5. 检验结果表
 CREATE TABLE check_results
 (
@@ -155,10 +167,13 @@ CREATE TABLE check_results
     lab_final_value      VARCHAR(50) COMMENT '检验结果',
     visiting_no          VARCHAR(50) COMMENT '就诊编号',
     lab_result_unit_name VARCHAR(50) COMMENT '检验结果单位名称',
-    audit_date           DATETIME COMMENT '审核日期，格式为 "YYYY-MM-DD HH:MM:SS"'
+    audit_date           DATETIME COMMENT '审核日期，格式为 "YYYY-MM-DD HH:MM:SS"',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists check_reports;
 -- 6. 检查报告表
 CREATE TABLE check_reports
 (
@@ -167,20 +182,28 @@ CREATE TABLE check_reports
     item_code    VARCHAR(50) COMMENT '检查项目编码',
     item_name    VARCHAR(50) COMMENT '检查项目名称',
     check_time   DATETIME COMMENT '检查时间',
-    visit_number VARCHAR(50) COMMENT '就诊编号'
+    visit_number VARCHAR(50) COMMENT '就诊编号',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists report_files;
 -- 7. 检查报告文件表
 CREATE TABLE report_files
 (
     id        BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文件ID',
     report_id BIGINT COMMENT '检查ID',
     file_type VARCHAR(50) COMMENT '文件类型',
-    file_url  TEXT COMMENT '文件下载URL'
+    file_url  TEXT COMMENT '文件下载URL',
+    is_down_load TINYINT COMMENT '文件是否已经下载',
+    file_path VARCHAR(255) COMMENT '已经下载的图像保存的路径地址(绝对地址)',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists element;
 -- 8. 病历表
 CREATE TABLE element
 (
@@ -194,34 +217,44 @@ CREATE TABLE element
     special_od      VARCHAR(255) COMMENT '右眼科专科检查',
     visit_number    VARCHAR(50) COMMENT '就诊编号',
     physical_exam   VARCHAR(255) COMMENT '体格检查',
-    dispose         VARCHAR(255) COMMENT '处理意见'
+    dispose         VARCHAR(255) COMMENT '处理意见',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists doctor;
 -- 9. 医生信息表
 CREATE TABLE doctor
 (
     id          BIGINT NOT NULL PRIMARY KEY COMMENT '医生ID',
     doctor_name VARCHAR(50) COMMENT '医生姓名',
-    is_delete   TINYINT COMMENT '逻辑删除',
-    `status`    TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在'
+    `status`    TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists dept;
 -- 10. 科室信息表
 CREATE TABLE dept
 (
     id        BIGINT NOT NULL PRIMARY KEY COMMENT '科室ID',
     dept_name VARCHAR(50) COMMENT '科室名称',
-    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在'
+    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table if exists site;
 -- 11. 眼别信息表
 CREATE TABLE site
 (
     id        BIGINT NOT NULL PRIMARY KEY COMMENT '眼别ID',
     site_name VARCHAR(50) COMMENT '眼别名称',
-    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在'
+    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
