@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ElementEntity {
 
+    private String id;             // 病历ID
+    private Long patientId;        // 患者ID
+    private String patientName;    // 患者姓名
     private String mainAppeal;      // 主诉
     private String pastHistory;     // 既往史
     private String presentIllness; // 现病史
@@ -27,11 +30,12 @@ public class ElementEntity {
     private String specialOs;      // 左眼科专科检查
     private String specialOd;      // 右眼科专科检查
     private String visitNumber;    // 就诊编号
-    private Long patientId;        // 患者ID
-    private String patientName;    // 患者姓名
+
+
     private String physicalExam;   // 体格检查
-    private String id;             // 病历ID
     private String dispose;        // 处理意见
+
+
     public static Element entityToPo(ElementEntity elementEntity) {
         Element element = new Element();
         element.setId(elementEntity.getId());
