@@ -6,6 +6,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
+import com.zcc.highmyopia.common.vo.UserVO;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.shiro.AccountProfile;
@@ -25,12 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author liangyue
- * @since 2021-02-01
+ * @Author zcc
+ * @Date 2024/12/18
+ * @Description
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -106,19 +104,30 @@ public class UserController {
         return Result.succ(null);
     }
 
-    // 查找
+    // 精确查找
     @GetMapping("/find/{userId}")
     @RequiresAuthentication
     public Result FindUser(@PathVariable(name = "userId") Long userId) {
         User user = userService.getById(userId);
         return Result.succ(user);
     }
+    // 模糊查找
+    @GetMapping("/search")
+    @RequiresAuthentication
+    public Result SearchUser(@RequestBody User user) {
+        List<User> users = userService.SearchUser(user);
+        Long total = (long) users.size();
+        UserVO userVO = new UserVO();
+        userVO.setUsers(users);
+        userVO.setTotal(total);
+        return Result.succ(userVO);
+    }
 
     // 分页查询
-    @GetMapping("/listPage")
+    @GetMapping("/page")
     @RequiresAuthentication
-    public Result getUsersPage(@RequestParam(defaultValue = "0") int page,  // 页码默认 0
-                               @RequestParam(defaultValue = "10") int size) {  // 每页大小默认 10
-        return userService.getUsersPage(page, size);
+    public Result getUsersPage(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
+                               @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10
+        return userService.getUsersPage(pageNumber, pageSize);
     }
 }

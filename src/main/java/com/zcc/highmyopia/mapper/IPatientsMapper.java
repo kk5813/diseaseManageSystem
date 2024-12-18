@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
+import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.po.Patients;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,6 +28,8 @@ public interface IPatientsMapper extends BaseMapper<Patients> {
 
     int batchInsert(@Param("list") List<Patients> list);
 
-    @Select("Select telephone from patient where patient_id = #{id}")
+    @Select("Select phone from patients where id = #{id}")
     String selectTelephoneByPatientId(@Param("id") String id);
+
+    List<Patients> searchPatients(PatientsDTO patientsDTO);
 }

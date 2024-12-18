@@ -42,7 +42,6 @@ redis:
 mybatis-plus:
   mapper-locations:
     - classpath:/mapper/*.xml
-    - classpath:/mapper/old/*.xml
 #  configuration:
 #    map-underscore-to-camel-case: false
 

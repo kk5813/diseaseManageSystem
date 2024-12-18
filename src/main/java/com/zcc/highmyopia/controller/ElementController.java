@@ -3,8 +3,10 @@ package com.zcc.highmyopia.controller;
 import com.zcc.highmyopia.common.dto.ElementDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.ElementVO;
+import com.zcc.highmyopia.common.vo.PatientsVO;
 import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.po.Element;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.service.IElementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,6 @@ public class ElementController {
         return Result.succ("病历更新成功");
     }
 
-
     // 条件查询
     @GetMapping("search")
     public Result queryElement(@RequestBody ElementDTO elementDto){
@@ -49,6 +50,24 @@ public class ElementController {
         ElementVO elementVO = new ElementVO();
         elementVO.setElements(elements);
         elementVO.setTotal(total);
-        return Result.succ("维护成功", elements);
+        return Result.succ("维护成功", elementVO);
+    }
+
+    // 条件查询
+    @GetMapping("find/{elementId}")
+    public Result findElement(@PathVariable(name = "elementId") Long elementId){
+        Element elements = elementService.findElement(elementId);
+        return Result.succ(elements);
+    }
+
+    // 分页查询
+    @GetMapping("page")
+    public Result pageElement(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
+                              @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10
+        List<Element> elements = elementService.pageQuery(pageNumber, pageSize);
+        ElementVO elementVO = new ElementVO();
+        elementVO.setElements(elements);
+        elementVO.setTotal((long) elements.size());
+        return Result.succ(elementVO);
     }
 }

@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -32,5 +35,10 @@ public class UserServiceImpl extends ServiceImpl<IUserMapper, User> implements I
         Page<User> userPage = new Page<>(page, size);
         IPage<User> userIPage = userMapper.selectPage(userPage,userLambdaQueryWrapper);
         return Result.succ(userIPage);
+    }
+
+    @Override
+    public List<User> SearchUser(User user) {
+        return userMapper.SearchUser(user);
     }
 }
