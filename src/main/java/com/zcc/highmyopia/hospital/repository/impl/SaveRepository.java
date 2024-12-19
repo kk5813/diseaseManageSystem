@@ -155,6 +155,10 @@ public class SaveRepository implements ISaveRepository {
 
                     recipes.add(recipe);
                 }
+                orderDetails = new ArrayList<>(orderDetails.stream()
+                        .filter(orderDetail -> orderDetail.getId() != null)
+                        .collect(Collectors.toMap(OrderDetail::getId, orderDetail-> orderDetail, (existing, replacement) -> existing))
+                        .values());
                 recipes = new ArrayList<>(recipes.stream()
                         .collect(Collectors.toMap(Recipe::getId, recipe -> recipe, (existing, replacement) -> existing))
                         .values());
@@ -182,6 +186,7 @@ public class SaveRepository implements ISaveRepository {
             checkResultsList = new ArrayList<>(checkResultsList.stream()
                     .collect(Collectors.toMap(CheckResults::getId, checkResults -> checkResults, (existing, replacement) -> existing))
                     .values());
+
             checkResultsService.saveOrUpdateBatch(checkResultsList);
         } catch (Exception e) {
             log.error("保存检查结果失败", e);

@@ -26,7 +26,7 @@ import java.util.Date;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Api(tags = "网址用户管理")
+@Api(tags = "眼别管理")
 @RestController
 @RequestMapping("/api/${app.config.api-version}/site")
 public class SiteController {
@@ -34,7 +34,7 @@ public class SiteController {
     private final ISiteService SiteService;
 
     @PostMapping("/add")
-    @ApiOperation(value = "添加用户")
+    @ApiOperation(value = "添加眼别")
     @RequiresAuthentication
     public Result addSite(@Validated @RequestBody Site site) {
         site.setUpdateTime(LocalDateTime.now());
@@ -44,7 +44,7 @@ public class SiteController {
     }
 
     @PostMapping("/edit")
-    @ApiOperation(value = "编辑用户")
+    @ApiOperation(value = "编辑眼别")
     @RequiresAuthentication
     public Result editSite(@RequestBody Site site) {
         LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
@@ -56,7 +56,7 @@ public class SiteController {
     }
 
     @GetMapping("/invalid/{siteId}")
-    @ApiOperation(value = "失效某用户")
+    @ApiOperation(value = "失效眼别")
     @RequiresAuthentication
     public Result invalidSite(@PathVariable(name = "siteId") Long siteId) {
         LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
@@ -68,7 +68,7 @@ public class SiteController {
     }
 
     @GetMapping("/find/{siteId}")
-    @ApiOperation(value = "查找用户")
+    @ApiOperation(value = "查找眼别")
     @RequiresAuthentication
     public Result FindSite(@PathVariable(name = "siteId") Long siteId) {
         LambdaQueryWrapper<Site> wrapper = new LambdaQueryWrapper<>();
@@ -79,7 +79,7 @@ public class SiteController {
 
 
     @GetMapping("page")
-    @ApiOperation(value = "分页查询用户")
+    @ApiOperation(value = "分页查询眼别")
     @RequiresAuthentication
     public Result pageSite(@RequestParam(defaultValue = "1") Integer pageNumber,  // 页码默认 0
                              @RequestParam(defaultValue = "10") Integer pageSize) {  // 每页大小默认 10

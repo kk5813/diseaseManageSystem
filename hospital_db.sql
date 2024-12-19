@@ -236,6 +236,8 @@ CREATE TABLE `order_detail`
     `order_remark`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单备注',
     `exec_organ_id`        bigint(20)                                                    NULL DEFAULT NULL COMMENT '执行机构ID',
     `exec_time`            datetime                                                      NULL DEFAULT NULL COMMENT '执行时间',
+    `create_time`          datetime                                                      NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`          datetime                                                      NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '订单详细表';
