@@ -37,8 +37,8 @@ public class DeptController {
     @ApiOperation(value = "添加科室")
     @RequiresAuthentication
     public Result addDept(@Validated @RequestBody Dept dept) {
-        dept.setCreateTime(new Date());
-        dept.setUpdateTime(new Date());
+        dept.setCreateTime(LocalDateTime.now());
+        dept.setUpdateTime(LocalDateTime.now());
         deptService.save(dept);
         return Result.succ(null);
     }

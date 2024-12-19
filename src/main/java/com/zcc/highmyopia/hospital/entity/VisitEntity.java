@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * @Author zcc
@@ -21,65 +23,48 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class VisitEntity{
 
-    // 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS"
-    private String birthday;
+    private String birthday;  // 出生日期
+    private String patientName;  // 病人姓名
+    private String deptName;  // 科室名称
+    private Long patientId;  // 病人ID
+    private String diagTime;  // 诊断时间
+    private String visitNumber;  // 就诊号
+    private Integer diagOrder;  // 诊断顺序
+    private Integer sex;  // 性别
+    private Long deptId;  // 科室ID
+    private String siteName;  // 眼部部位
+    private String diagName;  // 诊断名称
+    private String diagCode;  // 诊断编码
+    private String doctorName;  // 医生姓名
+    private Long doctorId;  // 医生ID
+    private String sexName;  // 性别名称
+    private Long siteId;  // 眼部部位ID
 
-    // 患者姓名
-    private String patientName;
-
-    // 科室名称
-    private String deptName;
-
-    // 患者ID
-    private Long patientId;
-
-    // 诊断时间，格式为 "YYYY-MM-DD HH:MM:SS"
-    private String diagTime;
-
-    // 就诊号
-    private String visitNumber;
-
-    // 诊断序号
-    private Integer diagOrder;
-
-    // 性别标识，1表示男性
-    private Integer sex;
-
-    // 科室ID
-    private Integer deptId;
-
-    // 眼别
-    private String siteName;
-
-    // 诊断名称
-    private String diagName;
-
-    // 诊断编码
-    private String diagCode;
-
-    // 医生姓名
-    private String doctorName;
-
-    // 医生ID
-    private Integer doctorId;
-
-    // 性别名称，"男"或"女"
-    private String sexName;
-
-    // 眼别ID
-    private Integer siteId;
 
     public static Visits entityToPo(VisitEntity visitEntity) {
         Visits visits = new Visits();
         visits.setPatientId(visitEntity.getPatientId());
-        visits.setDoctorId(Long.valueOf(visitEntity.getDoctorId()));
-        visits.setDeptId(Long.valueOf(visitEntity.getDeptId()));
-        visits.setSiteId(Long.valueOf(visitEntity.getSiteId()));
+        visits.setDoctorId(visitEntity.getDoctorId());
+        visits.setDeptId(visitEntity.getDeptId());
+        visits.setSiteId(visitEntity.getSiteId());
         visits.setVisitNumber(visitEntity.getVisitNumber());
-        visits.setDiagTime(LocalDateTime.parse(visitEntity.getDiagTime()));
         visits.setDiagOrder(visitEntity.getDiagOrder());
         visits.setDiagName(visitEntity.getDiagName());
         visits.setDiagCode(visitEntity.getDiagCode());
+
+        String diagTimeStr = visitEntity.getDiagTime();
+        if (diagTimeStr != null && !diagTimeStr.isEmpty()) {
+            try {
+                visits.setDiagTime(LocalDateTime.parse(diagTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            } catch (DateTimeParseException e) {
+                System.err.println("Invalid date format for diagTime: " + diagTimeStr);
+                visits.setDiagTime(LocalDateTime.now());  // 默认值为当前时间
+            }
+        } else {
+            visits.setDiagTime(LocalDateTime.now());  // 默认值为当前时间
+        }
+
         return visits;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.downLoadTest;
 
+import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -25,20 +28,52 @@ public class DownLoadServiceTest {
         ReportFiles reportFiles = ReportFiles.builder()
                 .id(1L)
                 .reportId(111L)
-                .isDownLoad((short) 0)
+                .isDownLoad( 0)
                 .fileUrl(url)
                 .fileType("application/pdf")
                 .build();
         downLoadService.DownLoadReportImage(reportFiles);
     }
 
-    @Resource
-    private IReportFilesMapper reportFilesMapper;
+    DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter formatterNoSplit = DateTimeFormatter.ofPattern("yyyyMMdd");
+    LocalDateTime today = LocalDateTime.now();
+    String dataSplit = today.format(formatterWithSplit);
+    String dataNoSplit = today.format(formatterNoSplit);
     @Test
-    void test_query(){
-        List<ReportFiles> notDownLoad = reportFilesMapper.getNotDownLoad();
-        System.out.println(notDownLoad);
+    void test_GetVisit() throws Exception {
+        List<VisitEntity> patientVisit = downLoadService.getPatientVisit("20240520", "20240529");
+        System.out.println(patientVisit);
     }
 
+    @Test
+    void test_GetRecipe() throws Exception {
+        downLoadService.getRecipe("20240801", "20241125");
+    }
+    @Test
+    void test_GetReportResult() throws Exception {
+        downLoadService.getReportDetail("2024-08-01", "2024-11-15");
+    }
+
+    @Test
+    void test_GetElement() throws Exception {
+        downLoadService.getOutElementByCondition("2024-06-26", "20240725", "MZ202407071064");
+    }
+
+    @Test
+    void test_getPatientsInfo() throws Exception {
+        downLoadService.getPatientInfo("1796786711460069377");
+    }
+
+    // 单独保存单个用户
+    @Test
+    void test_getCheckResult() throws Exception {
+        downLoadService.getCheckResult("20241112", "20241112", "1855597141015232514");
+    }
+
+    @Test
+    void test_downLoad(){
+        downLoadService.DownLoadReportImageBatch();
+    }
 
 }

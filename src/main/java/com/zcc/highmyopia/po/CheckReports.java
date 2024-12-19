@@ -1,8 +1,6 @@
 package com.zcc.highmyopia.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,14 +27,10 @@ public class CheckReports implements Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkTime;  // 检查时间
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime  updateTime;
 
 }

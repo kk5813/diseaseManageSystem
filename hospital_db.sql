@@ -229,6 +229,7 @@ CREATE TABLE doctor
 (
     id          BIGINT NOT NULL PRIMARY KEY COMMENT '医生ID',
     doctor_name VARCHAR(50) COMMENT '医生姓名',
+    site_id      BIGINT COMMENT '科室ID',
     `status`    TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
     create_time DATETIME COMMENT '创建时间',
     update_time DATETIME COMMENT '更新时间'

@@ -37,8 +37,8 @@ public class SiteController {
     @ApiOperation(value = "添加用户")
     @RequiresAuthentication
     public Result addSite(@Validated @RequestBody Site site) {
-        site.setUpdateTime(new Date());
-        site.setCreateTime(new Date());
+        site.setUpdateTime(LocalDateTime.now());
+        site.setCreateTime(LocalDateTime.now());
         SiteService.save(site);
         return Result.succ(null);
     }

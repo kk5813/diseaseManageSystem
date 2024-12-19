@@ -1,12 +1,11 @@
 package com.zcc.highmyopia.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,13 +36,9 @@ public class Patients implements Serializable {
     private String phone;  // 电话号码
 
     private Integer status;  // 逻辑删除状态
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime  updateTime;
 }
