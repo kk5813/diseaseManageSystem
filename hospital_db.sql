@@ -1,261 +1,376 @@
--- 创建新的数据库
-CREATE DATABASE IF NOT EXISTS hospital_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE hospital_db;
+/*
+ Navicat Premium Dump SQL
 
-drop table if exists patients;
--- 1. 患者信息表
-CREATE TABLE patients
-(
-    id        BIGINT NOT NULL PRIMARY KEY COMMENT '患者个人ID',
-    `name`    VARCHAR(50) COMMENT '患者姓名',
-    sex       TINYINT COMMENT '性别标识，1表示男性',
-    sex_name  VARCHAR(6) COMMENT '性别名称，"男"或"女"',
-    birthday  DATETIME COMMENT '患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS"',
-    id_number VARCHAR(18) UNIQUE COMMENT '身份证号',
-    phone     VARCHAR(20) DEFAULT NULL COMMENT '电话号码',
-    `status`  TINYINT      DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+ Source Server         : 9344
+ Source Server Type    : MySQL
+ Source Server Version : 50729 (5.7.29-0ubuntu0.18.04.1)
+ Source Host           : 43.136.178.202:3306
+ Source Schema         : hospital_db
 
-drop table if exists visits;
--- 2. 就诊信息表
-CREATE TABLE visits
-(
-    id           BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
-    patient_id   BIGINT COMMENT '患者ID',
-    doctor_id    BIGINT COMMENT '医生ID',
-    dept_id      BIGINT COMMENT '科室ID',
-    site_id      BIGINT COMMENT '眼别ID',
-    visit_number VARCHAR(50) COMMENT '就诊号',
-    diag_time    DATETIME COMMENT '诊断时间，格式为 "YYYY-MM-DD HH:MM:SS"',
-    diag_order   INT COMMENT '诊断序号',
-    diag_name    VARCHAR(255) COMMENT '诊断名称',
-    diag_code    VARCHAR(50) COMMENT '诊断编码',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+ Target Server Type    : MySQL
+ Target Server Version : 50729 (5.7.29-0ubuntu0.18.04.1)
+ File Encoding         : 65001
 
-drop table if exists recipe;
--- 3. 处方信息表
-CREATE TABLE recipe
-(
-    id              BIGINT NOT NULL PRIMARY KEY COMMENT '处方ID',
-    doctor_id       BIGINT COMMENT '医生ID',
-    patient_id      BIGINT COMMENT '患者ID',
-    dept_id         BIGINT COMMENT '科室ID',
-    reg_number      VARCHAR(50) COMMENT '挂号编号',
-    recipe_number   VARCHAR(50) UNIQUE COMMENT '处方编号',
-    recipe_type     INT COMMENT '处方类型',
-    billing_time    DATETIME COMMENT '开方时间格式为 "YYYY-MM-DD HH:MM:SS"',
-    order_detail_id BIGINT COMMENT '处方（医嘱）信息ID',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+ Date: 19/12/2024 12:22:43
+*/
 
-drop table if exists order_detail;
--- 4. 处方医嘱信息
-CREATE TABLE order_detail
-(
-    id                 BIGINT NOT NULL PRIMARY KEY COMMENT '处方（医嘱）信息ID',
-    totalNumber        INT COMMENT '总数量',
-    deptName           VARCHAR(50) COMMENT '科室名称',
-    cancelRefundDate   DATETIME       DEFAULT NULL COMMENT '退单日期',
-    orderId            BIGINT COMMENT '订单ID',
-    orderAttachId      BIGINT         DEFAULT NULL COMMENT '订单附件ID',
-    itemCode           BIGINT COMMENT '项目编码',
-    eyeType            INT COMMENT '眼别类型',
-    chmRecipeMethod    VARCHAR(255)   DEFAULT NULL COMMENT '中药处方方法',
-    skinEnterTime      DATETIME       DEFAULT NULL COMMENT '皮肤给药时间',
-    specif             VARCHAR(100)   DEFAULT NULL COMMENT '规格',
-    frequency          VARCHAR(100)   DEFAULT NULL COMMENT '频率',
-    orderState         INT COMMENT '订单状态',
-    decocType          VARCHAR(100)   DEFAULT NULL COMMENT '煎药类型',
-    oprLevel           INT            DEFAULT NULL COMMENT '操作级别',
-    totalDose          DECIMAL(10, 2) DEFAULT NULL COMMENT '总剂量',
-    recipeNumber       VARCHAR(50) COMMENT '处方编号',
-    itemName           VARCHAR(255) COMMENT '项目名称',
-    herbalAdjustName   VARCHAR(255)   DEFAULT NULL COMMENT '中药调整名称',
-    hospId             INT COMMENT '医院ID',
-    price              DECIMAL(10, 2) DEFAULT NULL COMMENT '价格',
-    chmNote            TEXT           DEFAULT NULL COMMENT '中药备注',
-    execPlace          VARCHAR(255) COMMENT '执行地点',
-    applyNumber        VARCHAR(50) COMMENT '申请单编号',
-    batchNumber        VARCHAR(50)    DEFAULT NULL COMMENT '批号',
-    packingUnit        INT COMMENT '包装单位',
-    modifyDate         DATETIME       DEFAULT NULL COMMENT '修改日期',
-    addExecDeptName    VARCHAR(255)   DEFAULT NULL COMMENT '附加执行科室名称',
-    execDeptName       VARCHAR(255) COMMENT '执行科室名称',
-    outsourceSign      INT COMMENT '外包标识',
-    deptId             INT COMMENT '科室ID',
-    addExecDept        VARCHAR(255)   DEFAULT NULL COMMENT '附加执行科室',
-    herbalRequest      VARCHAR(255)   DEFAULT NULL COMMENT '中药请求',
-    everyNumber        INT COMMENT '每次数量',
-    modifer            INT COMMENT '修改人ID',
-    herbalUseName      VARCHAR(255)   DEFAULT NULL COMMENT '中药使用名称',
-    recipeName         VARCHAR(255)   DEFAULT NULL COMMENT '处方名称',
-    recipeKindName     VARCHAR(255)   DEFAULT NULL COMMENT '处方种类名称',
-    insureRange        INT COMMENT '保险范围',
-    frequencyName      VARCHAR(255)   DEFAULT NULL COMMENT '频率名称',
-    orders             INT COMMENT '订单数',
-    combiNumber        VARCHAR(50)    DEFAULT NULL COMMENT '组合编号',
-    tempId             BIGINT COMMENT '临时ID',
-    herbalNumber       INT COMMENT '中药数量',
-    refundReasonsName  VARCHAR(255)   DEFAULT NULL COMMENT '退单原因名称',
-    refundDate         DATETIME       DEFAULT NULL COMMENT '退单日期',
-    printTimes         INT COMMENT '打印次数',
-    skinEnterId        BIGINT         DEFAULT NULL COMMENT '皮肤给药ID',
-    adminRouteName     VARCHAR(255)   DEFAULT NULL COMMENT '给药途径名称',
-    longRange          VARCHAR(255)   DEFAULT NULL COMMENT '长期范围',
-    skinEnterName      VARCHAR(255)   DEFAULT NULL COMMENT '皮肤给药名称',
-    packingUnitName    VARCHAR(50)    DEFAULT NULL COMMENT '包装单位名称',
-    dripSpeed          VARCHAR(255)   DEFAULT NULL COMMENT '滴速',
-    cancelRefunderId   BIGINT         DEFAULT NULL COMMENT '退单人ID',
-    orderTemplId       BIGINT         DEFAULT NULL COMMENT '订单模板ID',
-    combiSeq           INT            DEFAULT NULL COMMENT '组合顺序',
-    recipeKind         INT COMMENT '处方种类',
-    orderTemplName     VARCHAR(255)   DEFAULT NULL COMMENT '订单模板名称',
-    eyeTypeName        VARCHAR(50)    DEFAULT NULL COMMENT '眼别类型名称',
-    usableDays         INT            DEFAULT NULL COMMENT '有效天数',
-    doctorName         VARCHAR(255) COMMENT '医生姓名',
-    doctorId           INT COMMENT '医生ID',
-    decocTypeName      VARCHAR(255)   DEFAULT NULL COMMENT '煎药类型名称',
-    execDept           INT COMMENT '执行科室',
-    herbalAdjust       VARCHAR(255)   DEFAULT NULL COMMENT '中药调整',
-    cancelRefunderName VARCHAR(255)   DEFAULT NULL COMMENT '退单人名称',
-    tOutpOrderId       BIGINT COMMENT '门诊订单ID',
-    refundReasonsCode  VARCHAR(50)    DEFAULT NULL COMMENT '退单原因编码',
-    createDate         DATETIME COMMENT '创建日期',
-    dosageUnitName     VARCHAR(50)    DEFAULT NULL COMMENT '剂量单位名称',
-    skinTestResult     VARCHAR(255)   DEFAULT NULL COMMENT '皮肤测试结果',
-    dosageUnit         VARCHAR(50)    DEFAULT NULL COMMENT '剂量单位',
-    anesthesiaModeName VARCHAR(255)   DEFAULT NULL COMMENT '麻醉方式名称',
-    herbalUse          VARCHAR(255)   DEFAULT NULL COMMENT '中药使用',
-    creator            INT COMMENT '创建人ID',
-    chronicDisease     INT            DEFAULT NULL COMMENT '慢性病标识',
-    billingTime        DATETIME COMMENT '开账时间',
-    singleDose         DECIMAL(10, 2) DEFAULT NULL COMMENT '单次剂量',
-    refunder           INT            DEFAULT NULL COMMENT '退款人ID',
-    skinTest           VARCHAR(255)   DEFAULT NULL COMMENT '皮肤测试',
-    adminRoute         VARCHAR(255)   DEFAULT NULL COMMENT '给药途径',
-    anesthesiaMode     VARCHAR(255)   DEFAULT NULL COMMENT '麻醉方式',
-    medicDays          INT            DEFAULT NULL COMMENT '药品天数',
-    herbalRequestName  VARCHAR(255)   DEFAULT NULL COMMENT '中药请求名称',
-    execCombiSeq       INT            DEFAULT NULL COMMENT '执行组合顺序',
-    dripSpeedName      VARCHAR(255)   DEFAULT NULL COMMENT '滴速名称',
-    remarks            TEXT           DEFAULT NULL COMMENT '备注',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
-drop table if exists check_results;
--- 5. 检验结果表
-CREATE TABLE check_results
+-- ----------------------------
+-- Table structure for check_reports
+-- ----------------------------
+DROP TABLE IF EXISTS `check_reports`;
+CREATE TABLE `check_reports`
 (
-    id                   BIGINT NOT NULL PRIMARY KEY COMMENT '检验结果ID',
-    patient_id           BIGINT COMMENT '患者ID',
-    is_urgent            TINYINT COMMENT '0表示非紧急，1表示紧急',
-    lab_item_name        VARCHAR(50) COMMENT '检验项目名称',
-    report_name          VARCHAR(50) COMMENT '报告名称',
-    lab_item_code        VARCHAR(50) COMMENT '检验项目代码',
-    ref_range            VARCHAR(50) COMMENT '参考范围',
-    lab_result_sign_name VARCHAR(50) COMMENT '检验结果标识',
-    lab_final_value      VARCHAR(50) COMMENT '检验结果',
-    visiting_no          VARCHAR(50) COMMENT '就诊编号',
-    lab_result_unit_name VARCHAR(50) COMMENT '检验结果单位名称',
-    audit_date           DATETIME COMMENT '审核日期，格式为 "YYYY-MM-DD HH:MM:SS"',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`           bigint(20)                                                   NOT NULL AUTO_INCREMENT COMMENT '报告表ID',
+    `patient_id`   bigint(20)                                                   NULL DEFAULT NULL COMMENT '患者ID',
+    `item_code`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检查项目编码',
+    `item_name`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检查项目名称',
+    `check_time`   datetime                                                     NULL DEFAULT NULL COMMENT '检查时间',
+    `visit_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊编号',
+    `create_time`  datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`  datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  AUTO_INCREMENT = 46
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
-drop table if exists check_reports;
--- 6. 检查报告表
-CREATE TABLE check_reports
+-- ----------------------------
+-- Table structure for check_results
+-- ----------------------------
+DROP TABLE IF EXISTS `check_results`;
+CREATE TABLE `check_results`
 (
-    id           BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '报告表ID',
-    patient_id   BIGINT COMMENT '患者ID',
-    item_code    VARCHAR(50) COMMENT '检查项目编码',
-    item_name    VARCHAR(50) COMMENT '检查项目名称',
-    check_time   DATETIME COMMENT '检查时间',
-    visit_number VARCHAR(50) COMMENT '就诊编号',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`                   bigint(20)                                                   NOT NULL COMMENT '检验结果ID',
+    `patient_id`           bigint(20)                                                   NULL DEFAULT NULL COMMENT '患者ID',
+    `is_urgent`            tinyint(4)                                                   NULL DEFAULT NULL COMMENT '0表示非紧急，1表示紧急',
+    `lab_item_name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检验项目名称',
+    `report_name`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '报告名称',
+    `lab_item_code`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检验项目代码',
+    `ref_range`            varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参考范围',
+    `lab_result_sign_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检验结果标识',
+    `lab_final_value`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检验结果',
+    `visiting_no`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊编号',
+    `lab_result_unit_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '检验结果单位名称',
+    `audit_date`           datetime                                                     NULL DEFAULT NULL COMMENT '审核日期，格式为 \"YYYY-MM-DD HH:MM:SS\"',
+    `create_time`          datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`          datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
-drop table if exists report_files;
--- 7. 检查报告文件表
-CREATE TABLE report_files
+-- ----------------------------
+-- Table structure for dept
+-- ----------------------------
+DROP TABLE IF EXISTS `dept`;
+CREATE TABLE `dept`
 (
-    id        BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文件ID',
-    report_id BIGINT COMMENT '检查ID',
-    file_type VARCHAR(50) COMMENT '文件类型',
-    file_url  TEXT COMMENT '文件下载URL',
-    is_down_load TINYINT COMMENT '文件是否已经下载',
-    file_path VARCHAR(255) COMMENT '已经下载的图像保存的路径地址(绝对地址)',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`          bigint(20)                                                   NOT NULL COMMENT '科室ID',
+    `dept_name`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '科室名称',
+    `status`      tinyint(4)                                                   NULL DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    `create_time` datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
-drop table if exists element;
--- 8. 病历表
-CREATE TABLE element
+-- ----------------------------
+-- Table structure for doctor
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor`;
+CREATE TABLE `doctor`
 (
-    id              BIGINT NOT NULL PRIMARY KEY COMMENT '病历ID',
-    patient_id      BIGINT COMMENT '患者ID',
-    main_appeal     VARCHAR(255) COMMENT '主诉',
-    past_history    VARCHAR(255) COMMENT '既往史',
-    present_illness VARCHAR(255) COMMENT '现在史',
-    allergy         VARCHAR(255) COMMENT '过敏史',
-    special_os      VARCHAR(255) COMMENT '左眼科专科检查',
-    special_od      VARCHAR(255) COMMENT '右眼科专科检查',
-    visit_number    VARCHAR(50) COMMENT '就诊编号',
-    physical_exam   VARCHAR(255) COMMENT '体格检查',
-    dispose         VARCHAR(255) COMMENT '处理意见',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`          bigint(20)                                                   NOT NULL COMMENT '医生ID',
+    `doctor_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '医生姓名',
+    `site_id`     bigint(20)                                                   NULL DEFAULT NULL COMMENT '科室ID',
+    `status`      tinyint(4)                                                   NULL DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    `create_time` datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
-drop table if exists doctor;
--- 9. 医生信息表
-CREATE TABLE doctor
+-- ----------------------------
+-- Table structure for element
+-- ----------------------------
+DROP TABLE IF EXISTS `element`;
+CREATE TABLE `element`
 (
-    id          BIGINT NOT NULL PRIMARY KEY COMMENT '医生ID',
-    doctor_name VARCHAR(50) COMMENT '医生姓名',
-    site_id      BIGINT COMMENT '科室ID',
-    `status`    TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`              bigint(20)                                                    NOT NULL COMMENT '病历ID',
+    `patient_id`      bigint(20)                                                    NULL DEFAULT NULL COMMENT '患者ID',
+    `main_appeal`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主诉',
+    `past_history`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '既往史',
+    `present_illness` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '现在史',
+    `allergy`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '过敏史',
+    `special_os`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼科专科检查',
+    `special_od`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼科专科检查',
+    `visit_number`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '就诊编号',
+    `physical_exam`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '体格检查',
+    `dispose`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理意见',
+    `create_time`     datetime                                                      NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`     datetime                                                      NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
-drop table if exists dept;
--- 10. 科室信息表
-CREATE TABLE dept
+-- ----------------------------
+-- Table structure for followup
+-- ----------------------------
+DROP TABLE IF EXISTS `followup`;
+CREATE TABLE `followup`
 (
-    id        BIGINT NOT NULL PRIMARY KEY COMMENT '科室ID',
-    dept_name VARCHAR(50) COMMENT '科室名称',
-    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`              bigint(20)                                              NOT NULL AUTO_INCREMENT,
+    `case_id`         int(11)                                                 NOT NULL,
+    `patient_id`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL,
+    `plan_visit_date` datetime                                                NULL DEFAULT NULL,
+    `visit_plan`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL,
+    `visit_result`    bit(1)                                                  NULL DEFAULT NULL,
+    `visit_content`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `visit_remark`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `visit_date`      datetime                                                NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  AUTO_INCREMENT = 10
+  CHARACTER SET = utf8
+  COLLATE = utf8_general_ci
+  ROW_FORMAT = DYNAMIC;
 
-drop table if exists site;
--- 11. 眼别信息表
-CREATE TABLE site
+-- ----------------------------
+-- Table structure for order_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `order_detail`;
+CREATE TABLE `order_detail`
 (
-    id        BIGINT NOT NULL PRIMARY KEY COMMENT '眼别ID',
-    site_name VARCHAR(50) COMMENT '眼别名称',
-    `status`  TINYINT DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
-    create_time DATETIME COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
+    `id`                   bigint(20)                                                    NOT NULL COMMENT '处方（医嘱）信息ID',
+    `total_number`         int(11)                                                       NULL DEFAULT NULL COMMENT '总数量',
+    `dept_name`            varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '科室名称',
+    `cancel_refund_date`   datetime                                                      NULL DEFAULT NULL COMMENT '退单日期',
+    `order_id`             bigint(20)                                                    NULL DEFAULT NULL COMMENT '订单ID',
+    `order_attach_id`      bigint(20)                                                    NULL DEFAULT NULL COMMENT '订单附件ID',
+    `item_code`            bigint(20)                                                    NULL DEFAULT NULL COMMENT '项目编码',
+    `eye_type`             int(11)                                                       NULL DEFAULT NULL COMMENT '眼别类型',
+    `chm_recipe_method`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药处方方法',
+    `skin_enter_time`      datetime                                                      NULL DEFAULT NULL COMMENT '皮肤给药时间',
+    `specif`               varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '规格',
+    `frequency`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '频率',
+    `order_state`          int(11)                                                       NULL DEFAULT NULL COMMENT '订单状态',
+    `decoc_type`           varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '煎药类型',
+    `opr_level`            int(11)                                                       NULL DEFAULT NULL COMMENT '操作级别',
+    `total_dose`           decimal(10, 2)                                                NULL DEFAULT NULL COMMENT '总剂量',
+    `recipe_number`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '处方编号',
+    `item_name`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '项目名称',
+    `herbal_adjust_name`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药调整名称',
+    `hosp_id`              int(11)                                                       NULL DEFAULT NULL COMMENT '医院ID',
+    `price`                decimal(10, 2)                                                NULL DEFAULT NULL COMMENT '价格',
+    `chm_note`             text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci         NULL COMMENT '中药备注',
+    `exec_place`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行地点',
+    `apply_number`         varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '申请单编号',
+    `batch_number`         varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '批号',
+    `packing_unit`         int(11)                                                       NULL DEFAULT NULL COMMENT '包装单位',
+    `modify_date`          datetime                                                      NULL DEFAULT NULL COMMENT '修改日期',
+    `add_exec_dept_name`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '附加执行科室名称',
+    `exec_dept_name`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行科室名称',
+    `outsource_sign`       int(11)                                                       NULL DEFAULT NULL COMMENT '外包标识',
+    `dept_id`              int(11)                                                       NULL DEFAULT NULL COMMENT '科室ID',
+    `add_exec_dept`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '附加执行科室',
+    `herbal_request`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药请求',
+    `every_number`         int(11)                                                       NULL DEFAULT NULL COMMENT '每次数量',
+    `modifer`              int(11)                                                       NULL DEFAULT NULL COMMENT '修改人ID',
+    `herbal_use_name`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药使用名称',
+    `recipe_name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处方名称',
+    `recipe_kind_name`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处方种类名称',
+    `insure_range`         int(11)                                                       NULL DEFAULT NULL COMMENT '保险范围',
+    `frequency_name`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '频率名称',
+    `orders`               int(11)                                                       NULL DEFAULT NULL COMMENT '订单数',
+    `combi_number`         varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '组合编号',
+    `temp_id`              bigint(20)                                                    NULL DEFAULT NULL COMMENT '临时ID',
+    `herbal_number`        int(11)                                                       NULL DEFAULT NULL COMMENT '中药数量',
+    `refund_reasons_name`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退单原因名称',
+    `refund_date`          datetime                                                      NULL DEFAULT NULL COMMENT '退单日期',
+    `print_times`          int(11)                                                       NULL DEFAULT NULL COMMENT '打印次数',
+    `skin_enter_id`        bigint(20)                                                    NULL DEFAULT NULL COMMENT '皮肤给药ID',
+    `admin_route_name`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '给药途径名称',
+    `long_range`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '长期范围',
+    `skin_enter_name`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '皮肤给药名称',
+    `packing_unit_name`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '包装单位名称',
+    `drip_speed`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '滴速',
+    `cancel_refunder_id`   bigint(20)                                                    NULL DEFAULT NULL COMMENT '退单人ID',
+    `order_templ_id`       bigint(20)                                                    NULL DEFAULT NULL COMMENT '订单模板ID',
+    `combi_seq`            int(11)                                                       NULL DEFAULT NULL COMMENT '组合顺序',
+    `recipe_kind`          int(11)                                                       NULL DEFAULT NULL COMMENT '处方种类',
+    `order_templ_name`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单模板名称',
+    `eye_type_name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '眼别类型名称',
+    `usable_days`          int(11)                                                       NULL DEFAULT NULL COMMENT '有效天数',
+    `doctor_name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '医生姓名',
+    `doctor_id`            int(11)                                                       NULL DEFAULT NULL COMMENT '医生ID',
+    `decoc_type_name`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '煎药类型名称',
+    `exec_dept`            int(11)                                                       NULL DEFAULT NULL COMMENT '执行科室',
+    `herbal_adjust`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药调整',
+    `cancel_refunder_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '退单人名称',
+    `t_outp_order_id`      bigint(20)                                                    NULL DEFAULT NULL COMMENT '门诊订单ID',
+    `refund_reasons_code`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '退单原因编码',
+    `create_date`          datetime                                                      NULL DEFAULT NULL COMMENT '创建日期',
+    `dosage_unit_name`     varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '剂量单位名称',
+    `skin_test_result`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '皮肤测试结果',
+    `dosage_unit`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '剂量单位',
+    `anesthesia_mode_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '麻醉方式名称',
+    `herbal_use`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '中药使用',
+    `creator`              int(11)                                                       NULL DEFAULT NULL COMMENT '创建人ID',
+    `chronic_disease`      int(11)                                                       NULL DEFAULT NULL COMMENT '慢性病标识',
+    `billing_time`         datetime                                                      NULL DEFAULT NULL COMMENT '开账时间',
+    `single_dose`          decimal(10, 2)                                                NULL DEFAULT NULL COMMENT '单次剂量',
+    `order_type_name`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单类型名称',
+    `dose_unit_name`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '剂量单位名称',
+    `admin_route`          int(11)                                                       NULL DEFAULT NULL COMMENT '给药途径',
+    `order_remark`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '订单备注',
+    `exec_organ_id`        bigint(20)                                                    NULL DEFAULT NULL COMMENT '执行机构ID',
+    `exec_time`            datetime                                                      NULL DEFAULT NULL COMMENT '执行时间',
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  DEFAULT CHARSET = utf8mb4 COMMENT = '订单详细表';
+
+
+-- ----------------------------
+-- Table structure for patients
+-- ----------------------------
+DROP TABLE IF EXISTS `patients`;
+CREATE TABLE `patients`
+(
+    `id`          bigint(20)                                                   NOT NULL COMMENT '患者个人ID',
+    `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '患者姓名',
+    `sex`         tinyint(4)                                                   NULL DEFAULT NULL COMMENT '性别标识，1表示男性',
+    `sex_name`    varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '性别名称，\"男\"或\"女\"',
+    `birthday`    datetime                                                     NULL DEFAULT NULL COMMENT '患者出生日期，格式为 \"YYYY-MM-DD HH:MM:SS\"',
+    `id_number`   varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '身份证号',
+    `phone`       varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '电话号码',
+    `status`      tinyint(4)                                                   NULL DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    `create_time` datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `id_number` (`id_number`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for recipe
+-- ----------------------------
+DROP TABLE IF EXISTS `recipe`;
+CREATE TABLE `recipe`
+(
+    `id`            bigint(20)                                                   NOT NULL COMMENT '处方ID',
+    `doctor_id`     bigint(20)                                                   NULL DEFAULT NULL COMMENT '医生ID',
+    `patient_id`    bigint(20)                                                   NULL DEFAULT NULL COMMENT '患者ID',
+    `dept_id`       bigint(20)                                                   NULL DEFAULT NULL COMMENT '科室ID',
+    `reg_number`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '挂号编号',
+    `recipe_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处方编号',
+    `recipe_type`   int(11)                                                      NULL DEFAULT NULL COMMENT '处方类型',
+    `billing_time`  datetime                                                     NULL DEFAULT NULL COMMENT '开方时间格式为 \"YYYY-MM-DD HH:MM:SS\"',
+    `create_time`   datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`   datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `recipe_number` (`recipe_number`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for report_files
+-- ----------------------------
+DROP TABLE IF EXISTS `report_files`;
+CREATE TABLE `report_files`
+(
+    `id`           bigint(20)                                                    NOT NULL AUTO_INCREMENT COMMENT '文件ID',
+    `report_id`    bigint(20)                                                    NULL DEFAULT NULL COMMENT '检查ID',
+    `type`         varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '文件类型',
+    `url`          text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci         NULL COMMENT '文件下载URL',
+    `is_down_load` tinyint(4)                                                    NULL DEFAULT NULL COMMENT '文件是否已经下载',
+    `file_path`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '已经下载的图像保存的路径地址(绝对地址)',
+    `create_time`  datetime                                                      NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`  datetime                                                      NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1869592267581403195
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for site
+-- ----------------------------
+DROP TABLE IF EXISTS `site`;
+CREATE TABLE `site`
+(
+    `id`          bigint(20)                                                   NOT NULL COMMENT '眼别ID',
+    `site_name`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '眼别名称',
+    `status`      tinyint(4)                                                   NULL DEFAULT 1 COMMENT '逻辑删除: 0：不存在，1：存在',
+    `create_time` datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`
+(
+    `user_id`         bigint(20)                                              NOT NULL AUTO_INCREMENT,
+    `user_login_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL,
+    `user_name`       varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    `user_password`   varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    `salt`            varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    `user_status`     int(11)                                                 NOT NULL COMMENT '用户状态：0-管理员，-1有效，1医生，2护士',
+    `creator`         varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL,
+    `create_time`     datetime                                                NOT NULL,
+    `modifier`        varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL,
+    `update_time`     datetime                                                NULL DEFAULT NULL,
+    PRIMARY KEY (`user_id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 17
+  CHARACTER SET = utf8
+  COLLATE = utf8_general_ci
+  ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for visits
+-- ----------------------------
+DROP TABLE IF EXISTS `visits`;
+CREATE TABLE `visits`
+(
+    `id`           bigint(20)                                                    NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `patient_id`   bigint(20)                                                    NULL DEFAULT NULL COMMENT '患者ID',
+    `doctor_id`    bigint(20)                                                    NULL DEFAULT NULL COMMENT '医生ID',
+    `dept_id`      bigint(20)                                                    NULL DEFAULT NULL COMMENT '科室ID',
+    `site_id`      bigint(20)                                                    NULL DEFAULT NULL COMMENT '眼别ID',
+    `visit_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '就诊号',
+    `diag_time`    datetime                                                      NULL DEFAULT NULL COMMENT '诊断时间，格式为 \"YYYY-MM-DD HH:MM:SS\"',
+    `diag_order`   int(11)                                                       NULL DEFAULT NULL COMMENT '诊断序号',
+    `diag_name`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '诊断名称',
+    `diag_code`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL DEFAULT NULL COMMENT '诊断编码',
+    `create_time`  datetime                                                      NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`  datetime                                                      NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 29
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

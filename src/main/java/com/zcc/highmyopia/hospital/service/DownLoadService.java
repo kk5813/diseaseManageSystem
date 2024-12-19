@@ -259,19 +259,18 @@ public class DownLoadService implements IDownLoadService {
     @Override
     public void DownLoadReportImage(ReportFiles reportFile) {
 
-        String urls = APacsHost + reportFile.getFileUrl();  // 获取文件的URL
+        String urls = APacsHost + reportFile.getUrl();  // 获取文件的URL
 
         ResponseEntity<byte[]> response = restTemplate.getForEntity(urls, byte[].class);
         int statusCode = response.getStatusCodeValue();
 
-        // 判断HTTP状态码是否为200
         if (statusCode != 200) {
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         }
 
         byte[] fileBytes = response.getBody();  // 获取文件内容的字节数组
 
-        String fileType = reportFile.getFileType();
+        String fileType = reportFile.getType();
         fileType = fileType.split("/")[1];
 
         // 从 reportFile 获取文件名，假设 reportFile 对象有 getFileName() 方法
@@ -301,7 +300,7 @@ public class DownLoadService implements IDownLoadService {
 
     @Override
     public void DownLoadReportImageBatch() {
-        List<ReportFiles> reportFiles = saveRepository.DownLoadReportImageBatch();
+        List<ReportFiles> reportFiles = saveRepository.getNotDownLoadFiles();
         reportFiles.forEach(this::DownLoadReportImage);
     }
 

@@ -90,7 +90,6 @@ public class ConnectExamdetailAndCaselist {
             //数据库连接失败异常处理
             e.printStackTrace();
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         } finally {
             //System.out.println("数据库数据成功获取！！");

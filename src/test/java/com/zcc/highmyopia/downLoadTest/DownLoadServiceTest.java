@@ -22,6 +22,8 @@ import java.util.List;
 public class DownLoadServiceTest {
     @Resource
     private IDownLoadService downLoadService;
+    @Resource
+    private IReportFilesMapper reportFilesMapper;
     @Test
     void test_downLoadImage(){
         String url = "/api/report/file?requestType=WADO&studyUID=1.2.156.112817.155934683686344160769490832225524523102&seriesUID=1.2.156.112817.118358943037663121398112686282646406849&objectUID=1.2.156.112817.32109209785540512244365408321069489508";
@@ -29,8 +31,8 @@ public class DownLoadServiceTest {
                 .id(1L)
                 .reportId(111L)
                 .isDownLoad( 0)
-                .fileUrl(url)
-                .fileType("application/pdf")
+                .url(url)
+                .type("application/pdf")
                 .build();
         downLoadService.DownLoadReportImage(reportFiles);
     }
@@ -72,7 +74,14 @@ public class DownLoadServiceTest {
     }
 
     @Test
-    void test_downLoad(){
+    void test_downLoadOne(){
+        List<ReportFiles> list = reportFilesMapper.queryBatch(33L);
+        System.out.println(list);
+        list.forEach(l -> downLoadService.DownLoadReportImage(l));
+    }
+
+    @Test
+    void test_downLoadBatch(){
         downLoadService.DownLoadReportImageBatch();
     }
 

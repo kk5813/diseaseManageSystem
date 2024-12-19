@@ -30,7 +30,6 @@ public class Recipe implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime billingTime;  // 开方时间
 
-    private Long orderDetailId;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime  createTime;

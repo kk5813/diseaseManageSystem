@@ -25,8 +25,8 @@ public class ReportFiles {
 
     private Long id;
     private Long reportId;
-    private String fileType;
-    private String fileUrl;
+    private String type;
+    private String url;
     private Integer isDownLoad;
     private String filePath; // 确保是 String 类型
     @TableField(fill = FieldFill.INSERT)

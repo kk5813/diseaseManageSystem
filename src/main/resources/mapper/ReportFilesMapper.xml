@@ -5,8 +5,8 @@
     <resultMap id="ReportFileResultMap" type="com.zcc.highmyopia.po.ReportFiles">
         <result column="id" property="id" jdbcType="BIGINT"/>
         <result column="report_id" property="reportId" jdbcType="BIGINT"/>
-        <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
-        <result column="file_url" property="fileUrl" jdbcType="LONGVARCHAR"/>  <!-- TEXT 类型映射为 LONGVARCHAR -->
+        <result column="file_type" property="type" jdbcType="VARCHAR"/>
+        <result column="file_url" property="url" jdbcType="LONGVARCHAR"/>  <!-- TEXT 类型映射为 LONGVARCHAR -->
         <result column="is_download" property="isDownLoad" jdbcType="SMALLINT"/>
         <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
@@ -15,7 +15,7 @@
 
 
     <insert id="insertBatch" parameterType="com.zcc.highmyopia.po.ReportFiles">
-        insert into report_files (id, report_id, file_type, file_url, is_down_load, file_path, create_time, update_time)
+        insert into report_files (id, report_id, type, url, is_down_load, file_path, create_time, update_time)
         values
         <foreach item="file" index="index" collection="list" open="(" separator=")," close=")">
             #{file.id}, #{file.reportId}, #{file.fileType}, #{file.fileUrl}, #{file.isDownLoad}, #{file.filePath}, now(), now()

@@ -47,10 +47,9 @@ public class AccountController {
         User user = userService.getOne(new QueryWrapper<User>().eq("user_login_name", loginDto.getUserLoginName()));
         Assert.notNull(user, "用户不存在");  // 确保用户存在
 
-        // todo: 模拟前端MD5加密过程
+        // todo: 模拟前端MD5加密过程正式测试需要删掉
         // 验证密码：加盐后进行 MD5 加密
         if (!user.getUserPassword().equals(SecureUtil.md5(user.getSalt() +
-                // todo:正式测试需要删掉
                 SecureUtil.md5(loginDto.getUserPassword())))) {
             return Result.fail("密码错误！");
         }

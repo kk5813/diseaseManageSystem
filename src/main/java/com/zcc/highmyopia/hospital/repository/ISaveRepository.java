@@ -22,7 +22,7 @@ public interface ISaveRepository {
     void saveCheckReportsAndReportFiles(CheckReportsEntity checkReportsEntity);
     void saveCheckReportsAndReportFiles(List<CheckReportsEntity> checkReportsEntities);
 
-    List<ReportFiles> DownLoadReportImageBatch();
+    List<ReportFiles> getNotDownLoadFiles();
 
     void updateReportFiles(ReportFiles reportFile);
 

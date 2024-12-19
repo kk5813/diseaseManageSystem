@@ -31,7 +31,9 @@ public class ReportFilesMapperTest {
 //        List<ReportFiles> reportFilesList = reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
 //                .eq(ReportFiles::getReportId, 111L));
 //        System.out.println(reportFilesList);
-        Long reportId = 111L;
-        List<ReportFiles> reportFiles = reportFilesMapper.queryBatch(reportId);
+//        Long reportId = 111L;
+//        List<ReportFiles> reportFiles = reportFilesMapper.queryBatch(reportId);
+        List<ReportFiles> notDownLoad = reportFilesMapper.getNotDownLoad();
+        System.out.println(notDownLoad);
     }
 }

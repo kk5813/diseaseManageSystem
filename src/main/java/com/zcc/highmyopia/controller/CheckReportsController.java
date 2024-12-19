@@ -68,7 +68,7 @@ public class CheckReportsController {
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();
-                                reportFilesVO.setType(reportFile.getFileType());
+                                reportFilesVO.setType(reportFile.getType());
                                 reportFilesVO.setFilePath(reportFile.getFilePath());
                                 return reportFilesVO;
                             })

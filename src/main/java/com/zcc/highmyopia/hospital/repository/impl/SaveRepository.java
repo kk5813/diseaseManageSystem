@@ -1,6 +1,7 @@
 package com.zcc.highmyopia.hospital.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
@@ -45,6 +46,9 @@ public class SaveRepository implements ISaveRepository {
     private final IDeptService deptService;
     private final TransactionTemplate transactionTemplate;
     private final IPatientsService patientsService;
+    private final IOrderDetailService orderDetailService;
+
+    private final IReportFilesMapper reportFilesMapper;
 
     @Override
     public void saveVisits(List<VisitEntity> visitEntities) {
@@ -115,11 +119,10 @@ public class SaveRepository implements ISaveRepository {
                 Long doctorId = 1L;
                 Long deptId = 1L;
                 List<Recipe> recipes = new ArrayList<>();
+                List<OrderDetail> orderDetails = new ArrayList<>();
                 for (RecipeEntity recipeEntity : recipeEntities) {
-                    //todo 储存order_detail
                     List<OrderDetail> orderDetail = recipeEntity.getOrderDetail();
-                    //saveRepository.saveOrderDetails（）
-                    Long orderDetailId = orderDetail.get(0).getOrderId();
+                    orderDetails.addAll(orderDetail);
 
                     // 查询医生ID
                     Doctor doctor = doctorService.getOne(new LambdaQueryWrapper<Doctor>()
@@ -150,12 +153,12 @@ public class SaveRepository implements ISaveRepository {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     recipe.setBillingTime(LocalDateTime.parse(recipeEntity.getBillingTime(), formatter));
 
-                    recipe.setOrderDetailId(orderDetailId);
                     recipes.add(recipe);
                 }
                 recipes = new ArrayList<>(recipes.stream()
                         .collect(Collectors.toMap(Recipe::getId, recipe -> recipe, (existing, replacement) -> existing))
                         .values());
+                orderDetailService.saveOrUpdateBatch(orderDetails);
                 recipeService.saveOrUpdateBatch(recipes);
 
             } catch (Exception e) {
@@ -230,6 +233,8 @@ public class SaveRepository implements ISaveRepository {
                     CheckReports checkReports = CheckReportsEntity.entityToPo(checkReportsEntity);
                     checkReportsList.add(checkReports);
                 }
+                // 报告已存
+                checkReportsService.saveOrUpdateBatch(checkReportsList);
                 for (int i = 0; i < checkReportsEntities.size(); i++) {
                     CheckReportsEntity checkReportsEntity = checkReportsEntities.get(i);
                     CheckReports checkReports = checkReportsList.get(i);
@@ -242,6 +247,7 @@ public class SaveRepository implements ISaveRepository {
                     });
                     reportFilesList.addAll(files);
                 }
+                reportFilesService.saveOrUpdateBatch(reportFilesList);
             }catch (Exception e){
                 status.setRollbackOnly();
                 log.error("保存检查报告失败:", e);
@@ -249,19 +255,21 @@ public class SaveRepository implements ISaveRepository {
             }
             return null;
         });
-    
     }
 
 
 @Override
-public List<ReportFiles> DownLoadReportImageBatch() {
-    return reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
-            .eq(ReportFiles::getIsDownLoad, 0));
+public List<ReportFiles> getNotDownLoadFiles() {
+    return reportFilesMapper.getNotDownLoad();
 }
 
 @Override
 public void updateReportFiles(ReportFiles reportFile) {
-    reportFilesService.saveOrUpdate(reportFile);
+        reportFilesMapper.update(reportFile,
+                new LambdaUpdateWrapper<ReportFiles>()
+                        .eq(ReportFiles::getId, reportFile.getId())
+                        .set(ReportFiles::getIsDownLoad, reportFile.getIsDownLoad())
+                        .set(ReportFiles::getFilePath, reportFile.getFilePath()));
 }
 
 @Override
