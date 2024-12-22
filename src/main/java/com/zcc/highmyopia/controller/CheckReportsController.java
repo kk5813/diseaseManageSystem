@@ -12,16 +12,21 @@ import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.ICheckResultsService;
 import com.zcc.highmyopia.service.IReportFilesService;
+import com.zcc.highmyopia.util.PDFToImg;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +46,8 @@ public class CheckReportsController {
     private final ICheckReportsService checkReportsService;
     private final IReportFilesService reportFilesService;
     private final IReportFilesMapper reportFilesMapper;
+    @Value("${hospital.pdf2ImgPath}")
+    private String PDFToImgRelativePath;
 
     @GetMapping("find/{patientId}")
     @ApiOperation(value = "获取患者检查报告")
@@ -68,8 +75,14 @@ public class CheckReportsController {
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();
-                                reportFilesVO.setType(reportFile.getType());
-                                reportFilesVO.setFilePath(reportFile.getFilePath());
+                                if(reportFile.getType() == ".pdf"){
+                                     reportFilesVO.setFilePath(pdfPathToImgPath(reportFile.getFilePath()));
+                                     int dot = reportFilesVO.getFilePath().lastIndexOf(".") + 1;
+                                     reportFilesVO.setType(reportFile.getFilePath().substring(dot));
+                                }else{
+                                    reportFilesVO.setType(reportFile.getType());
+                                    reportFilesVO.setFilePath(reportFile.getFilePath());
+                                }
                                 return reportFilesVO;
                             })
                             .collect(Collectors.toList());
@@ -79,5 +92,12 @@ public class CheckReportsController {
                 .collect(Collectors.toList());
         return Result.succ(checkReportVOS);
     }
-
+    private String pdfPathToImgPath(String filePath){
+        File file = new File(filePath);
+        File parentFile = file.getParentFile();
+        int dot = file.getName().lastIndexOf(".");
+        // todo 这里图片格式写死了为png, 不建议搜索文件，这样太慢了，要改的话不如直接改数据库，不改变原来的表而是新加一个表，来做pdf报告映射的png路径，这样修改最小。
+        Path path = Paths.get(parentFile.getPath() + PDFToImgRelativePath, file.getName().substring(0, dot) + PDFToImg.PNG);
+        return path.toString();
+    }
 }

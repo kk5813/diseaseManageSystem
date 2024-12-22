@@ -11,6 +11,7 @@ import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.ReportFiles;
+import com.zcc.highmyopia.util.PDFToImg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oracle.security.o5logon.a;
@@ -24,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -48,7 +50,8 @@ public class DownLoadService implements IDownLoadService {
     private String APacsHost;
     @Value("${hospital.filePath}")
     private String targetPath;
-
+    @Value("${hospital.pdf2ImgPath}")
+    private String PDFToImgRelativePath;
     private final int connectTimeOut = 7200;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ISaveRepository saveRepository;
@@ -245,8 +248,9 @@ public class DownLoadService implements IDownLoadService {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
         int statusCode = response.getStatusCodeValue();
-        if (statusCode != 200)
+        if (statusCode != 200) {
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        }
         String body = response.getBody();
 
         List<CheckReportsEntity> checkReportsEntities = JSON.parseArray(
@@ -282,11 +286,22 @@ public class DownLoadService implements IDownLoadService {
         if (!targetFile.getParentFile().exists()) {
             targetFile.getParentFile().mkdirs();  // 创建目标目录
         }
-
+        //创建新的目录单独存PDF转换后的图片
+        String PDFToImgPath = targetPath + PDFToImgRelativePath;
+        File destPath = new File(PDFToImgPath);
+        log.info("写如路径为：" + PDFToImgPath);
+        if(!destPath.exists()){
+            destPath.mkdirs();
+        }
         // 将文件内容写入到指定路径
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             if (fileBytes != null) {
                 fos.write(fileBytes);
+                // 同时将pdf转化为image
+                if(fileName.endsWith(".pdf")) {
+                    log.info("写如图片");
+                    PDFToImg.pdf2Image(targetPath, PDFToImgPath, fileName, PDFToImg.PNG, PDFToImg.DPI_MID);
+                }
             }
             // 更新状态为已下载
             reportFile.setIsDownLoad(1);  // 标记文件已下载

@@ -24,6 +24,12 @@ public class DownLoadServiceTest {
     private IDownLoadService downLoadService;
     @Resource
     private IReportFilesMapper reportFilesMapper;
+
+    /**
+     *   @Description : 测试医院接口PDF获取和转化为png图片
+     *   @available : True
+     *   @Date : 2024-12-22 22时
+     * */
     @Test
     void test_downLoadImage(){
         String url = "/api/report/file?requestType=WADO&studyUID=1.2.156.112817.155934683686344160769490832225524523102&seriesUID=1.2.156.112817.118358943037663121398112686282646406849&objectUID=1.2.156.112817.32109209785540512244365408321069489508";

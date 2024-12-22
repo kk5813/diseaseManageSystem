@@ -1,0 +1,17 @@
+autoDetectedPackages:
+- com.zcc.highmyopia
+enableAutoDetect: true
+funcDisplayConfig:
+  skipConstructors: false
+  skipFieldAccess: true
+  skipFieldChange: true
+  skipGetters: true
+  skipPrivateMethods: false
+  skipSetters: true
+ignoreSameClassCall: null
+ignoreSamePackageCall: null
+includedPackagePrefixes: []
+includedParentClasses: []
+name: xcodemap-filter
+recordMode: smart
+startOnDebug: false

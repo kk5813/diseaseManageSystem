@@ -69,6 +69,7 @@ public class test {
         int connectTimeout=7200;
         String hospId ="1824";
         String appKey = "Cdm_1824";
+        //String appSecret = "0ihd.e4zc";
         String appSecret="ywgp.lbol";
 
         Map<String,String> querys = new HashMap<>();
@@ -99,7 +100,8 @@ public class test {
         int connectTimeout=7200;
         String hospId ="1824";
         String appKey = "Cdm_1824";
-        String appSecret="ywgp.lbol";
+        //String appSecret="ywgp.lbol";
+        String appSecret = "0ihd.e4zc";
         Map<String,String> querys = new HashMap<>();
         querys.put("diagBdate","20240520");
         querys.put("diagEdate","20240529");
