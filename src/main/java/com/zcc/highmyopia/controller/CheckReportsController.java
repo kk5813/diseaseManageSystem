@@ -78,7 +78,7 @@ public class CheckReportsController {
                                 if(reportFile.getType() == ".pdf"){
                                      reportFilesVO.setFilePath(pdfPathToImgPath(reportFile.getFilePath()));
                                      int dot = reportFilesVO.getFilePath().lastIndexOf(".") + 1;
-                                     reportFilesVO.setType(reportFile.getFilePath().substring(dot));
+                                     reportFilesVO.setType("image/" + reportFile.getFilePath().substring(dot));
                                 }else{
                                     reportFilesVO.setType(reportFile.getType());
                                     reportFilesVO.setFilePath(reportFile.getFilePath());
