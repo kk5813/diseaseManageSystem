@@ -4,13 +4,14 @@ import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.po.ReportFiles;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author zcc
  * @Date 2024/12/16
  * @Description
  */
-public interface IDownLoadService {
+public abstract interface IDownLoadService {
 
     // 患者就诊信息
     List<VisitEntity> getPatientVisit(String beginData, String endData) throws Exception;
@@ -32,9 +33,11 @@ public interface IDownLoadService {
     void getCheckResult(String beginData, String endData, String patientId);
     void getCheckResult(String beginData, String endData, List<String> patientIds);
 
+    void getPatientInfo(String number) throws Exception;
+
     void DownLoadReportImage(ReportFiles reportFiles);
 
     void DownLoadReportImageBatch();
 
-    void getPatientInfo(String number) throws Exception;
+
 }

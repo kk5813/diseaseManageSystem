@@ -50,7 +50,8 @@ public class DownLoadServiceTest {
 
     @Test
     void test_GetRecipe() throws Exception {
-        downLoadService.getRecipe("20240801", "20241125");
+        // downLoadService.getRecipe("20240801", "20241125");
+        downLoadService.getRecipe("20241219", "20241219");
     }
     @Test
     void test_GetReportResult() throws Exception {
@@ -70,7 +71,11 @@ public class DownLoadServiceTest {
     // 单独保存单个用户
     @Test
     void test_getCheckResult() throws Exception {
-        downLoadService.getCheckResult("20241112", "20241112", "1855597141015232514");
+        LocalDateTime start = LocalDateTime.now();
+        System.out.println(start);
+        downLoadService.getCheckResult("20241219", "20241219", "1869575479859933185");
+        LocalDateTime end = LocalDateTime.now();
+        System.out.println(end);
     }
 
     @Test
@@ -82,7 +87,11 @@ public class DownLoadServiceTest {
 
     @Test
     void test_downLoadBatch(){
+        LocalDateTime start = LocalDateTime.now();
+        System.out.println(start);
         downLoadService.DownLoadReportImageBatch();
+        LocalDateTime end = LocalDateTime.now();
+        System.out.println(end);
     }
 
 }

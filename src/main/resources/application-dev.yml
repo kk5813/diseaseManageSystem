@@ -64,8 +64,8 @@ highmyopia:
 
 hospital:
   hospId: 1824
-  appKey: Cdm_1824
-  appSecret: ywgp.lbol
+  appKey: cdm_1824
+  appSecret: item_code
   AHisHost: http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
   filePath: E:\Download\project
