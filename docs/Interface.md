@@ -613,31 +613,22 @@ http://localhost:8081/api/v{n}/patients
 {
     "url": "/export",
     "method": "post",
-    "body": {
-        "sex": "男",
-        "name": "朱畅畅"
-        "birthdayBegin": "2024-12-17"
-        "birthdayEnd": "2024-12-17"
-        "visitTimeBegin": "2024-12-17"    // begin end成对出现
-        "visitTimeEnd": "2024-12-17"
-        // 若无任何条件即所有
-    }
+    "body":{
+    "sex": 1,
+    "name": "朱",
+    "birthdayBegin": "2024-12-17",
+    "birthdayEnd": "2024-12-19",
+    "visitTimeBegin": "",
+    "visitTimeEnd": ""
+}
 }
 ```
 
 **响应：** 
 
 ```json
-//后端直接返回文件流：
-{
-    "code": 200,
-    "msg": "批量导出成功",
-    "headers": {
-        "Content-Type": "text/csv",
-        "Content-Disposition": "attachment; filename=patients.csv"
-	}
-}
-
+id,name,sexName,birthday,idNumber,phone
+1,朱畅畅,男,2024-12-18T14:45,123,4321
 ```
 
 #### 3.2.7 患者信息编辑
@@ -1341,17 +1332,24 @@ http://localhost:8081/api/v{n}/visits
 
 ```json
 {
-    "data": {
-        "total": 3
-        "list":[
-            visit1,
-        	visit2,
-        	visit3
-        	...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": [
+        {
+            "id": 1,
+            "patientId": 1,
+            "doctorId": 1,
+            "deptId": 1,
+            "siteId": 1,
+            "visitNumber": "1",
+            "diagTime": "2024-12-18 18:45:31",
+            "diagOrder": 1,
+            "diagName": "1",
+            "diagCode": "1",
+            "createTime": "2024-12-13T10:45:40.000+00:00",
+            "updateTime": "2024-12-18T10:45:44.000+00:00"
+        }
+    ]
 }
 ```
 
@@ -1372,17 +1370,26 @@ http://localhost:8081/api/v{n}/check_result
 
 ```json
 {
-    "data": {
-        "total": 3
-        "list":[
-            checkResult1,
-        	checkResult2,
-        	checkResult3
-        	...
-        ]
-    },
     "code": 200,
-    "msg": ""
+    "msg": "操作成功",
+    "data": [
+        {
+            "id": 1,
+            "patientId": 1,
+            "isUrgent": 1,
+            "labItemName": "1",
+            "labItemCode": "1",
+            "reportName": "1",
+            "refRange": "1",
+            "labResultSignName": "1",
+            "labFinalValue": "1",
+            "visitingNo": "1",
+            "labResultUnitName": "1",
+            "auditDate": "2024-12-18 18:48:40",
+            "createTime": "2024-12-18T10:48:44.000+00:00",
+            "updateTime": "2024-12-18T10:48:46.000+00:00"
+        }
+    ]
 }
 ```
 
@@ -1403,43 +1410,53 @@ http://localhost:8081/api/v{n}/check_report
 
 ```json
 {
-    "data": {
-        "total": 2
+    "code": 200,
+    "msg": "操作成功",
     "data": [
         {
-            "patientId": "1855597141015232514",
-            "itemCode": "310300064A",
-            "itemName": "光学相干断层成像（OCT）",
-            "visitNumber": "MZ202411120358",
-            "checkTime": "2024-11-12 17:21:29",
-            "files": [    // 一次检查可能有多张图片
-                {
-                    "type": "application/pdf",
-                    "filePath": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
-                },
-                 {
-                    "type": "application/pdf",
-                    "url": "E:\Download\project\e1e16675-e7a8-40d3-b2c3-b2242f56a171.pdf"
-                }
-            ],
-        },
-        {
-            "item_code": "310300064A",
-            "patient_id": "1855597141015232514",
-            "item_name": "光学相干断层成像（OCT）",
-            "visit_number": "MZ202411120358",
-            "check_time": "2024-11-12 17:21:29",
+            "patientId": "1",
+            "itemCode": "1",
+            "itemName": "1",
+            "visitNumber": "1",
+            "checkTime": "2024-12-18T18:49:32",
             "files": [
                 {
-                    "type": "image/jpeg",
-                    "file_path": "E:\Download\project\140a36e0-79ef-420b-adaf-41362093f6ab.jpg"
+                    "type": "application/pdf",
+                    "filePath": "E:\\Download\\project\\140a36e0-79ef-420b-adaf-41362093f6ab.pdf"
                 }
             ]
         }
     ]
-    },
-    "code": 200,
-    "msg": ""
+}
+```
+
+### 12 门诊处方
+
+```json
+{
+    url : "/find/{patientId}",
+    method: get
+}
+```
+
+```json
+{
+  "code": 200,
+  "msg": "操作成功",
+  "data": [
+    {
+      "id": 1,
+      "doctorId": 1,
+      "patientId": 1,
+      "deptId": 1,
+      "regNumber": "1",
+      "recipeNumber": "1",
+      "recipeType": 1,
+      "billingTime": "2024-12-11 12:53:14",
+      "createTime": "2024-12-19T12:53:16",
+      "updateTime": "2024-12-19T12:53:19"
+    }
+  ]
 }
 ```
 

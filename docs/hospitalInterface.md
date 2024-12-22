@@ -1,4 +1,4 @@
-### 1.1 患者就诊信息
+### 1.1 患者就诊信息(测试成功)
 
 #### 1.1.1 基本信息
 
@@ -93,7 +93,7 @@
 
 
 
-### 1.2 门诊处方信息
+### 1.2 门诊处方信息(测试成功)
 
 #### 1.2.1 基本信息
 
@@ -268,7 +268,7 @@
 
 
 
-### 1.3 患者检验结果
+### 1.3 患者检验结果(测试成功)
 
 #### 1.3.1 基本信息
 
@@ -332,7 +332,7 @@
 | refRange(check_results)          | string | 参考范围                                   |      |
 | labResultSignName(check_results) | string | 检验结果标识                               |      |
 | labFinalValue(check_results)     | string | 检验结果                                   |      |
-| visitingNo                       | string | 就诊编号                                   |      |
+| visitingNo(check_results)        | string | 就诊编号                                   |      |
 | sexName(patients)                | string | 性别名称，"男"或"女"                       |      |
 | patientBrithday(patients)        | string | 患者出生日期，格式为 "YYYY-MM-DD HH:MM:SS" |      |
 | labResultUnitName(check_results) | string | 检验结果单位名称                           |      |
@@ -502,7 +502,7 @@
 
 
 
-### 1.5 患者门诊病历
+### 1.5 患者门诊病历(测试成功)
 
 #### 1.5.1 基本信息
 
@@ -593,7 +593,7 @@
 
 
 
-### 1.6 患者敏感信息（电话）查询
+### 1.6 患者敏感信息（电话）查询(测试成功)
 
 #### 1.6.1 基本信息
 
@@ -675,7 +675,7 @@
 
 
 
-### 1.7 患者敏感信息（电话）查询
+### 1.7  视力眼压接口
 
 #### 1.7.1 基本信息
 
