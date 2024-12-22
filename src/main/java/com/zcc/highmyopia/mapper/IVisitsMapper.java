@@ -1,6 +1,7 @@
 package com.zcc.highmyopia.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.po.Visits;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,4 +17,5 @@ import java.util.List;
 @Mapper
 @Component
 public interface IVisitsMapper extends BaseMapper<Visits> {
+    List<Visits> categoryCount(CategoryCountDTO categoryCountDTO);
 }

@@ -1490,5 +1490,62 @@ http://localhost:8081/api/v{n}/check_report
 }
 ```
 
+### 14 分门别类统计患病人数
+
+```json
+{
+    url : "http://localhost:8081/api/v{n}/diagnosis",   // 参数还在考虑中
+    method: GET,
+    body:{
+        // 时间参数为空则为查询所有，但一定要传
+        "beginTime": 20241222
+        "endTime": 20241222
+    }
+}
+```
+
+```json
+{
+    "code": 200,
+    "msg": "操作成功",
+    "data": [
+        {
+            "groupName": "干眼",
+            "totalCount": 4,
+            "categoryCounts": [
+                {
+                    "categoryName": "干眼综合征",
+                    "count": 4
+                }
+            ]
+        },
+        {
+            "groupName": "白内障",
+            "totalCount": 4,
+            "categoryCounts": [
+                {
+                    "categoryName": "白内障",
+                    "count": 1
+                },
+                {
+                    "categoryName": "先天性白内障",
+                    "count": 3
+                }
+            ]
+        },
+        {
+            "groupName": "青光眼",
+            "totalCount": 3,
+            "categoryCounts": [
+                {
+                    "categoryName": "闭角型青光眼",
+                    "count": 3
+                }
+            ]
+        }
+    ]
+}
+```
+
 
 

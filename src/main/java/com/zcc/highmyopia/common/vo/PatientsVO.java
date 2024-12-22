@@ -2,7 +2,10 @@ package com.zcc.highmyopia.common.vo;
 
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,6 +15,9 @@ import java.util.List;
  * @Description
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PatientsVO {
 
     private Long total;

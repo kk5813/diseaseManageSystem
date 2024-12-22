@@ -1,23 +1,26 @@
 package com.zcc.highmyopia.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
 import com.zcc.highmyopia.hospital.service.AsyncDownLoadService;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.po.CheckReports;
+import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.ICheckReportsService;
+import com.zcc.highmyopia.service.IVisitsService;
+import com.zcc.highmyopia.service.impl.VisitsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,6 +40,7 @@ public class TodayController {
     private final ICheckReportsService checkReportsService;
     private final IDownLoadService downLoadService;
     private final AsyncDownLoadService asyncDownLoadService;
+    private final IVisitsService visitsService;
 
     /**
      * @Description 此方法为当天来的患者进行第三方库表查询
@@ -73,6 +77,15 @@ public class TodayController {
         // 不等待任务完成，立即返回响应
         return Result.succ("Tasks have been started, you can query later for the results.");
     }
+
+    @GetMapping("CategoryCount")
+    @ApiOperation(value = "分门别类患病人数统计")
+    @RequiresAuthentication
+    public Result categoryCount(@RequestBody CategoryCountDTO categoryCountDTO){
+        List<CategoryGroupCountVO> categoryGroupCountVOList = visitsService.categoryCount(categoryCountDTO);
+        return Result.succ(categoryGroupCountVOList);
+    }
+
 
 
 

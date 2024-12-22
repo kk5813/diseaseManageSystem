@@ -50,8 +50,8 @@ public class DownLoadServiceTest {
 
     @Test
     void test_GetRecipe() throws Exception {
-        // downLoadService.getRecipe("20240801", "20241125");
-        downLoadService.getRecipe("20241219", "20241219");
+        downLoadService.getRecipe("20240801", "20241125");
+        //downLoadService.getRecipe("20241219", "20241219");
     }
     @Test
     void test_GetReportResult() throws Exception {

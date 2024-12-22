@@ -3,4 +3,14 @@
 <mapper namespace="com.zcc.highmyopia.mapper.IVisitsMapper">
 
 
+    <select id="categoryCount" resultType="com.zcc.highmyopia.po.Visits">
+        select * from visits
+        where diag_name IS NOT NULL and diag_code IS NOT NULL
+        <if test="beginTime != null and beginTime != ''">
+            and diag_time &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and diag_time &lt;= #{endTime}
+        </if>
+    </select>
 </mapper>
