@@ -69,4 +69,7 @@ public class Result {
         m.setMsg(mess);  // 设置自定义的消息
         return m;
     }
+    public static Result fail(int code, String mess){
+        return fail(code,mess,null);
+    }
 }

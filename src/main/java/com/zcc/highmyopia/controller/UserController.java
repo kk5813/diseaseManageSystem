@@ -1,8 +1,6 @@
 package com.zcc.highmyopia.controller;
 
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zcc.highmyopia.common.dto.UserDto;
@@ -11,7 +9,6 @@ import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.common.vo.UserVO;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IUserService;
-import com.zcc.highmyopia.shiro.AccountProfile;
 import com.zcc.highmyopia.util.JwtUtils;
 import com.zcc.highmyopia.util.SaltUtil;
 import com.zcc.highmyopia.util.ShiroUtil;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,8 +80,7 @@ public class UserController {
         if (status != 0) {
             return Result.fail(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getInfo(),null);
         }
-        User temp = userService.getOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUserLoginName, user.getUserLoginName()));
+        User temp = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUserId, user.getUserId()));
         // Todo ShiroUtil.getProfile().getUserName() 这句话在新创的管理员上是空的，这边暂时回表查询一下。
         User one = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUserId, userId));
         log.info(one.getUserName());
@@ -100,7 +95,12 @@ public class UserController {
             temp.setSalt(salt);
             temp.setUserPassword(SecureUtil.md5( salt + SecureUtil.md5(user.getUserPassword())));
         }
-        userService.saveOrUpdate(temp);
+        try{
+            userService.saveOrUpdate(temp);
+        }catch(RuntimeException e){
+            log.error(String.valueOf(e));
+            return Result.fail(ResultCode.USER_EDIT_ERROR.getCode(),ResultCode.USER_EDIT_ERROR.getInfo());
+        }
         return Result.succ(null);
     }
 

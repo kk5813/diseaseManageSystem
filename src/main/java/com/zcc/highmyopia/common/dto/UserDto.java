@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
  */
 @Data
 public class UserDto {
+    @NotBlank(message = "用户id不能为空")
+    private Long userId;
 
     private String userLoginName;
 
@@ -25,6 +27,4 @@ public class UserDto {
     private String userPassword;
 
     private Integer userStatus;
-
-    private String modifier;
 }
