@@ -50,6 +50,11 @@ public class UserController {
     @RequiresAuthentication
     public Result addUser(@Validated @RequestBody User user) {
         User temp = new User();
+        User user1 = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUserLoginName, user.getUserLoginName()));
+        if(user1 != null){
+            log.info(user1.getUserName() + "用户名已注册！");
+            return Result.fail("该用户名已注册！");
+        }
         temp.setCreator(ShiroUtil.getProfile().getUserName());
         temp.setCreateTime(LocalDateTime.now());
         String salt = SaltUtil.getSalt();

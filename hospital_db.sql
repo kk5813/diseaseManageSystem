@@ -376,3 +376,5 @@ CREATE TABLE `visits`
   ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
+# 将user_login_name 修改为候选键
+alter table `user` add UNIQUE(user_login_name);

@@ -86,10 +86,10 @@ public class PDFToImg {
             g.dispose();
             int dot = file.getName().lastIndexOf('.');
             // 将合并的图片保存为文件
-
             ImageIO.write(combinedImage, type, new File(destPath, fileName.substring(0,dot) + "." + type));
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }finally {
             // 关闭PDF文档
             pdDocument.close();
