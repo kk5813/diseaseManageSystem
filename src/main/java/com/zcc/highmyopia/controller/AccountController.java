@@ -6,6 +6,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zcc.highmyopia.common.dto.LoginDto;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
@@ -30,6 +31,7 @@ public class AccountController {
     private final JwtUtils jwtUtils;  // JWT 工具类，用于生成和解析 JWT Token
 
     private final IUserService userService;  // 用户服务，用于用户相关操作
+    public final static Integer USERDELETE = -1;
 
     /**
      * 用户登录接口
@@ -47,6 +49,10 @@ public class AccountController {
         User user = userService.getOne(new QueryWrapper<User>().eq("user_login_name", loginDto.getUserLoginName()));
         Assert.notNull(user, "用户不存在");  // 确保用户存在
 
+        // 用户被删除应该无法访问
+        if(USERDELETE.equals(user.getUserStatus())){
+            return Result.fail(ResultCode.FORBIDDEN.getCode(),ResultCode.FORBIDDEN.getInfo());
+        }
         // todo: 模拟前端MD5加密过程正式测试需要删掉
         // 验证密码：加盐后进行 MD5 加密
         if (!user.getUserPassword().equals(SecureUtil.md5(user.getSalt() +

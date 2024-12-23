@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -86,11 +87,18 @@ public class UserController {
         log.info(one.getUserName());
         temp.setModifier(one.getUserName());
         temp.setUpdateTime(LocalDateTime.now());
-        temp.setUserLoginName(user.getUserLoginName());
-        temp.setUserName(user.getUserName());
-        temp.setUserStatus(user.getUserStatus());
+        if(StringUtils.isNotBlank(user.getUserLoginName())){
+            temp.setUserLoginName(user.getUserLoginName());
+        }
+        if(StringUtils.isNotBlank(user.getUserName())){
+            temp.setUserName(user.getUserName());
+        }
+        if(StringUtils.isNotBlank(user.getUserStatus().toString())){
+            temp.setUserStatus(user.getUserStatus());
+        }
         //密码非空才修改
-        if(user.getUserPassword() != null && !user.getUserPassword().trim().isEmpty()){
+        //user.getUserPassword() != null && !user.getUserPassword().trim().isEmpty()
+        if(StringUtils.isNotBlank(user.getUserPassword())){
             String salt = SaltUtil.getSalt();
             temp.setSalt(salt);
             temp.setUserPassword(SecureUtil.md5( salt + SecureUtil.md5(user.getUserPassword())));

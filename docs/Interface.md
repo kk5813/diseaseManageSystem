@@ -1354,6 +1354,52 @@ http://localhost:8081/api/v{n}/visits
 }
 ```
 
+#### 9.2 分页查询
+
+```json
+{
+    url : "/page",
+    method: get,
+    body:{
+        pageSize,
+        pageNumber,
+    }
+}
+```
+
+```json
+{
+    "data": {
+        "total": 3  //总数
+        "users":[
+            doctor1,
+            doctor2
+            ...
+        ]
+    },
+    "code": 200,
+    "msg": ""
+}
+```
+
+#### 9.3 模糊查询
+
+```json
+{
+    "url": "/search",
+    "method": "get",
+    "body": {
+    "dataStart": "2024-07-01",
+    "dataEnd": "2025-01-01",
+    "patientName": "朱畅畅",
+    "diagName": "1",
+    "diagCode": "1",
+}
+}
+```
+
+**响应：**
+
 ### 10 检查结果
 
 ```json

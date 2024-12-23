@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.interactive.viewerpreferences.PDViewerPreferences;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,5 +39,18 @@ public class VisitsController {
                 .eq(Visits::getPatientId, patientId));
         return Result.succ(list);
     }
+    @GetMapping("/page")
+    @ApiOperation(value = "分页查询患者就诊信息")
+    @RequiresAuthentication
+    public Result getVisitsPage(@RequestParam(defaultValue = "1") int pageNumber,
+                                @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName){
+        return visitsService.getVisitsPage(pageNumber,pageSize, diagName);
+    }
 
+//    @GetMapping("/search")
+//    @ApiOperation(value = "模糊查询患者就诊信息")
+//    @RequiresAuthentication
+//    public Result SearchVisits(){
+//
+//    }
 }

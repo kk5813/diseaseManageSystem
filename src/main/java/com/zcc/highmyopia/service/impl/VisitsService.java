@@ -1,8 +1,14 @@
 package com.zcc.highmyopia.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zcc.highmyopia.common.disease.Disease;
 import com.zcc.highmyopia.common.dto.CategoryCountDTO;
+import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CategoryCountVO;
 import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
 import com.zcc.highmyopia.mapper.IDeptMapper;
@@ -13,6 +19,7 @@ import com.zcc.highmyopia.service.IDeptService;
 import com.zcc.highmyopia.service.IVisitsService;
 import lombok.RequiredArgsConstructor;
 import oracle.sql.INTERVALDS;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -81,6 +88,17 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
             categoryGroupCountVOList.add(categoryGroupCountVO);
         }
         return categoryGroupCountVOList;
+    }
+
+    @Override
+    public Result getVisitsPage(int page, int size, String diagName) {
+        LambdaQueryWrapper<Visits> visitsLambdaQueryWrapper = Wrappers.lambdaQuery();
+        Page<Visits> visitsPage = new Page<>(page, size);
+        if (StringUtils.isNotBlank(diagName)) {
+            visitsLambdaQueryWrapper.like(Visits::getDiagName, diagName);
+        }
+        IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
+        return Result.succ(visitsIPage);
     }
 
 }
