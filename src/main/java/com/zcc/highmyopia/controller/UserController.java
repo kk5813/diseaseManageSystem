@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zcc.highmyopia.common.dto.UserDto;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.common.vo.UserVO;
@@ -58,7 +59,7 @@ public class UserController {
         temp.setCreator(ShiroUtil.getProfile().getUserName());
         temp.setCreateTime(LocalDateTime.now());
         String salt = SaltUtil.getSalt();
-        String password = SecureUtil.md5(salt + SecureUtil.md5(user.getUserPassword()));
+        String password = SecureUtil.md5(salt + SecureUtil.md5(user.getUserPassword().trim()));
         temp.setUserPassword(password);
         temp.setSalt(salt);
         temp.setUserLoginName(user.getUserLoginName());
@@ -72,7 +73,7 @@ public class UserController {
     @PostMapping("/edit")
     @ApiOperation(value = "编辑用户")
     @RequiresAuthentication
-    public Result editUser(@RequestBody User user, HttpServletRequest request) {
+    public Result editUser(@RequestBody UserDto user, HttpServletRequest request) {
         String jwtToken = request.getHeader("Authorization");
         Claims claimByToken = jwtUtils.getClaimByToken(jwtToken);
         Integer status = (Integer) claimByToken.get("status");
@@ -80,18 +81,25 @@ public class UserController {
         String userId = claimByToken.getSubject();
         log.info("当前用户的ID是：{}", userId);
         // 身份校验:只有管理员才有权限修改
-
-        if (status != 0)
+        if (status != 0) {
             return Result.fail(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getInfo(),null);
+        }
         User temp = userService.getOne(new LambdaQueryWrapper<User>()
                 .eq(User::getUserLoginName, user.getUserLoginName()));
-        temp.setModifier(ShiroUtil.getProfile().getUserName());
+        // Todo ShiroUtil.getProfile().getUserName() 这句话在新创的管理员上是空的，这边暂时回表查询一下。
+        User one = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUserId, userId));
+        log.info(one.getUserName());
+        temp.setModifier(one.getUserName());
         temp.setUpdateTime(LocalDateTime.now());
         temp.setUserLoginName(user.getUserLoginName());
         temp.setUserName(user.getUserName());
         temp.setUserStatus(user.getUserStatus());
-        temp.setUserPassword(SecureUtil.md5(user.getSalt() + SecureUtil.md5(user.getUserPassword())));
-
+        //密码非空才修改
+        if(user.getUserPassword() != null && !user.getUserPassword().trim().isEmpty()){
+            String salt = SaltUtil.getSalt();
+            temp.setSalt(salt);
+            temp.setUserPassword(SecureUtil.md5( salt + SecureUtil.md5(user.getUserPassword())));
+        }
         userService.saveOrUpdate(temp);
         return Result.succ(null);
     }
