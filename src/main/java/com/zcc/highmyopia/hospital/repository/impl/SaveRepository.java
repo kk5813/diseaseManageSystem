@@ -52,8 +52,9 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveVisits(List<VisitEntity> visitEntities) {
-        if (visitEntities == null || visitEntities.isEmpty())
+        if (visitEntities == null || visitEntities.isEmpty()) {
             return;
+        }
         // 封装实体
         List<Visits> visitsList = new ArrayList<>();
         // 去重
@@ -73,6 +74,8 @@ public class SaveRepository implements ISaveRepository {
                 .values());
 
         List<Site> sites = new ArrayList<>(visitEntities.stream()
+                // 添加过滤步骤，排除getSiteId为空的visitEntity
+                .filter(visitEntity -> visitEntity.getSiteId() != null)
                 .map(visitEntity -> {
                     Site site = new Site();
                     site.setId(visitEntity.getSiteId());

@@ -70,8 +70,9 @@ public class DownLoadService implements IDownLoadService {
         Response resp = HttpClientUtils.httpPostJson(AHisHost, path, connectTimeOut, headers,
                 query, reqJson, signHeaderPrefixList, appKey, appSecret, hospId);
         int statusCode = resp.getStatusCode();
-        if (statusCode != 200)
+        if (statusCode != 200) {
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        }
         String body = resp.getBody();
         // 解析 JSON 响应体
         List<VisitEntity> visitEntities = JSON.parseArray(

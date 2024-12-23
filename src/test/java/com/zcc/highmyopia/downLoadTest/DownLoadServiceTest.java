@@ -50,7 +50,7 @@ public class DownLoadServiceTest {
     String dataNoSplit = today.format(formatterNoSplit);
     @Test
     void test_GetVisit() throws Exception {
-        List<VisitEntity> patientVisit = downLoadService.getPatientVisit("20240520", "20240529");
+        List<VisitEntity> patientVisit = downLoadService.getPatientVisit("20240603", "20240730");
         System.out.println(patientVisit);
     }
 
@@ -83,7 +83,14 @@ public class DownLoadServiceTest {
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
     }
-
+    @Test
+    void test_addCheckResult() {
+        LocalDateTime start = LocalDateTime.now();
+        System.out.println(start);
+        downLoadService.getCheckResult("20241219", "20241219");
+        LocalDateTime end = LocalDateTime.now();
+        System.out.println(end);
+    }
     @Test
     void test_downLoadOne(){
         List<ReportFiles> list = reportFilesMapper.queryBatch(33L);
