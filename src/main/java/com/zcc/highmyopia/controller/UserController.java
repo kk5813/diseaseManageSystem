@@ -12,6 +12,7 @@ import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.util.JwtUtils;
 import com.zcc.highmyopia.util.SaltUtil;
 import com.zcc.highmyopia.util.ShiroUtil;
+import com.zcc.highmyopia.util.ThrowUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,10 +50,7 @@ public class UserController {
     public Result addUser(@Validated @RequestBody User user) {
         User temp = new User();
         User user1 = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getUserLoginName, user.getUserLoginName()));
-        if(user1 != null){
-            log.info(user1.getUserName() + "用户名已注册！");
-            return Result.fail("该用户名已注册！");
-        }
+        ThrowUtils.throwIf(user1!=null, ResultCode.USER_EDIT_ERROR,"该用户名已注册！");
         temp.setCreator(ShiroUtil.getProfile().getUserName());
         temp.setCreateTime(LocalDateTime.now());
         String salt = SaltUtil.getSalt();
