@@ -72,4 +72,6 @@ public class Result {
     public static Result fail(int code, String mess){
         return fail(code,mess,null);
     }
+
+    public static Result error(ResultCode resultCode){ return fail(resultCode.getCode(), resultCode.getInfo());}
 }

@@ -67,4 +67,14 @@ public class GlobalExceptionHandler {
         log.error("运行时异常:-------------->", e);  // 记录异常日志
         return Result.fail(e.getMessage());  // 返回自定义的错误结果
     }
+
+    /**
+     * 捕捉 业务异常 BusinessException
+     * 返回 业务定义的错误状态码和自定义的失败响应
+     */
+    @ExceptionHandler(BusinessException.class)
+    public Result businessExceptionHandler(BusinessException e) {
+        log.error("BusinessException", e);
+        return Result.fail(e.getCode(), e.getMessage());
+    }
 }

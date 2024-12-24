@@ -740,7 +740,7 @@ String host = "http://sit.aierchina.com:8710";
 | iopOs       | String | 左眼眼压       |
 | iopOd       | String | 右眼眼压       |
 
-响应数据样例：
+响应数据样例：	
 
 ```json
 {

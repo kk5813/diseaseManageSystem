@@ -23,7 +23,11 @@ public enum ResultCode {
     NOT_ACCEPTABLE(406, "用户请求的格式不可得（比如用户请求JSON格式，但是只有XML格式）。"),
     GONE(410, "用户请求的资源被永久删除，且不会再得到的。"),
     INTERNAL_SERVER_ERROR(500, "服务器发生错误，用户将无法判断发出的请求是否成功"),
-    USER_EDIT_ERROR(4031,"登录用户名已存在，操作失败"),
+
+    // 五位数的异常代码，为业务异常代码。以后尽量用这个吧，自动定义，自己说明。
+    USER_EDIT_ERROR(40003,"登录用户名已存在，操作失败"),
+    PARAMS_ERROR(40000, "请求参数错误"),
+    OPERATION_ERROR(50001, "操作失败");
     ;
 
     private int code;
