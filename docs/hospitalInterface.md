@@ -673,31 +673,49 @@
 
 
 
-
-
-### 1.7  视力眼压接口
+## 1.7 视力眼压接口
 
 #### 1.7.1 基本信息
 
 > 请求host: http://sit.aierchina.com:8710/external-api
 >
-> 请求path：
+> 请求path：/external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber
 >
-> 请求方式：POST
+> 请求方式：get
 >
 > 接口描述：该接口用于获取患者的体查信息（视力和眼压）
 
-
 #### 1.7.2 请求参数
 
-格式：application/json
+格式：路径参数querys
 
 参数说明：
+
+| 参数名称    | 值     | 描述                              |
+| ----------- | ------ | --------------------------------- |
+| checkBdate  | String | 检查的开始日期，格式为 YYYY-MM-DD |
+| checkEdate  | String | 检查的结束日期，格式为 YYYY-MM-DD |
+| visitNumber | String | 访问编号或病例编号                |
 
 请求参数代码：
 
 ```java
+String host = "http://sit.aierchina.com:8710";
+        String path = "/external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
+        int connectTimeout=7200;
+        String HospId = "9999";
+        String appKey = "aviseq_9999";
+        String appSecret = "lsj.z4HzPyAA";
 
+        Map<String,String> querys = new HashMap<>();
+        querys.put("checkBdate","2024-06-09");
+        querys.put("checkEdate","2024-07-08");
+        querys.put("visitNumber","MZ202407070797");
+        String reqJson = JsonUtil.toJson(querys);
+        Map<String,String>headers =new HashMap<>();
+        List<String> signHeaderPrefixList = new ArrayList<>();
+        Response resp = HttpClientUtils.httpGet(host, path, connectTimeout, headers, querys, signHeaderPrefixList,appKey,appSecret,HospId);
+        System.out.println(resp.getBody());
 ```
 
 #### 1.7.3 响应数据
@@ -706,13 +724,45 @@
 
 参数说明：
 
+| 参数名称    | 类型   | 描述           |
+| ----------- | ------ | -------------- |
+| patientName | String | 姓名           |
+| visitNumber | String | 就诊号         |
+| patientId   | String | 患者ID         |
+| scdOs       | String | 左眼裸眼视力   |
+| scdOd       | String | 右眼裸眼视力   |
+| scdOsValue  | String | 左眼裸眼视力值 |
+| scdOdValue  | String | 右眼裸眼视力值 |
+| ccdOs       | String | 左眼矫正视力   |
+| ccdOd       | String | 右眼矫正视力   |
+| ccdOsValue  | String | 左眼矫正视力值 |
+| ccdOdValue  | String | 右眼矫正视力值 |
+| iopOs       | String | 左眼眼压       |
+| iopOd       | String | 右眼眼压       |
+
 响应数据样例：
 
 ```json
-
+{
+    "data": [
+        {
+            "patientName": "祝倩",
+            "iopOd": null,
+            "scdOsValue": "0.1",
+            "patientId": 1809846719874044000,
+            "visitNumber": "MZ202407070797",
+            "ccdOs": "10",
+            "scdOd": "02",
+            "scdOdValue": "0.12",
+            "ccdOsValue": "0.8",
+            "ccdOdValue": "1.0",
+            "iopOs": null,
+            "ccdOd": "11",
+            "scdOs": "01"
+        }
+    ],
+    "resultCode": "1",
+    "resultMsg": "成功！"
+}
 ```
-
-
-
-
 

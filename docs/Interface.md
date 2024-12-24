@@ -1363,6 +1363,7 @@ http://localhost:8081/api/v{n}/visits
     body:{
         pageSize,
         pageNumber,
+        diagName,
     }
 }
 ```
@@ -1382,23 +1383,7 @@ http://localhost:8081/api/v{n}/visits
 }
 ```
 
-#### 9.3 模糊查询
 
-```json
-{
-    "url": "/search",
-    "method": "get",
-    "body": {
-    "dataStart": "2024-07-01",
-    "dataEnd": "2025-01-01",
-    "patientName": "朱畅畅",
-    "diagName": "1",
-    "diagCode": "1",
-}
-}
-```
-
-**响应：**
 
 ### 10 检查结果
 

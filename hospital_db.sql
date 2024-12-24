@@ -378,3 +378,29 @@ CREATE TABLE `visits`
 SET FOREIGN_KEY_CHECKS = 1;
 # 将user_login_name 修改为候选键
 alter table `user` add UNIQUE(user_login_name);
+
+DROP TABLE IF EXISTS `patient_vision_records`;
+CREATE TABLE `patient_vision_records`
+(
+    `id`            bigint(20)                                                   NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+    `patient_name`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '患者姓名',
+    `visit_number`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊号',
+    `patient_id`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '患者ID',
+    `scd_os`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼裸眼视力',
+    `scd_od`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼裸眼视力',
+    `scd_os_value`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼裸眼视力值',
+    `scd_od_value`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼裸眼视力值',
+    `ccd_os`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼矫正视力',
+    `ccd_od`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼矫正视力',
+    `ccd_os_value`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼矫正视力值',
+    `ccd_od_value`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼矫正视力值',
+    `iop_os`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼眼压',
+    `iop_od`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '右眼眼压',
+    `create_time`   datetime                                                     NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time`   datetime                                                     NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;

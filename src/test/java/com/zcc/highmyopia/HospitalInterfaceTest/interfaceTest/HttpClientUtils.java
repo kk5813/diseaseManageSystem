@@ -74,8 +74,9 @@ public class HttpClientUtils {
      */
     public static Response httpGet(String host, String path, int connectTimeout, Map<String, String> headers, Map<String, String> querys, List<String> signHeaderPrefixList, String appKey, String appSecret, String hostId)
             throws Exception {
+        //headers.put("Content-Type","Content-type:text/html;charset=utf-8");
         headers = initialBasicHeader(HttpMethod.GET, path, headers, querys, null, signHeaderPrefixList, appKey, appSecret,hostId);
-
+        //headers.put("AccessNonce","jAmrFEikpC");
         HttpClient httpClient = wrapClient(host);
         httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, getTimeout(connectTimeout));
 
@@ -84,7 +85,7 @@ public class HttpClientUtils {
         for (Map.Entry<String, String> e : headers.entrySet()) {
             get.addHeader(e.getKey(), MessageDigestUtil.utf8ToIso88591(e.getValue()));
         }
-
+        headers.forEach((x, y)->{System.out.println(x + ":" + y);});
         return convert(httpClient.execute(get));
     }
 

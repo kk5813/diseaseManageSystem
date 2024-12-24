@@ -2,6 +2,7 @@ package com.zcc.highmyopia.HospitalInterfaceTest.interfaceTest;
 
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -175,6 +176,37 @@ public class test {
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
         Response resp = HttpClientUtils.httpPostJson(host, path, connectTimeout, headers, querys, reqJson,signHeaderPrefixList,appKey,appSecret,hospId);
+        System.out.println(resp.getBody());
+        System.out.println(resp.getStatusCode());
+    }
+
+    /**
+     * 请求host: http://sit.aierchina.com:8710
+     * 请求path：/external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber
+     * 请求方式：get
+     * 接口描述：该接口用于慢病管理体察数据查询接口
+     *  @Description :
+     *  @available : True
+     *  @Date : 2024-12-24
+     *  @tester :aigao
+     */
+    @Test
+    public  void testgetAutoVisionByVisitNumber() throws Exception {
+        String host = "http://sit.aierchina.com:8710";
+        String path = "/external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
+        int connectTimeout=7200;
+        String HospId = "9999";
+        String appKey = "aviseq_9999";
+        String appSecret = "lsj.z4HzPyAA";
+
+        Map<String,String> querys = new HashMap<>();
+        querys.put("checkBdate","2024-06-09");
+        querys.put("checkEdate","2024-07-08");
+        querys.put("visitNumber","MZ202407070797");
+        String reqJson = JsonUtil.toJson(querys);
+        Map<String,String>headers =new HashMap<>();
+        List<String> signHeaderPrefixList = new ArrayList<>();
+        Response resp = HttpClientUtils.httpGet(host, path, connectTimeout, headers, querys, signHeaderPrefixList,appKey,appSecret,HospId);
         System.out.println(resp.getBody());
         System.out.println(resp.getStatusCode());
     }
