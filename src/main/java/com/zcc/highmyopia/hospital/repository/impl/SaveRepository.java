@@ -2,27 +2,20 @@ package com.zcc.highmyopia.hospital.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.mapper.*;
 import com.zcc.highmyopia.po.*;
 import com.zcc.highmyopia.service.*;
-import com.zcc.highmyopia.service.impl.DoctorService;
-import com.zcc.highmyopia.service.impl.SiteService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**

@@ -13,6 +13,14 @@ spring:
     url: jdbc:mysql://43.136.178.202:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: mysql9344!
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: HikariPool-1
+
 
 # 应用配置
 app:

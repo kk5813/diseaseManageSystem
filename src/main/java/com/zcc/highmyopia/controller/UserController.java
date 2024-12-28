@@ -139,7 +139,7 @@ public class UserController {
         User user = userService.getById(userId);
         return Result.succ(user);
     }
-    @GetMapping("/search")
+    @PostMapping("/search")
     @ApiOperation(value = "模糊查找用户")
     @RequiresAuthentication
     public Result SearchUser(@RequestBody User user) {

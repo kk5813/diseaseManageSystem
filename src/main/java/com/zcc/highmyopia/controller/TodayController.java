@@ -78,15 +78,13 @@ public class TodayController {
         return Result.succ("Tasks have been started, you can query later for the results.");
     }
 
-    @GetMapping("CategoryCount")
+    @PostMapping("CategoryCount")
     @ApiOperation(value = "分门别类患病人数统计")
     @RequiresAuthentication
     public Result categoryCount(@RequestBody CategoryCountDTO categoryCountDTO){
+        log.info("收到请求");
         List<CategoryGroupCountVO> categoryGroupCountVOList = visitsService.categoryCount(categoryCountDTO);
         return Result.succ(categoryGroupCountVOList);
     }
-
-
-
 
 }

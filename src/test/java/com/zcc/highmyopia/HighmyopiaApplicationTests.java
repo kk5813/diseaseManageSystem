@@ -1,7 +1,9 @@
 package com.zcc.highmyopia;
 
 import cn.hutool.crypto.SecureUtil;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
+import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IUserMapper;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.po.Visits;
@@ -201,6 +203,21 @@ class HighmyopiaApplicationTests {
         visitEntity.setVisitNumber("123445566");
         Visits visits = VisitEntity.entityToPo(visitEntity);
         System.out.println(visits);
+    }
+
+    @Resource
+    private IDownLoadService downLoadService;
+    @Test
+    public void getDataSet() throws InterruptedException {
+        LocalDateTime today = LocalDateTime.of(2024,12,27,0,0);
+        LocalDateTime now = LocalDateTime.of(2024,1,31,0,0);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        while (now.isBefore(today)){
+            String date = now.format(formatter);
+            downLoadService.getFunds(date, date);
+            now = now.plusDays(1);
+            Thread.sleep(50);
+        }
     }
 
 

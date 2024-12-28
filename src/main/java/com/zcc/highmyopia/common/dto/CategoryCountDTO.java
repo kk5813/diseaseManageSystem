@@ -17,4 +17,5 @@ public class CategoryCountDTO {
     private String beginTime;
 
     private String endTime;
+
 }

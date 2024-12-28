@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class PatientsDTO {
 
-
     private String name;
 
     private Integer sex;

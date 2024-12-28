@@ -1526,12 +1526,12 @@ http://localhost:8081/api/v{n}/check_report
 
 ```json
 {
-    url : "http://localhost:8081/api/v{n}/diagnosis",   // 参数还在考虑中
+    url : "/today/CategoryCount",  
     method: GET,
     body:{
         // 时间参数为空则为查询所有，但一定要传
-        "beginTime": 20241222
-        "endTime": 20241222
+        "beginTime": "",
+        "endTime": ""
     }
 }
 ```

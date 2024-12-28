@@ -1,21 +1,15 @@
 package com.zcc.highmyopia.hospital.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
-import com.zcc.highmyopia.mapper.IReportFilesMapper;
-import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.util.PDFToImg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oracle.security.o5logon.a;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -290,7 +283,7 @@ public class DownLoadService implements IDownLoadService {
         //创建新的目录单独存PDF转换后的图片
         String PDFToImgPath = targetPath + PDFToImgRelativePath;
         File destPath = new File(PDFToImgPath);
-        log.info("写如路径为：" + PDFToImgPath);
+        log.info("写入路径为：" + PDFToImgPath);
         if(!destPath.exists()){
             destPath.mkdirs();
         }
@@ -300,7 +293,7 @@ public class DownLoadService implements IDownLoadService {
                 fos.write(fileBytes);
                 // 同时将pdf转化为image
                 if(fileName.endsWith(".pdf")) {
-                    log.info("写如图片");
+                    log.info("保存为图片");
                     PDFToImg.pdf2Image(targetPath, PDFToImgPath, fileName, PDFToImg.PNG, PDFToImg.DPI_MID);
                 }
             }
@@ -320,5 +313,71 @@ public class DownLoadService implements IDownLoadService {
         reportFiles.forEach(this::DownLoadReportImage);
     }
 
+    @Override
+    public void DownLoadReportImageFunds(ReportFiles reportFile) {
 
+        String urls = APacsHost + reportFile.getUrl();  // 获取文件的URL
+
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(urls, byte[].class);
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode != 200) {
+            throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        }
+
+        byte[] fileBytes = response.getBody();  // 获取文件内容的字节数组
+
+        String fileType = reportFile.getType();
+        fileType = fileType.split("/")[1];
+
+        // 从 reportFile 获取文件名，假设 reportFile 对象有 getFileName() 方法
+        String fileName = UUID.randomUUID() + "." + fileType;
+
+        File targetFile = new File(targetPath, fileName);  // 拼接文件路径和文件名
+
+        // 确保目标目录存在
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();  // 创建目标目录
+        }
+
+        // 将文件内容写入到指定路径
+        try (FileOutputStream fos = new FileOutputStream(targetFile)) {
+            if (fileBytes != null) {
+                fos.write(fileBytes);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("文件保存失败", e);
+        }
+    }
+    @Override
+    public void getFunds(String beginData, String endData) throws InterruptedException {
+        String path = "/api/report/getList";
+        String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
+                .queryParam("physc_bdate", beginData)
+                .queryParam("physc_edate", endData)
+                .toUriString();
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        int statusCode = response.getStatusCodeValue();
+        if (statusCode != 200)
+            throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        String body = response.getBody();
+        List<CheckReportsEntity> checkReportsEntities = JSON.parseArray(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONArray("data").toString(),
+                CheckReportsEntity.class);
+        log.info("{}的数据以及完成保存，下面进行保存图片",beginData);
+        int i = 0;
+        for (CheckReportsEntity checkReportsEntity : checkReportsEntities) {
+            if (checkReportsEntity.getItemName().equals("眼底照相")){
+                List<ReportFiles> files = checkReportsEntity.getFiles();
+                for (ReportFiles file : files) {
+                    DownLoadReportImageFunds(file);
+                    i++;
+                }
+            }
+        }
+        log.info("{} 数量为:{}", beginData, i);
+    }
 }

@@ -40,4 +40,8 @@ public abstract interface IDownLoadService {
     void DownLoadReportImageBatch();
 
 
+    void DownLoadReportImageFunds(ReportFiles reportFile);
+    // 获取眼底照相的图片
+    void getFunds(String beginData, String endData) throws InterruptedException;
+
 }

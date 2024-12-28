@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CheckReportVO;
 import com.zcc.highmyopia.common.vo.ReportFilesVO;
-import com.zcc.highmyopia.mapper.ICheckReportsMapper;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.CheckReports;
-import com.zcc.highmyopia.po.CheckResults;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.service.ICheckReportsService;
-import com.zcc.highmyopia.service.ICheckResultsService;
 import com.zcc.highmyopia.service.IReportFilesService;
 import com.zcc.highmyopia.util.PDFToImg;
 import io.swagger.annotations.Api;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,6 +88,7 @@ public class CheckReportsController {
                 .collect(Collectors.toList());
         return Result.succ(checkReportVOS);
     }
+
     private String pdfPathToImgPath(String filePath){
         File file = new File(filePath);
         File parentFile = file.getParentFile();
