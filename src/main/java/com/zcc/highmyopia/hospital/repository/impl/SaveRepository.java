@@ -40,8 +40,10 @@ public class SaveRepository implements ISaveRepository {
     private final TransactionTemplate transactionTemplate;
     private final IPatientsService patientsService;
     private final IOrderDetailService orderDetailService;
+    private final IElementVisionService elementVisionService;
 
     private final IReportFilesMapper reportFilesMapper;
+
 
     @Override
     public void saveVisits(List<VisitEntity> visitEntities) {
@@ -259,28 +261,44 @@ public class SaveRepository implements ISaveRepository {
     }
 
 
-@Override
-public List<ReportFiles> getNotDownLoadFiles() {
+    @Override
+    public List<ReportFiles> getNotDownLoadFiles() {
     return reportFilesMapper.getNotDownLoad();
 }
 
-@Override
-public void updateReportFiles(ReportFiles reportFile) {
+    @Override
+    public void updateReportFiles(ReportFiles reportFile) {
         reportFilesMapper.update(reportFile,
                 new LambdaUpdateWrapper<ReportFiles>()
                         .eq(ReportFiles::getId, reportFile.getId())
                         .set(ReportFiles::getIsDownLoad, reportFile.getIsDownLoad())
                         .set(ReportFiles::getFilePath, reportFile.getFilePath()));
+    }
+
+    @Override
+    public void savePatientInfo(PatientEntity patientEntity) {
+        Patients patients = PatientEntity.entityToPo(patientEntity);
+        try {
+            patientsService.saveOrUpdate(patients);
+        } catch (Exception e) {
+            log.error("保存用户信息失败", e);
+            throw new RuntimeException("保存用户信息失败", e);
+        }
 }
 
-@Override
-public void savePatientInfo(PatientEntity patientEntity) {
-    Patients patients = PatientEntity.entityToPo(patientEntity);
-    try {
-        patientsService.saveOrUpdate(patients);
-    } catch (Exception e) {
-        log.error("保存用户信息失败", e);
-        throw new RuntimeException("保存用户信息失败", e);
+    @Override
+    public void saveElementVision(List<ElementVisionEntity> visionEntities) {
+        if (visionEntities == null || visionEntities.isEmpty())
+            return;
+
+        List<ElementVision> elementVisions = visionEntities.stream()
+                .map(ElementVisionEntity::entityToPo).collect(Collectors.toList());
+
+        try {
+            elementVisionService.saveOrUpdateBatch(elementVisions);
+        }catch (Exception e){
+            log.error("视力眼压数据保存失败", e);
+            throw new RuntimeException("视力眼压数据保存失败", e);
+        }
     }
-}
 }

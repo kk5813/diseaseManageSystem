@@ -1,7 +1,6 @@
 package com.zcc.highmyopia.hospital.entity;
 
-import com.zcc.highmyopia.po.CheckReports;
-import com.zcc.highmyopia.po.Visits;
+import com.zcc.highmyopia.po.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,6 +64,27 @@ public class VisitEntity{
         }
 
         return visits;
+    }
+
+    public static VisitEntity poToEntity(Visits visits, Patients patients, Doctor doctor, Dept dept, Site site) {
+        return VisitEntity.builder()
+                .birthday(String.valueOf(patients.getBirthday()))
+                .patientName(patients.getName())
+                .deptName(dept.getDeptName())
+                .patientId(visits.getPatientId())
+                .diagTime(String.valueOf(visits.getDiagTime()))
+                .visitNumber(visits.getVisitNumber())
+                .diagOrder(visits.getDiagOrder())
+                .sex(patients.getSex())
+                .deptId(visits.getDeptId())
+                .siteName(site.getSiteName())
+                .diagName(visits.getDiagName())
+                .diagCode(visits.getDiagCode())
+                .doctorName(doctor.getDoctorName())
+                .doctorId(visits.getDoctorId())
+                .sexName(patients.getSexName())
+                .siteId(visits.getSiteId())
+                .build();
     }
 
 }

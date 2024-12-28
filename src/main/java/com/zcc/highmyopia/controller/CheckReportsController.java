@@ -25,6 +25,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -71,10 +72,9 @@ public class CheckReportsController {
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();
-                                if(reportFile.getType() == ".pdf"){
+                                if((reportFile.getType().equals("application/pdf"))){
                                      reportFilesVO.setFilePath(pdfPathToImgPath(reportFile.getFilePath()));
-                                     int dot = reportFilesVO.getFilePath().lastIndexOf(".") + 1;
-                                     reportFilesVO.setType("image/" + reportFile.getFilePath().substring(dot));
+                                     reportFilesVO.setType("image/png");
                                 }else{
                                     reportFilesVO.setType(reportFile.getType());
                                     reportFilesVO.setFilePath(reportFile.getFilePath());

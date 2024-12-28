@@ -52,4 +52,21 @@ public class ElementEntity {
         return element;
     }
 
+    public static ElementEntity poToEntity(Element element, String patientName){
+        return ElementEntity.builder()
+                .id(element.getId())
+                .patientId(element.getPatientId())
+                .patientName(patientName)
+                .mainAppeal(element.getMainAppeal())
+                .pastHistory(element.getPastHistory())
+                .presentIllness(element.getPresentIllness())
+                .allergy(element.getAllergy())
+                .specialOs(element.getSpecialOs())
+                .specialOd(element.getSpecialOd())
+                .visitNumber(element.getVisitNumber())
+                .physicalExam(element.getPhysicalExam())
+                .dispose(element.getDispose())
+                .build();
+    }
+
 }

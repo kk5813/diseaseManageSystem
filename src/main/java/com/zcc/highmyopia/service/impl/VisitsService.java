@@ -91,14 +91,14 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
     }
 
     @Override
-    public Result getVisitsPage(int page, int size, String diagName) {
+    public IPage<Visits> getVisitsPage(int page, int size, String diagName) {
         LambdaQueryWrapper<Visits> visitsLambdaQueryWrapper = Wrappers.lambdaQuery();
         Page<Visits> visitsPage = new Page<>(page, size);
         if (StringUtils.isNotBlank(diagName)) {
             visitsLambdaQueryWrapper.like(Visits::getDiagName, diagName);
         }
         IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
-        return Result.succ(visitsIPage);
+        return visitsIPage;
     }
 
 }

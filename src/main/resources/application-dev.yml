@@ -71,12 +71,18 @@ highmyopia:
     header: Authorization
 
 hospital:
-  hospId: 1824
-  appKey: Cdm_1824
-  appSecret: ywgp.lbol
   AHisHost: http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
   filePath: E:\Download\project
+
+  hospId: 1824
+  appKey: Cdm_1824
+  appSecret: ywgp.lbol
+
+  vision-hospId: 9999
+  vision-appKey: aviseq_9999
+  vision-appSecret: lsj.z4HzPyAA
+
   # 这个路径是在原来filePath后面+pdfImg
   pdf2ImgPath: \pdfImg
 
@@ -86,7 +92,7 @@ knife4j:
   enable-token: true
   token-header-name: Authorization
   # 这里的token是jwt令牌
-  token-value: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MCwiaWF0IjoxNzM0NTI5MTA5LCJleHAiOjE3MzUxMzM5MDl9.0sIR4uV1QeV3MfwuIt7C8EOKRelKhD008FJgR_fMqsU_gr_wSrGsg01B6SzX63Xd6oPvgyYVbcjnYzpThNiJlQ"
+  token-value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MSwiaWF0IjoxNzM1MzgyMjY3LCJleHAiOjE3MzU5ODcwNjd9.Cibeu7C199fUE8BveA-5gedem52VJLVKSmsnwQL8a5sSxAcdtSZf3mMOP7ZkqXYXNBhdko1W_ikSwBn-IPKXMw
 #  basic: #开启密码验证
 #    enable: true
 #    username: root

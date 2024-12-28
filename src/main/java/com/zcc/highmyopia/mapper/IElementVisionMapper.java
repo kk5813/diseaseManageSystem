@@ -1,7 +1,7 @@
 package com.zcc.highmyopia.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zcc.highmyopia.po.PatientVisionRecords;
+import com.zcc.highmyopia.po.ElementVision;
 
 /**
  * @ClassName IPatientVisionRecords
@@ -10,6 +10,6 @@ import com.zcc.highmyopia.po.PatientVisionRecords;
  * @Date 2024/12/24 11:02
  * @Version 1.0
  */
-public interface IPatientVisionRecordsMapper extends BaseMapper<PatientVisionRecords> {
+public interface IElementVisionMapper extends BaseMapper<ElementVision> {
 
 }

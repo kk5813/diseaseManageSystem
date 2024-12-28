@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.common.vo;
 
+import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.po.Element;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,6 @@ public class ElementVO {
 
     private Long total;
 
-    private List<Element> elements;
+    private List<ElementEntity> elements;
 
 }

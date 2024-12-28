@@ -4,6 +4,7 @@ package com.zcc.highmyopia.service;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zcc.highmyopia.common.dto.ElementDTO;
+import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.po.Element;
 

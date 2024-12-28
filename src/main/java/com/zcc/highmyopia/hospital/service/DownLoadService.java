@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
+import com.zcc.highmyopia.hospital.utils.Constants;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.util.PDFToImg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,12 @@ public class DownLoadService implements IDownLoadService {
     private String appKey;
     @Value("${hospital.appSecret}")
     private String appSecret;
+    @Value("${hospital.vision-hospId}")
+    private String visionHospId;
+    @Value("${hospital.vision-appKey}")
+    private String visionAppKey;
+    @Value("${hospital.vision-appSecret}")
+    private String visionAppSecret;
     @Value("${hospital.AHisHost}")
     private String AHisHost;
     @Value("${hospital.APacsHost}")
@@ -183,6 +191,40 @@ public class DownLoadService implements IDownLoadService {
                 JSON.parseObject(body).getJSONArray("data").toString(),
                 PatientEntity.class);
         saveRepository.savePatientInfo(patientEntity);
+    }
+
+    @Override
+    public void getElementVision(String beginData, String endData, String visitNumber) throws Exception {
+        if (StringUtils.isBlank(visitNumber))
+            throw new AppException(400, "visitNumber字段必传");
+        String path = "/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
+
+        Map<String,String> querys = new HashMap<>();
+        querys.put("checkBdate",beginData);
+        querys.put("checkEdate",endData);
+        querys.put("visitNumber",visitNumber);
+
+        Map<String,String>headers =new HashMap<>();
+        List<String> signHeaderPrefixList = new ArrayList<>();
+        Response resp = HttpClientUtils.httpGet(AHisHost, path, connectTimeOut, headers, querys, signHeaderPrefixList,visionAppKey,visionAppSecret,visionHospId);
+        int statusCode = resp.getStatusCode();
+        if (statusCode != 200)
+            throw new AppException(statusCode, "请求获取患者就诊信息失败");
+        String body = resp.getBody();
+        List<ElementVisionEntity> visionEntities = JSON.parseArray(
+                JSON.parseObject(body).getJSONArray("data").toString(),
+                ElementVisionEntity.class);
+        saveRepository.saveElementVision(visionEntities);
+    }
+    @Override
+    public void getElementVision(String beginData, String endData, List<String> visitNumber) throws Exception {
+        visitNumber.forEach( entity -> {
+            try {
+                getElementVision(beginData,endData,entity);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override

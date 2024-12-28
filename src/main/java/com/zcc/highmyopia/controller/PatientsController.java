@@ -2,6 +2,7 @@ package com.zcc.highmyopia.controller;
 
 
 import com.esotericsoftware.minlog.Log;
+import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.PatientsVO;
@@ -135,4 +136,18 @@ public class PatientsController {
     }
 
 
+    @GetMapping("element_time_line")
+    @RequiresAuthentication
+    @ApiOperation(value = "展示病人就诊以及病历时间线")
+    public Result timeLineElement(@RequestParam Long patientId){
+        List<ElementShowDTO> timeLineElement = patientService.timeLineElement(patientId);
+        return Result.succ(timeLineElement);
+    }
+
+    @GetMapping("a")
+    @RequiresAuthentication
+    @ApiOperation(value = "病人计划随访日期时间")
+    public Result addToFollowUp(){
+        return Result.succ(null);
+    }
 }

@@ -1,5 +1,6 @@
 package com.zcc.highmyopia.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.common.lang.Result;
@@ -16,5 +17,6 @@ import java.util.List;
  */
 public interface IVisitsService extends IService<Visits> {
     List<CategoryGroupCountVO> categoryCount(CategoryCountDTO categoryCountDTO);
-    Result getVisitsPage(int page, int size, String diagName);
+
+    IPage<Visits> getVisitsPage(int page, int size, String diagName);
 }

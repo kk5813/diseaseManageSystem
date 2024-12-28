@@ -1,11 +1,8 @@
 package com.zcc.highmyopia.controller;
 
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.common.vo.ElementVO;
-import com.zcc.highmyopia.mapper.IPatientVisionRecordsMapper;
-import com.zcc.highmyopia.po.Element;
-import com.zcc.highmyopia.po.PatientVisionRecords;
-import com.zcc.highmyopia.service.IPatientVisionRecordsService;
+import com.zcc.highmyopia.mapper.IElementVisionMapper;
+import com.zcc.highmyopia.service.IElementVisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @ClassName PatientVisionRecordsController
@@ -29,12 +24,13 @@ import java.util.List;
 @Slf4j
 @Api(tags = "视力眼压管理")
 @RequestMapping("/api/${app.config.api-version}/visionRecords")
-public class PatientVisionRecordsController {
-    @Autowired
-    IPatientVisionRecordsService patientVisionRecordsService;
+public class ElementVisionController {
 
     @Autowired
-    IPatientVisionRecordsMapper patientVisionRecordsMapper;
+    IElementVisionService patientVisionRecordsService;
+
+    @Autowired
+    IElementVisionMapper patientVisionRecordsMapper;
     @ApiOperation(value = "视力眼压信息分页查询")
     @RequiresAuthentication
     @GetMapping("page")

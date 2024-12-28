@@ -10,4 +10,5 @@ import com.zcc.highmyopia.po.Site;
  * @Description
  */
 public interface ISiteService extends IService<Site> {
+    Site getSiteById(Long siteId);
 }

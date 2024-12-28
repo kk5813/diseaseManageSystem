@@ -12,12 +12,11 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("patient_vision_records")
-public class PatientVisionRecords implements Serializable {
+public class ElementVision implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;  // 自增主键
 
-    private String patientName;  // 患者姓名
     private String visitNumber;  // 就诊号
     private String patientId;  // 患者ID
 
@@ -34,10 +33,9 @@ public class PatientVisionRecords implements Serializable {
     private String iopOs;  // 左眼眼压
     private String iopOd;  // 右眼眼压
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;  // 创建时间
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime  createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;  // 更新时间
+    private LocalDateTime  updateTime;
 }

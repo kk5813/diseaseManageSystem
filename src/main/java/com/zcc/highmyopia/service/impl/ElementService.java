@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zcc.highmyopia.common.dto.ElementDTO;
+import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.mapper.IElementMapper;
 import com.zcc.highmyopia.po.Element;
@@ -60,7 +61,6 @@ public class ElementService extends ServiceImpl<IElementMapper, Element> impleme
 
     @Override
     public List<Element> queryElement(ElementDTO elementDto) {
-
         return elementMapper.queryElementOnCondition(elementDto);
     }
 

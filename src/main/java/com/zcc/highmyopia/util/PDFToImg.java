@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class PDFToImg {
 
-    public static final String PNG = "png";
+    public static final String PNG = ".png";
     /**
      * @Description dpi 越大图片越清晰， 但耗时
      * */

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.service.IDeptService;
+import com.zcc.highmyopia.service.IRedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import java.util.Date;
 public class DeptController {
 
     private final IDeptService deptService;
+    private final IRedisService redisService;
 
     @PostMapping("/add")
     @ApiOperation(value = "添加科室")

@@ -10,4 +10,5 @@ import com.zcc.highmyopia.po.Doctor;
  * @Description
  */
 public interface IDeptService extends IService<Dept> {
+    Dept getDeptById(Long deptId);
 }

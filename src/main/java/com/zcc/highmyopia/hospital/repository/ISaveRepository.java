@@ -27,4 +27,6 @@ public interface ISaveRepository {
     void updateReportFiles(ReportFiles reportFile);
 
     void savePatientInfo(PatientEntity patientEntity);
+
+    void saveElementVision(List<ElementVisionEntity> visionEntities);
 }

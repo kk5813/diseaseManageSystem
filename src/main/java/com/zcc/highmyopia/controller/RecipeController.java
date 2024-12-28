@@ -2,6 +2,7 @@ package com.zcc.highmyopia.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.hospital.entity.RecipeEntity;
 import com.zcc.highmyopia.po.Recipe;
 import com.zcc.highmyopia.service.IRecipeService;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +39,8 @@ public class RecipeController {
         log.info("根据用户ID查询门诊记录 patient：{}", patientId);
         List<Recipe> list = recipeService.list(new LambdaQueryWrapper<Recipe>()
                 .eq(Recipe::getId, patientId));
+        List<RecipeEntity> recipeEntities = new ArrayList<>();
+
         return Result.succ(list);
     }
 }

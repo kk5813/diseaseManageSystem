@@ -9,4 +9,7 @@ import com.zcc.highmyopia.po.Doctor;
  * @Description
  */
 public interface IDoctorService extends IService<Doctor> {
+
+    Doctor getDoctorById(Long doctorId);
+
 }

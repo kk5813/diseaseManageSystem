@@ -35,6 +35,10 @@ public abstract interface IDownLoadService {
 
     void getPatientInfo(String number) throws Exception;
 
+    // 视力眼压接口
+    void getElementVision(String beginData, String endData, String visitNumber) throws Exception;
+    void getElementVision(String beginData, String endData, List<String> visitNumber) throws Exception;
+
     void DownLoadReportImage(ReportFiles reportFiles);
 
     void DownLoadReportImageBatch();

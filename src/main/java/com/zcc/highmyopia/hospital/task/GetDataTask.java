@@ -56,13 +56,17 @@ public class GetDataTask {
                     .map(VisitEntity::getVisitNumber)
                     .collect(Collectors.toList());
 
+            List<String> patientIds = patientVisits.stream()
+                    .map(patientVisit -> String.valueOf(patientVisit.getPatientId()))
+                            .collect(Collectors.toList());
             // 下载检查报告信息
             downLoadService.getCheckResult(dataSplit, dataSplit, visitNumbers);
             // 下载门诊病历信息
             downLoadService.getOutElementByCondition(dataSplit, dataSplit, visitNumbers);
             // 下载检验结果
             downLoadService.getReportDetail(dataSplit, dataSplit, visitNumbers);
-
+            // 下载视力眼压
+            downLoadService.getElementVision(dataSplit, dataSplit, patientIds);
 
             // 下载图片到本地位置
             downLoadService.DownLoadReportImageBatch();
