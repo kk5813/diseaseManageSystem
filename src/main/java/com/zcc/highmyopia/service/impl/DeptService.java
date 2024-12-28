@@ -33,6 +33,7 @@ public class DeptService extends ServiceImpl<IDeptMapper, Dept> implements IDept
         if (dept != null) return dept;
 
         dept = deptMapper.selectById(deptId);
+        if (dept == null) return new Dept();
         redisService.setValue(cacheKey, dept);
         return dept;
     }

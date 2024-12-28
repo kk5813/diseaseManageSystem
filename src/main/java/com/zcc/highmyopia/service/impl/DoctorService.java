@@ -30,6 +30,7 @@ public class DoctorService extends ServiceImpl<IDoctorMapper, Doctor> implements
         if (doctor != null) return doctor;
 
         doctor = doctorMapper.selectById(doctorId);
+        if (doctor == null) return new Doctor();
         redisService.setValue(cacheKey, doctor);
         return doctor;
     }

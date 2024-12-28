@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.common.dto.PatientsDTO;
-import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.hospital.entity.ElementEntity;
 import com.zcc.highmyopia.hospital.entity.ElementVisionEntity;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
@@ -14,8 +13,6 @@ import com.zcc.highmyopia.po.*;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
 import com.zcc.highmyopia.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.engine.valueextraction.ArrayElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +29,7 @@ import java.util.stream.Collectors;
  * @since 2021-02-05
  */
 @Service
-public class PatientsServiceImpl extends ServiceImpl<IPatientsMapper, Patients> implements IPatientsService {
+public class PatientsService extends ServiceImpl<IPatientsMapper, Patients> implements IPatientsService {
 
     @Autowired
     IPatientsMapper patientMapper;
@@ -63,7 +60,6 @@ public class PatientsServiceImpl extends ServiceImpl<IPatientsMapper, Patients> 
 
     @Override
     public List<Patients> searchPatients(PatientsDTO patientsDTO) {
-
         return patientMapper.searchPatients(patientsDTO);
     }
 
@@ -74,6 +70,7 @@ public class PatientsServiceImpl extends ServiceImpl<IPatientsMapper, Patients> 
         if (patients != null) return patients;
 
         patients = patientMapper.selectById(patientId);
+        if (patients == null) return new Patients();
         redisService.setValue(cacheKey, patients);
         return patients;
     }
@@ -87,8 +84,7 @@ public class PatientsServiceImpl extends ServiceImpl<IPatientsMapper, Patients> 
         List<ElementEntity> elementEntities = elementList.stream()
                 .map(element -> {
                     String patientName = getPatientById(element.getPatientId()).getName();
-                    return ElementEntity.poToEntity(element,patientName);
-                })
+                    return ElementEntity.poToEntity(element,patientName);})
                 .collect(Collectors.toList());
         // visits就诊信息
         List<Visits> visitsList = visitsService.list(new LambdaQueryWrapper<Visits>()

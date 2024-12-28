@@ -4,6 +4,8 @@ import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.ReportFiles;
+import com.zcc.highmyopia.po.Visits;
+import com.zcc.highmyopia.service.IVisitsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -105,6 +108,17 @@ public class DownLoadServiceTest {
         downLoadService.DownLoadReportImageBatch();
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
+    }
+
+    @Resource
+    private IVisitsService visitsService;
+
+    @Test
+    void getElementVision(){
+        List<Visits> list = visitsService.list();
+        List<String> visitNumber = list.stream()
+                .map(Visits::getVisitNumber)
+                .collect(Collectors.toList());
     }
 
 }

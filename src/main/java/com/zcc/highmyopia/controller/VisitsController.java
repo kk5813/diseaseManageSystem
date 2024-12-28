@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.mapper.IVisitsMapper;
@@ -61,6 +62,7 @@ public class VisitsController {
     @RequiresAuthentication
     public Result getVisitsPage(@RequestParam(defaultValue = "1") int pageNumber,
                                 @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName){
+        log.info("分页查询接口调用");
         IPage<Visits> visitsPage = visitsService.getVisitsPage(pageNumber, pageSize, diagName);
         List<Visits> records = visitsPage.getRecords();
         List<VisitEntity> visitEntities = records.stream()
@@ -69,6 +71,8 @@ public class VisitsController {
                     Dept dept = deptService.getDeptById(visit.getDeptId());
                     Doctor doctor = doctorService.getDoctorById(visit.getDoctorId());
                     Site site = siteService.getSiteById(visit.getSiteId());
+                    if (patient == null || dept == null || doctor == null || site == null)
+                        throw new AppException(401, "信息未找到");
                     return VisitEntity.poToEntity(visit, patient, doctor, dept, site);
                 })
                 .collect(Collectors.toList());

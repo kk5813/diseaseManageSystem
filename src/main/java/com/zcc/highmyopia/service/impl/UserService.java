@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +24,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<IUserMapper, User> implements IUserService {
+public class UserService extends ServiceImpl<IUserMapper, User> implements IUserService {
 
     private final IUserMapper userMapper;
 

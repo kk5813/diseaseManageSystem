@@ -5,6 +5,7 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IUserMapper;
+import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.IRedisService;
@@ -218,6 +219,21 @@ class HighmyopiaApplicationTests {
             now = now.plusDays(1);
             Thread.sleep(50);
         }
+    }
+
+    @Resource
+    private IRedisService redisService;
+    @Test
+    public void redis_serve(){
+        Dept dept = new Dept();
+        dept.setDeptName("1");
+        dept.setId(1L);
+        dept.setStatus(1);
+
+        redissonService.setValue("a", dept);
+        System.out.println("已保存");
+        Dept dept1 = redissonService.getValue("a");
+        System.out.println(dept1);
     }
 
 

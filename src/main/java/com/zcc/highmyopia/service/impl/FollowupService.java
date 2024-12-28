@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-03-04
  */
 @Service
-public class FollowupServiceImpl extends ServiceImpl<IFollowupMapper, Followup> implements IFollowupService {
+public class FollowupService extends ServiceImpl<IFollowupMapper, Followup> implements IFollowupService {
 
 }

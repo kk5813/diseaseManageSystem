@@ -32,6 +32,7 @@ public class SiteService extends ServiceImpl<ISiteMapper, Site> implements ISite
         if (site != null) return site;
 
         site = siteMapper.selectById(siteId);
+        if (site == null ) return new Site();
         redisService.setValue(cacheKey, site);
         return site;
     }

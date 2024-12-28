@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  * @Version 1.0
  */
 @Service
-public class ElementVisionServiceImpl extends ServiceImpl<IElementVisionMapper, ElementVision> implements IElementVisionService {
+public class ElementVisionService extends ServiceImpl<IElementVisionMapper, ElementVision> implements IElementVisionService {
     @Resource
     private IElementVisionMapper PatientVisionRecordsMapper;
     @Override
