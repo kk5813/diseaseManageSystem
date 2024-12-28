@@ -9,6 +9,7 @@ import com.zcc.highmyopia.service.IPatientVisionRecordsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class PatientVisionRecordsController {
     @Autowired
     IPatientVisionRecordsMapper patientVisionRecordsMapper;
     @ApiOperation(value = "视力眼压信息分页查询")
+    @RequiresAuthentication
     @GetMapping("page")
     public Result pageElement(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
                               @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10

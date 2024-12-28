@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class ElementController {
 
 
     @PostMapping("add")
+    @RequiresAuthentication
     @ApiOperation(value = "添加病例报告")
     public Result addElement(@RequestBody ElementEntity elementEntity){
         elementService.addElement(elementEntity);
@@ -41,6 +43,7 @@ public class ElementController {
     }
 
     @PutMapping("edit")
+    @RequiresAuthentication
     @ApiOperation(value = "编辑病例报告")
     public Result editElement(@RequestBody ElementEntity elementEntity){
         elementService.editElement(elementEntity);
@@ -48,6 +51,7 @@ public class ElementController {
     }
 
     @GetMapping("search")
+    @RequiresAuthentication
     @ApiOperation(value = "条件查询病例报告")
     public Result queryElement(@RequestBody ElementDTO elementDto){
         List<Element> elements = elementService.queryElement(elementDto);
@@ -59,6 +63,7 @@ public class ElementController {
     }
 
     @GetMapping("find/{elementId}")
+    @RequiresAuthentication
     @ApiOperation(value = "ID查询病例报告")
     public Result findElement(@PathVariable(name = "elementId") Long elementId){
         Element elements = elementService.findElement(elementId);
@@ -66,6 +71,7 @@ public class ElementController {
     }
 
     @GetMapping("page")
+    @RequiresAuthentication
     @ApiOperation(value = "分页查询病例报告")
     public Result pageElement(@RequestParam(defaultValue = "1") int pageNumber,  // 页码默认 0
                               @RequestParam(defaultValue = "10") int pageSize) {  // 每页大小默认 10

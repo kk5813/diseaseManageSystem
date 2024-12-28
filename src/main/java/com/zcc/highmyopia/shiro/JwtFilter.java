@@ -1,10 +1,12 @@
 package com.zcc.highmyopia.shiro;
 
+import cn.hutool.core.date.StopWatch;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.util.JwtUtils;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExpiredCredentialsException;
@@ -18,9 +20,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class JwtFilter extends AuthenticatingFilter {
 
     @Autowired
@@ -93,4 +101,44 @@ public class JwtFilter extends AuthenticatingFilter {
         }
         return super.preHandle(request, response);
     }
+
+
+    /**
+     * Todo 下面的代码只实现了获取当前请求信息，而且没有读json数据，request.getReader只能调用一次。aop会失败，原因和shiro的拦截链有关
+     * Todo 后续要么加，要么删
+     * */
+    @Override
+    public boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
+        // 获取请求相关信息
+        HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
+        String requestId = UUID.randomUUID().toString();
+        String url = httpServletRequest.getRequestURI();
+        String ip = httpServletRequest.getRemoteHost();
+
+        // 初始化请求参数
+        String reqParam = "";
+        // 处理查询参数（路径参数、查询参数）
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        if (parameterMap != null && !parameterMap.isEmpty()) {
+            reqParam = "Query Params: " + parameterMapToString(parameterMap);
+        }
+        // 输出请求日志
+        log.info("Request start，id: {}, path: {}, ip: {}, params: {}", requestId, url, ip, reqParam);
+
+        // 调用父类方法继续执行过滤器链
+        boolean continueChain = super.onPreHandle(request, response, mappedValue);
+
+        // 返回是否继续执行过滤器链
+        return continueChain;
+    }
+
+    /**
+     * 将请求的查询参数（路径或查询参数）转换为可读字符串格式
+     */
+    private String parameterMapToString(Map<String, String[]> parameterMap) {
+        return parameterMap.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
+                .collect(Collectors.joining(", "));
+    }
+
 }
