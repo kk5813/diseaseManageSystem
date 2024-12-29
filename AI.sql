@@ -1,12 +1,16 @@
 CREATE TABLE IF NOT EXISTS `model_disease` (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '所配的AI诊断的信息',
     `name` VARCHAR(255) NOT NULL COMMENT '诊断疾病的名称',
-    'desc' VARCHAR(255) COMMENT '所需诊断疾病说明',
+    `desc` VARCHAR(255) COMMENT '所需诊断疾病说明',
     input VARCHAR(255) NOT NULL COMMENT '诊断所需的输入数据格式(item_name1,item_name2)',
     start_node INT NOT NULL COMMENT '疾病诊断流程起点模型主键',
     `create_time`  datetime COMMENT '创建时间',
     `update_time`  datetime COMMENT '更新时间'
-);
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 46
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `model_node` (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '模型的主键',
@@ -17,7 +21,11 @@ CREATE TABLE IF NOT EXISTS `model_node` (
     api VARCHAR(255) NOT NULL COMMENT '服务的api地址',
     `create_time`  datetime COMMENT '创建时间',
     `update_time`  datetime COMMENT '更新时间'
-);
+)ENGINE = InnoDB
+ AUTO_INCREMENT = 46
+ CHARACTER SET = utf8mb4
+ COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
 
 CREATE TABLE IF NOT EXISTS `model_line` (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT '模型服务决策的主键',
@@ -28,4 +36,8 @@ CREATE TABLE IF NOT EXISTS `model_line` (
     `desc` VARCHAR(255) COMMENT '放行规则描述',
     `create_time`  datetime COMMENT '创建时间',
     `update_time`  datetime COMMENT '更新时间'
-);
+)ENGINE = InnoDB
+ AUTO_INCREMENT = 46
+ CHARACTER SET = utf8mb4
+ COLLATE = utf8mb4_general_ci
+ ROW_FORMAT = Dynamic;
