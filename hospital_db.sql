@@ -131,15 +131,18 @@ DROP TABLE IF EXISTS `followup`;
 CREATE TABLE `followup`
 (
     `id`              bigint(20)                                              NOT NULL AUTO_INCREMENT,
-    `case_id`         int(11)                                                 NOT NULL,
-    `patient_id`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL,
-    `plan_visit_date` datetime                                                NULL DEFAULT NULL,
-    `visit_plan`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL,
-    `visit_result`    bit(1)                                                  NULL DEFAULT NULL,
-    `visit_content`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-    `visit_remark`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-    `visit_date`      datetime                                                NULL DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
+    `patient_id`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL COMMENT '病人id',
+    `plan_visit_date` datetime                                                NULL DEFAULT NULL COMMENT '计划随访时间',
+    `visit_plan`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL COMMENT '随访计划安排',
+    `visit_result`    smallint                                                NOT NULL DEFAULT 0 COMMENT '随访结果，1随访过，0未随访，-1删除',
+    `visit_content`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '随访内容',
+    `visit_remark`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '随访备注说明',
+    `visit_date`      datetime                                                NULL DEFAULT NULL COMMENT '病人来访时间',
+    `create_time`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX idx_followup_patient_id (`patient_id`),
+    INDEX idx_followup_plan_visit_date (`plan_visit_date`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 10
   CHARACTER SET = utf8
@@ -404,3 +407,22 @@ CREATE TABLE `patient_vision_records`
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = Dynamic;
+
+# 创建病人和随访的视图
+DROP VIEW IF EXISTS followup_patient_view;
+CREATE VIEW followup_patient_view AS
+SELECT
+    f.id AS followup_id,
+    f.patient_id AS patient_id,
+    f.plan_visit_date AS plan_visit_date,
+    f.visit_plan AS visit_plan,
+    f.visit_result AS visit_result,
+    f.visit_content AS visit_content,
+    f.visit_remark AS visit_remark,
+    f.visit_date AS visit_date,
+    p.name AS patient_name,
+    p.sex_name AS gender,
+    p.phone AS telephone,
+    p.id_number AS id_number
+FROM followup f
+         LEFT JOIN patients p ON f.patient_id = p.id;

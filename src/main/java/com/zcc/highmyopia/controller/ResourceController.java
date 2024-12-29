@@ -40,6 +40,7 @@ public class ResourceController {
 
     @Value("${hospital.pdf2ImgPath}")
     private String PDFToImgRelativePath;
+
     @GetMapping("/images/{filename}")
     public ResponseEntity<?> getImage(@PathVariable String filename) {
         // 创建一个资源对象，指向E盘的项目目录

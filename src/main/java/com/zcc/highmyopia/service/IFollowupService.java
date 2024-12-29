@@ -1,5 +1,8 @@
 package com.zcc.highmyopia.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.vo.FollowupPatientVO;
 import com.zcc.highmyopia.po.Followup;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,7 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IFollowupService extends IService<Followup> {
 
+    public Result SearchFollowup(String patientId, String dateStart, String dateEnd, Integer visitResult, int pageNo, int pageSize);
 
 
+    public IPage<FollowupPatientVO> SearchFollowPatient(String patientId, String dateStart, String dateEnd, Integer visitResult, int pageNo, int pageSize);
 
 }

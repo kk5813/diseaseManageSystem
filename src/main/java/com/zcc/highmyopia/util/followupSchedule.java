@@ -1,6 +1,6 @@
 package com.zcc.highmyopia.util;
 
-import com.zcc.highmyopia.common.dto.ListFollowup;
+import com.zcc.highmyopia.common.vo.ListFollowupVO;
 import com.zcc.highmyopia.mapper.IFollowupMapper;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
 import com.zcc.highmyopia.service.IFollowupService;
@@ -38,7 +38,7 @@ public class followupSchedule {
 
         String result = "";
         System.out.println("发送短信-------------------------------------------");
-        for(ListFollowup listFollowup : followupMapper.selectTomorrowFollowUpList()) {
+        for(ListFollowupVO listFollowup : followupMapper.selectTomorrowFollowUpList()) {
             System.out.print(listFollowup.getPatientName() + " ");
             System.out.println(patientsMapper.selectTelephoneByPatientId(listFollowup.getPatientId()));
             String str = listFollowup.getPatientName();

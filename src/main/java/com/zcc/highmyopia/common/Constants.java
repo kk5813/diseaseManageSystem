@@ -25,5 +25,11 @@ public class Constants {
 
         public static String DEPT = "dept_";
     }
+    public static class FollowupStatus{
+        public static int DELETE = -1;
+        public static int NOT_FOLLOW = 0;
+
+        public static int FOLLOW_SUCCESS = 1;
+    }
 
 }
