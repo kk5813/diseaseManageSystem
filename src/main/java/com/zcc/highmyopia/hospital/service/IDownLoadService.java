@@ -4,7 +4,6 @@ import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.po.ReportFiles;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author zcc
@@ -25,19 +24,20 @@ public abstract interface IDownLoadService {
     void getReportDetail(String beginData, String endData, List<String> visitNumbers) throws Exception;
 
     // 门诊病历数据接口
-    void getOutElementByCondition(String beginData, String endData, String visitNumber) throws Exception;
-    void getOutElementByCondition(String beginData, String endData, List<String> visitNumbers) throws Exception;
+    void getOutElementByVisitNumber(String beginData, String endData, String visitNumber) throws Exception;
+    void getOutElementByVisitNumber(String beginData, String endData, List<String> visitNumbers) throws Exception;
 
     // 患者检验结果 getList
     void getCheckResult(String beginData, String endData);
-    void getCheckResult(String beginData, String endData, String patientId);
-    void getCheckResult(String beginData, String endData, List<String> patientIds);
+    void getCheckResultByPatientId(String beginData, String endData, String patientId);
+    void getCheckResultByPatientId(String beginData, String endData, List<String> patientIds);
 
-    void getPatientInfo(String number) throws Exception;
+    void getPatientInfoByPatientId(List<String> patientIds) throws Exception;
+    void getPatientInfoByPatientId(String patientId) throws Exception;
 
     // 视力眼压接口
-    void getElementVision(String beginData, String endData, String visitNumber) throws Exception;
-    void getElementVision(String beginData, String endData, List<String> visitNumber) throws Exception;
+    void getElementVisionByVisitNumber(String beginData, String endData, String visitNumber) throws Exception;
+    void getElementVisionByVisitNumber(String beginData, String endData, List<String> visitNumber) throws Exception;
 
     void DownLoadReportImage(ReportFiles reportFiles);
 

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
-import com.zcc.highmyopia.hospital.utils.Constants;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -149,7 +148,7 @@ public class DownLoadService implements IDownLoadService {
 
     // 门诊病历，visit字段必传
     @Override
-    public void getOutElementByCondition(String beginData, String endData, String visitNumber) throws Exception {
+    public void getOutElementByVisitNumber(String beginData, String endData, String visitNumber) throws Exception {
         String path = "/api/aemro/outpElement/getOutpElementByCondition";
 
         Map<String, String> query = new HashMap<>();
@@ -172,11 +171,11 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getPatientInfo(String number) throws Exception {
+    public void getPatientInfoByPatientId(String patientId) throws Exception {
         String path = "/api/interface/patientInfo/getById";
 
         Map<String, String> r = new HashMap<>();
-        r.put("id", "1796786711460069377");
+        r.put("id", patientId);
         String reqJson = JSON.toJSONString(r);
         Map<String, String> headers = new HashMap<>();
         Map<String, String> query = null;
@@ -194,7 +193,18 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getElementVision(String beginData, String endData, String visitNumber) throws Exception {
+    public void getPatientInfoByPatientId(List<String> patientIds) throws Exception {
+        patientIds.forEach(e -> {
+            try {
+                getPatientInfoByPatientId(e);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    @Override
+    public void getElementVisionByVisitNumber(String beginData, String endData, String visitNumber) throws Exception {
         if (StringUtils.isBlank(visitNumber))
             throw new AppException(400, "visitNumber字段必传");
         String path = "/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
@@ -217,10 +227,10 @@ public class DownLoadService implements IDownLoadService {
         saveRepository.saveElementVision(visionEntities);
     }
     @Override
-    public void getElementVision(String beginData, String endData, List<String> visitNumber) throws Exception {
+    public void getElementVisionByVisitNumber(String beginData, String endData, List<String> visitNumber) throws Exception {
         visitNumber.forEach( entity -> {
             try {
-                getElementVision(beginData,endData,entity);
+                getElementVisionByVisitNumber(beginData,endData,entity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -228,10 +238,10 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getOutElementByCondition(String beginData, String endData, List<String> visitNumbers) throws Exception {
+    public void getOutElementByVisitNumber(String beginData, String endData, List<String> visitNumbers) throws Exception {
         visitNumbers.forEach(visitNumber -> {
             try {
-                getOutElementByCondition(beginData, endData, visitNumber);
+                getOutElementByVisitNumber(beginData, endData, visitNumber);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -259,10 +269,10 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResult(String beginData, String endData, List<String> patientIds) {
+    public void getCheckResultByPatientId(String beginData, String endData, List<String> patientIds) {
         patientIds.forEach(patientId -> {
             try {
-                getCheckResult(beginData, endData, patientId);
+                getCheckResultByPatientId(beginData, endData, patientId);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -270,7 +280,7 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResult(String beginData, String endData, String patientId) {
+    public void getCheckResultByPatientId(String beginData, String endData, String patientId) {
         String path = "/api/report/getList";
         String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
                 .queryParam("physc_bdate", beginData)
