@@ -11,6 +11,5 @@ import org.springframework.stereotype.Component;
  * @Description
  */
 @Mapper
-@Component
 public interface IModelLineMapper extends BaseMapper<ModelLine> {
 }

@@ -39,7 +39,7 @@ public class ModelDiseaseController {
     private final IModelDiseaseService modelDiseaseService;
     private final IDiagnoseService diagnoseService;
 
-    @GetMapping("getDisease")
+    @GetMapping("get_disease")
     @ApiOperation("获取配置的疾病列表")
     @RequiresAuthentication
     public Result getList(){

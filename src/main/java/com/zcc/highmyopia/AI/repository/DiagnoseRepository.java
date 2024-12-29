@@ -124,7 +124,7 @@ public class DiagnoseRepository implements IDiagnoseRepository {
                 .id(disease.getId())
                 .input(disease.getInput())
                 .startNode(disease.getStartNode())
-                .desc(disease.getDesc())
+                .desc(disease.getDescription())
                 .name(disease.getName())
                 .treeNodeMap(treeNodeMap)
                 .build();

@@ -30,7 +30,7 @@ public class ModelLine {
 
     private String limitValue;
 
-    private String desc;
+    private String description;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

@@ -16,7 +16,7 @@ import java.util.PriorityQueue;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("diagnose_disease")
+@TableName("model_disease")
 public class ModelDisease {
 
     @TableId(value = "id", type = IdType.INPUT)
@@ -24,7 +24,7 @@ public class ModelDisease {
 
     private String name;
 
-    private String desc;
+    private String description;
 
     private String input;
 

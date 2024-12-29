@@ -29,7 +29,7 @@ public class ModelNode {
 
     private String api;
 
-    private String desc;
+    private String description;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
