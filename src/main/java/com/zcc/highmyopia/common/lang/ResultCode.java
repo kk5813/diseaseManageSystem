@@ -27,7 +27,10 @@ public enum ResultCode {
     // 五位数的异常代码，为业务异常代码。以后尽量用这个吧，自动定义，自己说明。
     USER_EDIT_ERROR(40003,"登录用户名已存在，操作失败"),
     PARAMS_ERROR(40000, "请求参数错误"),
-    OPERATION_ERROR(50001, "操作失败");
+    OPERATION_ERROR(50001, "操作失败"),
+    RESOURCE_NOT_FOUND(40004,"请求的图片资源不存在"),
+    PATHVARIABLE_NULL(40005, "请求的路径参数为空"),
+    FILE_FORMAT_ERROR(40006,"文件格式非法"),
     ;
 
     private int code;

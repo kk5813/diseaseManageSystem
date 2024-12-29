@@ -46,6 +46,9 @@ public class CheckReportsController {
     @Value("${hospital.pdf2ImgPath}")
     private String PDFToImgRelativePath;
 
+    @Value("${hospital.localImage}")
+    private String ImagePathLocalHost;
+
     @GetMapping("find/{patientId}")
     @ApiOperation(value = "获取患者检查报告")
     @RequiresAuthentication
@@ -77,7 +80,7 @@ public class CheckReportsController {
                                      reportFilesVO.setType("image/png");
                                 }else{
                                     reportFilesVO.setType(reportFile.getType());
-                                    reportFilesVO.setFilePath(reportFile.getFilePath());
+                                    reportFilesVO.setFilePath(LocalPathToVirtualPath(reportFile.getFilePath()));
                                 }
                                 return reportFilesVO;
                             })
@@ -94,7 +97,13 @@ public class CheckReportsController {
         File parentFile = file.getParentFile();
         int dot = file.getName().lastIndexOf(".");
         // todo 这里图片格式写死了为png, 不建议搜索文件，这样太慢了，要改的话不如直接改数据库，不改变原来的表而是新加一个表，来做pdf报告映射的png路径，这样修改最小。
-        Path path = Paths.get(parentFile.getPath() + PDFToImgRelativePath, file.getName().substring(0, dot) + PDFToImg.PNG);
+        //Path path = Paths.get(parentFile.getPath() + PDFToImgRelativePath, file.getName().substring(0, dot) + PDFToImg.PNG);
+        Path path = Paths.get(ImagePathLocalHost + PDFToImgRelativePath,file.getName().substring(0,dot) + PDFToImg.PNG);
+        log.info(path.toString());
         return path.toString();
+    }
+    private String LocalPathToVirtualPath(String filePath){
+        File file = new File(filePath);
+        return Paths.get(ImagePathLocalHost,file.getName()).toString();
     }
 }

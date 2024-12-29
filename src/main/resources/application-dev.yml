@@ -20,8 +20,11 @@ spring:
       connection-timeout: 30000
       max-lifetime: 1800000
       pool-name: HikariPool-1
-
-
+#  web:
+#    resources:
+#      # 将E盘的图片目录映射为http://localhost:8081/images/访问, classpath:/static/：保留了默认的静态资源目录(优先级：从左到右)
+#      static-locations: file:/E:/Download/project/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,
+#      add-mappings: true
 # 应用配置
 app:
   config:
@@ -85,6 +88,8 @@ hospital:
 
   # 这个路径是在原来filePath后面+pdfImg
   pdf2ImgPath: \pdfImg
+  # 本地图片映射路径
+  localImage: /images
 
 # 接口文档配置
 # 访问 http://localhost:8081/doc.html
