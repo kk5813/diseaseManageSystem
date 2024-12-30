@@ -34,6 +34,8 @@ public enum ResultCode {
 
     ID_NOT_FOUND(40401, "不存在指向该id的数据！"),
     DATE_VARIABLE_ERROR(40004,"日期参数错误，也可能传入的参数逻辑上错误"),
+    ID_FIELD_MISSING(40005,"传入的参数缺失某个ID值字段"),
+    PARAMS_FIELD_MISSING(40006,"json请求参数缺失，或者不完整"),
     ;
 
     private int code;
