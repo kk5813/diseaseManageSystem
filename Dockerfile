@@ -1,17 +1,11 @@
 # 基础镜像
 FROM openjdk:8-jre-slim
 
-# 作者
-MAINTAINER kk
-
-# 配置
-ENV PARAMS=""
-
-# 时区
-ENV TZ=PRC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 时区设置
+RUN ln -sf /usr/share/zoneinfo/PRC /etc/localtime && echo "PRC" > /etc/timezone
 
 # 添加应用
-ADD target/highmyopia-2.4.2.jar.jar /highmyopia.jar
+COPY target/highmyopia-2.4.2.jar /highmyopia.jar
 
-ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /highmyopia.jar $PARAMS"]
+# 启动应用的命令
+ENTRYPOINT ["java", "-jar", "/highmyopia.jar"]
