@@ -1,7 +1,15 @@
 package com.zcc.highmyopia;
 
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
+import com.zcc.highmyopia.AI.model.valobj.RuleTreeVO;
+import com.zcc.highmyopia.AI.repository.DiagnoseRepository;
+import com.zcc.highmyopia.AI.repository.IDiagnoseRepository;
+import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
+import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine;
+import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IUserMapper;
@@ -18,16 +26,24 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @SpringBootTest
@@ -229,6 +245,8 @@ class HighmyopiaApplicationTests {
         dept.setDeptName("1");
         dept.setId(1L);
         dept.setStatus(1);
+        dept.setCreateTime(LocalDateTime.now());
+        dept.setUpdateTime(LocalDateTime.now());
 
         redissonService.setValue("a", dept);
         System.out.println("已保存");
@@ -236,5 +254,54 @@ class HighmyopiaApplicationTests {
         System.out.println(dept1);
     }
 
+    @Resource
+    private DefaultTreeFactory defaultTreeFactory;
+    @Resource
+    private IDiagnoseRepository diagnoseRepository;
+    @Test
+    public void doDiagnose(){
+        RuleTreeVO ruleTreeVO = diagnoseRepository.getRuleTreeVOByDiseaseId(1);
+        DecisionTreeEngine decisionTreeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
+        List<DiagnoseResultEntity> process = decisionTreeEngine.process(null);
+        System.out.println(process);
+
+    }
+
+
+    @Test
+    public void testMock(){
+        String url = "http://127.0.0.1:4523/m1/3365319-628336-default/api/1"; // 请求的 URL
+
+        // 创建 RestTemplate 实例
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 设置请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", "Mozilla/5.0"); // 模拟浏览器请求
+        headers.set("Accept", "application/json"); // 请求返回 JSON 格式
+
+        // 打印请求的 URL 和请求头
+        System.out.println("Sending GET request to: " + url);
+        System.out.println("Request Headers: " + headers);
+
+        // 创建 HttpEntity，传入头部信息
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            // 发送 GET 请求
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+            // 打印响应状态码和响应内容
+            System.out.println("Response Status: " + response.getStatusCode());
+            System.out.println("Response Body: " + response.getBody());
+        } catch (Exception e) {
+            // 打印异常信息
+            System.err.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
 }
+
+

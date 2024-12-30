@@ -3,7 +3,6 @@ package com.zcc.highmyopia.hospital.task;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
-import com.zcc.highmyopia.hospital.repository.impl.SaveRepository;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,32 +41,37 @@ public class GetDataTask {
         String dataNoSplit = yesterday.format(formatterNoSplit);
 
         try {
-            // 下载门诊处方信息
-            downLoadService.getRecipe(dataNoSplit, dataNoSplit);
 
-            // 下载患者就诊信息
-            List<VisitEntity> patientVisits = downLoadService.getPatientVisit(dataNoSplit, dataNoSplit);
-            if (patientVisits == null || patientVisits.isEmpty()) {
-                log.warn("未获取到患者就诊信息");
+            // 1. 下载所有的当天就诊信息
+            List<VisitEntity> visits = downLoadService.getPatientVisit(dataNoSplit, dataNoSplit);
+            if (visits == null || visits.isEmpty()) {
+                log.warn("未获取到当天的就诊信息");
                 return;
             }
-            List<String> visitNumbers = patientVisits.stream()
-                    .map(VisitEntity::getVisitNumber)
-                    .collect(Collectors.toList());
+            List<String> visitNumbersList = visits.stream()
+                    .map(VisitEntity::getVisitNumber).distinct().collect(Collectors.toList());
+            List<String> patientIdsList = visits.stream()
+                    .map(patientVisit -> String.valueOf(patientVisit.getPatientId())).distinct().collect(Collectors.toList());
 
-            List<String> patientIds = patientVisits.stream()
-                    .map(patientVisit -> String.valueOf(patientVisit.getPatientId()))
-                            .collect(Collectors.toList());
-            // 下载检查报告信息
-            downLoadService.getCheckResult(dataSplit, dataSplit, visitNumbers);
-            // 下载门诊病历信息
-            downLoadService.getOutElementByCondition(dataSplit, dataSplit, visitNumbers);
-            // 下载检验结果
-            downLoadService.getReportDetail(dataSplit, dataSplit, visitNumbers);
-            // 下载视力眼压
-            downLoadService.getElementVision(dataSplit, dataSplit, patientIds);
+            // 2.下载病人信息
+            downLoadService.getPatientInfoByPatientId(patientIdsList);
 
-            // 下载图片到本地位置
+            // 3. 获取当天的所有处方信息
+            downLoadService.getRecipe(dataNoSplit, dataNoSplit);
+
+            // 4.下载检查报告信息
+            downLoadService.getCheckResultByPatientId(dataSplit, dataSplit, visitNumbersList);
+
+            // 5.下载门诊病历信息
+            downLoadService.getOutElementByVisitNumber(dataSplit, dataSplit, visitNumbersList);
+
+            // 6.下载检验结果
+            downLoadService.getReportDetail(dataSplit, dataSplit, visitNumbersList);
+
+            // 7.下载视力眼压
+            downLoadService.getElementVisionByVisitNumber(dataSplit, dataSplit, patientIdsList);
+
+            // 8. 批量下载图片到本地位置
             downLoadService.DownLoadReportImageBatch();
             log.info("每日定時任務完成");
         } catch (Exception e) {

@@ -1,0 +1,1 @@
+docker build -t highmyopia-app:1.0 -f ./Dockerfile .

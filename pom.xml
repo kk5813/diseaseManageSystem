@@ -10,7 +10,6 @@
     </parent>
     <groupId>com.zcc</groupId>
     <artifactId>highmyopia</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
     <name>highmyopia</name>
     <description>Demo project for Spring Boot</description>
 <!--    <packaging>war</packaging>-->
@@ -57,8 +56,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -68,7 +65,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>1.18.24</version> <!-- 或使用当前最新稳定版本 -->
+            <scope>provided</scope>  <!-- 这表示 Lombok 仅在编译时可用，运行时不需要 -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -241,21 +239,21 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
                 <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>com.zcc.highmyopia.HighmyopiaApplication</Main-Class>  <!-- 替换为你的主类 -->
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.4</version>  <!-- 使用合适的版本 -->
             </plugin>
         </plugins>
     </build>

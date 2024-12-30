@@ -1,9 +1,6 @@
 package com.zcc.highmyopia.hospital.entity;
 
-import com.zcc.highmyopia.hospital.repository.impl.SaveRepository;
-import com.zcc.highmyopia.po.Element;
 import com.zcc.highmyopia.po.Patients;
-import javafx.scene.input.DataFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -7,11 +7,14 @@ import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.IVisitsService;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @SpringBootTest
 public class DownLoadServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(DownLoadServiceTest.class);
     @Resource
     private IDownLoadService downLoadService;
     @Resource
@@ -57,6 +61,24 @@ public class DownLoadServiceTest {
         System.out.println(patientVisit);
     }
 
+    // 测试
+    @Test
+    void test_getPatientsInfo() throws Exception {
+        List<Visits> list = visitsService.list();
+        List<Visits> values = new ArrayList<>(list.stream()
+                .collect(Collectors.toMap(Visits::getPatientId, e -> e, (existing, replacement) -> existing))
+                .values());
+        log.info("patient_num:{}", values.size());
+        values.forEach(e -> {
+            try {
+                downLoadService.getPatientInfoByPatientId(String.valueOf(e.getPatientId()));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+    }
+
     @Test
     void test_GetRecipe() throws Exception {
         downLoadService.getRecipe("20240801", "20241125");
@@ -69,12 +91,7 @@ public class DownLoadServiceTest {
 
     @Test
     void test_GetElement() throws Exception {
-        downLoadService.getOutElementByCondition("2024-06-26", "20240725", "MZ202407071064");
-    }
-
-    @Test
-    void test_getPatientsInfo() throws Exception {
-        downLoadService.getPatientInfo("1796786711460069377");
+        downLoadService.getOutElementByVisitNumber("2024-06-26", "20240725", "MZ202407071064");
     }
 
     // 单独保存单个用户
@@ -82,7 +99,7 @@ public class DownLoadServiceTest {
     void test_getCheckResult() throws Exception {
         LocalDateTime start = LocalDateTime.now();
         System.out.println(start);
-        downLoadService.getCheckResult("20241219", "20241219", "1869575479859933185");
+        downLoadService.getCheckResultByPatientId("20241219", "20241219", "1869575479859933185");
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
     }
@@ -116,9 +133,20 @@ public class DownLoadServiceTest {
     @Test
     void getElementVision(){
         List<Visits> list = visitsService.list();
-        List<String> visitNumber = list.stream()
-                .map(Visits::getVisitNumber)
-                .collect(Collectors.toList());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        list.forEach( e -> {
+            String visitNumber = e.getVisitNumber();
+            LocalDateTime diagTime = e.getDiagTime();
+            String date = diagTime.format(formatter);
+            try {
+                downLoadService.getElementVisionByVisitNumber(date,date, visitNumber);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
     }
+
+
 
 }

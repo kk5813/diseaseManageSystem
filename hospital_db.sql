@@ -131,18 +131,15 @@ DROP TABLE IF EXISTS `followup`;
 CREATE TABLE `followup`
 (
     `id`              bigint(20)                                              NOT NULL AUTO_INCREMENT,
-    `patient_id`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL COMMENT '病人id',
-    `plan_visit_date` datetime                                                NULL DEFAULT NULL COMMENT '计划随访时间',
-    `visit_plan`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL COMMENT '随访计划安排',
-    `visit_result`    smallint                                                NOT NULL DEFAULT 0 COMMENT '随访结果，1随访过，0未随访，-1删除',
-    `visit_content`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '随访内容',
-    `visit_remark`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '随访备注说明',
-    `visit_date`      datetime                                                NULL DEFAULT NULL COMMENT '病人来访时间',
-    `create_time`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    INDEX idx_followup_patient_id (`patient_id`),
-    INDEX idx_followup_plan_visit_date (`plan_visit_date`)
+    `case_id`         int(11)                                                 NOT NULL,
+    `patient_id`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL,
+    `plan_visit_date` datetime                                                NULL DEFAULT NULL,
+    `visit_plan`      varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci  NULL DEFAULT NULL,
+    `visit_result`    bit(1)                                                  NULL DEFAULT NULL,
+    `visit_content`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `visit_remark`    varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `visit_date`      datetime                                                NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 10
   CHARACTER SET = utf8
@@ -382,10 +379,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 # 将user_login_name 修改为候选键
 alter table `user` add UNIQUE(user_login_name);
 
-DROP TABLE IF EXISTS `element_vision`;
-CREATE TABLE `element_vision`
+DROP TABLE IF EXISTS `patient_vision_records`;
+CREATE TABLE `patient_vision_records`
 (
     `id`            bigint(20)                                                   NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+    `patient_name`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '患者姓名',
     `visit_number`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊号',
     `patient_id`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '患者ID',
     `scd_os`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '左眼裸眼视力',
@@ -406,63 +404,3 @@ CREATE TABLE `element_vision`
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = Dynamic;
-
-# 创建病人和随访的视图
-DROP VIEW IF EXISTS followup_patient_view;
-CREATE VIEW followup_patient_view AS
-SELECT
-    f.id AS followup_id,
-    f.patient_id AS patient_id,
-    f.plan_visit_date AS plan_visit_date,
-    f.visit_plan AS visit_plan,
-    f.visit_result AS visit_result,
-    f.visit_content AS visit_content,
-    f.visit_remark AS visit_remark,
-    f.visit_date AS visit_date,
-    p.name AS patient_name,
-    p.sex_name AS gender,
-    p.phone AS telephone,
-    p.id_number AS id_number
-FROM followup f
-         LEFT JOIN patients p ON f.patient_id = p.id;
-
-
-DROP VIEW IF EXISTS patient_visit_summary_view;
-CREATE VIEW patient_visit_summary_view AS
-SELECT
-    e.visit_number AS visit_number,
-    e.id AS element_id,
-    e.patient_id AS patient_id,
-    e.main_appeal AS main_appeal,
-    e.past_history AS past_history,
-    e.present_illness AS present_illness,
-    e.allergy AS allergy,
-    e.special_os AS special_os,
-    e.special_od AS special_od,
-    e.physical_exam AS physical_exam,
-    e.dispose AS dispose,
-    v.diag_time AS diag_time,
-    v.diag_name AS diag_name,
-    v.diag_code AS diag_code,
-    ev.scd_os AS scd_os,
-    ev.scd_od AS scd_od,
-    ev.scd_os_value AS scd_os_value,
-    ev.scd_od_value AS scd_od_value,
-    ev.ccd_os AS ccd_os,
-    ev.ccd_od AS ccd_od,
-    ev.ccd_os_value AS ccd_os_value,
-    ev.ccd_od_value AS ccd_od_value,
-    ev.iop_os AS iop_os,
-    ev.iop_od AS iop_od
-FROM
-    element e
-        LEFT JOIN
-    visits v ON e.visit_number = v.visit_number
-        LEFT JOIN
-    element_vision ev ON e.visit_number = ev.visit_number;
-
-# v.id AS visit_id,
-#     v.doctor_id AS doctor_id,
-#     v.dept_id AS dept_id,
-#     v.site_id AS site_id,
-#     ev.id AS vision_id,

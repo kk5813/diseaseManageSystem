@@ -1,16 +1,12 @@
 package com.zcc.highmyopia.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
 import com.zcc.highmyopia.hospital.service.AsyncDownLoadService;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
-import com.zcc.highmyopia.po.CheckReports;
-import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.IVisitsService;
-import com.zcc.highmyopia.service.impl.VisitsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -54,7 +49,7 @@ public class TodayController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String today = LocalDateTime.now().format(formatter);
         // 1. 根据patientId查到这个人的CheckReport和FileUrl
-        downLoadService.getCheckResult(today, today, String.valueOf(patientId));
+        downLoadService.getCheckResultByPatientId(today, today, String.valueOf(patientId));
         // 2. 下载数据库中未下载的图像并保存到本地
         downLoadService.DownLoadReportImageBatch();
 
