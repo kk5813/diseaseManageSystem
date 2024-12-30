@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcc.highmyopia.mapper.IPatientVisitSummaryViewMapper">
+
+    <!-- 根据 visit_number 或 patient_id 进行模糊查询 -->
+    <select id="selectByVisitNumberOrPatientId" resultType="com.zcc.highmyopia.po.PatientVisitSummaryView">
+        SELECT
+        visit_number,
+        element_id,
+        patient_id,
+        main_appeal,
+        past_history,
+        present_illness,
+        allergy,
+        special_os,
+        special_od,
+        physical_exam,
+        dispose,
+        diag_time,
+        diag_name,
+        diag_code,
+        scd_os,
+        scd_od,
+        scd_os_value,
+        scd_od_value,
+        ccd_os,
+        ccd_od,
+        ccd_os_value,
+        ccd_od_value,
+        iop_os,
+        iop_od
+        FROM patient_visit_summary_view
+        WHERE 1 = 1
+        <if test="visitNumber != null and visitNumber != ''">
+            AND visit_number = #{visitNumber}
+        </if>
+        <if test="patientId != null and patientId != ''">
+            AND patient_id = #{patientId}
+        </if>
+    </select>
+</mapper>
