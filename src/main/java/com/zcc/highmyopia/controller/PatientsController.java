@@ -146,10 +146,10 @@ public class PatientsController {
     @GetMapping("element_time_line")
     @RequiresAuthentication
     @ApiOperation(value = "展示病人就诊以及病历时间线")
-    public Result timeLineElement(  @RequestParam(defaultValue = "") String visitNumber,
-                                    @RequestParam(required = false) Long patientId,
-                                    @RequestParam(defaultValue = "1") int pageNum,
-                                    @RequestParam(defaultValue = "10") int pageSize){
+    public Result timeLineElement(@RequestParam(defaultValue = "") String visitNumber,
+                                  @RequestParam(required = false) Long patientId,
+                                  @RequestParam(defaultValue = "1") int pageNum,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
         Page<PatientVisitSummaryView> page = new Page<>(pageNum, pageSize);
         IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, patientId, page);
         return Result.succ(patientVisitSummaryByPage);

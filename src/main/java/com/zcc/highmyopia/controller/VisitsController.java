@@ -64,6 +64,7 @@ public class VisitsController {
                                 @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName){
         log.info("分页查询接口调用");
         IPage<Visits> visitsPage = visitsService.getVisitsPage(pageNumber, pageSize, diagName);
+        log.info("原分页查询正常");
         List<Visits> records = visitsPage.getRecords();
         List<VisitEntity> visitEntities = records.stream()
                 .map( visit -> {
