@@ -36,6 +36,7 @@ public enum ResultCode {
     DATE_VARIABLE_ERROR(40004,"日期参数错误，也可能传入的参数逻辑上错误"),
     ID_FIELD_MISSING(40005,"传入的参数缺失某个ID值字段"),
     PARAMS_FIELD_MISSING(40006,"json请求参数缺失，或者不完整"),
+    JSON_PARSE_ERROR(40007,"json格式转化失败"),
     ;
 
     private int code;

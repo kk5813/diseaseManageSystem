@@ -407,6 +407,27 @@ CREATE TABLE `element_vision`
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = Dynamic;
 
+# AI诊断结果表
+DROP TABLE IF EXISTS `AI_model_result`;
+CREATE TABLE `AI_model_result`
+(
+    `id`            bigint(20)    NOT NULL AUTO_INCREMENT COMMENT '模型结果ID',
+    `patient_id`    bigint(20)    NULL DEFAULT NULL COMMENT '患者ID',
+    `visit_number`  varchar(50)   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊编号',
+    `user_id`       bigint(20)    NULL DEFAULT NULL COMMENT '操作者用户ID',
+    `diagnosis_process_id` bigint(20) NULL DEFAULT NULL COMMENT '诊断疾病流程ID',
+    `description`   TEXT          CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '诊断结果描述信息',
+    `urls`          JSON          NULL DEFAULT NULL COMMENT '存储多个分割或检测结果图URL的JSON数组',
+    `create_time`   datetime      NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime      NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX AI_model_result_idx_patient_id (`patient_id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
 # 创建病人和随访的视图
 DROP VIEW IF EXISTS followup_patient_view;
 CREATE VIEW followup_patient_view AS
@@ -426,7 +447,7 @@ SELECT
 FROM followup f
          LEFT JOIN patients p ON f.patient_id = p.id;
 
-
+# element、visits、element_vision 三表视图
 DROP VIEW IF EXISTS patient_visit_summary_view;
 CREATE VIEW patient_visit_summary_view AS
 SELECT
