@@ -6,8 +6,8 @@ import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.PatientsVO;
-import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.service.IPatientsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
  * <p>

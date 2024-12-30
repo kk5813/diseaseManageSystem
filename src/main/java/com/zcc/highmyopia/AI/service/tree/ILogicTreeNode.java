@@ -1,8 +1,6 @@
 package com.zcc.highmyopia.AI.service.tree;
 
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
-import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
-import org.omg.CORBA.INTERNAL;
 
 /**
  * @Author zcc
@@ -11,6 +9,6 @@ import org.omg.CORBA.INTERNAL;
  */
 public interface ILogicTreeNode {
 
-    DiagnoseResultEntity logic(Integer modelId);
+    DiagnoseResultEntity logic(Integer modelId, String filePath, String api);
 
 }

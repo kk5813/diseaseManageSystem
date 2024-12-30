@@ -96,7 +96,7 @@ public class DiagnoseRepository implements IDiagnoseRepository {
         ModelDisease disease = modelDiseaseService.getModelDiseaseByDiseaseId(diseaseId);
         List<ModelNode> modelNodes = modelNodeService.getModelNodeByDiseaseId(diseaseId);
         List<ModelLine> modelLines = modelLineService.getModelLineByDiseaseId(diseaseId);
-        // treeNodeLine转为map结构
+        // treeNodeLine转为map结构   起点 -> treeNodeLine
         Map<Integer, List<RuleTreeNodeLineVO>> treeNodeLineMap = new HashMap<>();
         for (ModelLine modelLine : modelLines) {
             RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
@@ -115,6 +115,8 @@ public class DiagnoseRepository implements IDiagnoseRepository {
                     .id(modelNode.getId())
                     .api(modelNode.getApi())
                     .name(modelNode.getName())
+                    .input(modelNode.getInput())
+                    .treeNodeLineVOList(treeNodeLineMap.get(modelNode.getId()))
                     .build();
             treeNodeMap.put(modelNode.getId(), treeNodeVO);
         }

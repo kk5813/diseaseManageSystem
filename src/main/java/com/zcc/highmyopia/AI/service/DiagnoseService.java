@@ -36,7 +36,7 @@ public class DiagnoseService implements IDiagnoseService {
     private DefaultTreeFactory treeFactory;
 
     @Override
-    public DiagnoseResultEntity diagnose(DiagnoseEntity diagnoseEntity) {
+    public List<DiagnoseResultEntity> diagnose(DiagnoseEntity diagnoseEntity) {
         Long patientId = diagnoseEntity.getPatientId();
         List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
         RuleTreeVO ruleTreeVO = diagnoseRepository.getRuleTreeVOByDiseaseId(diagnoseEntity.getDiseaseId());

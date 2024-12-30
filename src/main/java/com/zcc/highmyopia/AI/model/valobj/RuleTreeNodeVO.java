@@ -25,6 +25,8 @@ public class RuleTreeNodeVO {
     /** 规则比值 */
     private String name;
 
+    private String input;
+
     /** 规则连线 */
     private List<RuleTreeNodeLineVO> treeNodeLineVOList;
 

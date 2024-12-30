@@ -10,7 +10,6 @@
     </parent>
     <groupId>com.zcc</groupId>
     <artifactId>highmyopia</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
     <name>highmyopia</name>
     <description>Demo project for Spring Boot</description>
 <!--    <packaging>war</packaging>-->
@@ -68,7 +67,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>1.18.24</version> <!-- 或使用当前最新稳定版本 -->
+            <scope>provided</scope>  <!-- 这表示 Lombok 仅在编译时可用，运行时不需要 -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -240,18 +240,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

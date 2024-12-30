@@ -2,6 +2,7 @@ package com.zcc.highmyopia.AI.service.tree.factory.engine;
 
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,5 +12,5 @@ import java.util.Map;
  */
 public interface IDecisionTreeEngine {
 
-    DiagnoseResultEntity process(Map<String, String> url);
+    List<DiagnoseResultEntity> process(Map<String, String> url);
 }

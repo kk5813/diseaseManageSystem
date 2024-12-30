@@ -51,8 +51,8 @@ public class ModelDiseaseController {
     @ApiOperation("获取配置的疾病列表")
     @RequiresAuthentication
     public Result diagnose(@RequestBody DiagnoseEntity diagnose){
-        DiagnoseResultEntity resultEntity = diagnoseService.diagnose(diagnose);
-        return Result.succ(resultEntity);
+        List<DiagnoseResultEntity> diagnoseResultEntityList = diagnoseService.diagnose(diagnose);
+        return Result.succ(diagnoseResultEntityList);
     }
 
 }

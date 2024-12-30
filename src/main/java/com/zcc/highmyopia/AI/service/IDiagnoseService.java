@@ -3,6 +3,8 @@ package com.zcc.highmyopia.AI.service;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 
+import java.util.List;
+
 /**
  * @Author zcc
  * @Date 2024/12/29
@@ -10,6 +12,6 @@ import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
  */
 public interface IDiagnoseService {
 
-    DiagnoseResultEntity diagnose(DiagnoseEntity diagnoseEntity);
+    List<DiagnoseResultEntity> diagnose(DiagnoseEntity diagnoseEntity);
 
 }

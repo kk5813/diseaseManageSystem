@@ -21,5 +21,5 @@ public class DiagnoseResultEntity {
     String resultInfo;
 
     // 分割或检测的结果图URL
-    List<String> urls;
+    String url;
 }
