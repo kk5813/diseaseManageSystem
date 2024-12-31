@@ -61,7 +61,7 @@ public class TodayController {
     }
 
     @GetMapping("get_test_data")
-    @ApiOperation(value = "getTest")
+    @ApiOperation(value = "部署服务器上拉取数据使用")
     @RequiresAuthentication
     public Result getTestData(){
         getDataService.getDataTest();

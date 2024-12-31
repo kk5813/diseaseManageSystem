@@ -48,7 +48,7 @@ public class ModelDiseaseController {
     }
 
     @PostMapping("diagnose")
-    @ApiOperation("获取配置的疾病列表")
+    @ApiOperation("模型诊断接口")
     @RequiresAuthentication
     public Result diagnose(@RequestBody DiagnoseEntity diagnose){
         List<DiagnoseResultEntity> diagnoseResultEntityList = diagnoseService.diagnose(diagnose);

@@ -97,7 +97,7 @@ knife4j:
   enable-token: true
   token-header-name: Authorization
   # 这里的token是jwt令牌
-  token-value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MSwiaWF0IjoxNzM1MzgyMjY3LCJleHAiOjE3MzU5ODcwNjd9.Cibeu7C199fUE8BveA-5gedem52VJLVKSmsnwQL8a5sSxAcdtSZf3mMOP7ZkqXYXNBhdko1W_ikSwBn-IPKXMw
+  token-value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MSwiaWF0IjoxNzM1NjE2NDk2LCJleHAiOjE3MzYyMjEyOTZ9.XJf1fsdCBRT6mhN4FEHjV4m8d7emkQO5HTOMduDVh4hbVwoitMqWnuuD9TYOeHdkWkPCprKleNSIBPUcx5T3Xw
 #  basic: #开启密码验证
 #    enable: true
 #    username: root

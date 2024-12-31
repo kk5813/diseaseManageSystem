@@ -9,11 +9,13 @@ import com.zcc.highmyopia.AI.repository.DiagnoseRepository;
 import com.zcc.highmyopia.AI.repository.IDiagnoseRepository;
 import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
 import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine;
+import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.VisitEntity;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.mapper.IUserMapper;
 import com.zcc.highmyopia.po.Dept;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.IRedisService;
@@ -241,17 +243,9 @@ class HighmyopiaApplicationTests {
     private IRedisService redisService;
     @Test
     public void redis_serve(){
-        Dept dept = new Dept();
-        dept.setDeptName("1");
-        dept.setId(1L);
-        dept.setStatus(1);
-        dept.setCreateTime(LocalDateTime.now());
-        dept.setUpdateTime(LocalDateTime.now());
-
-        redissonService.setValue("a", dept);
-        System.out.println("已保存");
-        Dept dept1 = redissonService.getValue("a");
-        System.out.println(dept1);
+        String cacheKey = Constants.RedisKey.PATIENTS + "1796037988798971906";
+        Patients patients = redissonService.getValue(cacheKey);
+        System.out.println(patients);
     }
 
     @Resource

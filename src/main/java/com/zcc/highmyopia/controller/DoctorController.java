@@ -55,49 +55,49 @@ public class DoctorController {
 
     private final IRedisService redisService;
 
-    @PostMapping("/add")
-    @ApiOperation(value = "添加医生")
-    @RequiresAuthentication
-    public Result addDoctor(@Validated @RequestBody Doctor doctor) {
-        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
-        doctor.setCreateTime(LocalDateTime.now());
-        doctor.setUpdateTime(LocalDateTime.now());
-        doctor.setStatus(1);
-        boolean save = doctorService.save(doctor);
-        if (save)
-            redisService.setValue(cacheKey, doctor);
-        return Result.succ(null);
-    }
+//    @PostMapping("/add")
+//    @ApiOperation(value = "添加医生")
+//    @RequiresAuthentication
+//    public Result addDoctor(@Validated @RequestBody Doctor doctor) {
+//        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
+//        doctor.setCreateTime(LocalDateTime.now());
+//        doctor.setUpdateTime(LocalDateTime.now());
+//        doctor.setStatus(1);
+//        boolean save = doctorService.save(doctor);
+//        if (save)
+//            redisService.setValue(cacheKey, doctor);
+//        return Result.succ(null);
+//    }
 
-    @PostMapping("/edit")
-    @ApiOperation(value = "编辑医生")
-    @RequiresAuthentication
-    public Result editDoctor(@RequestBody Doctor doctor) {
-        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
-        LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Doctor::getId, doctor.getId());
-        wrapper.set(Doctor::getDoctorName, doctor.getDoctorName());
-        wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
-        boolean update = doctorService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
+//    @PostMapping("/edit")
+//    @ApiOperation(value = "编辑医生")
+//    @RequiresAuthentication
+//    public Result editDoctor(@RequestBody Doctor doctor) {
+//        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
+//        LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Doctor::getId, doctor.getId());
+//        wrapper.set(Doctor::getDoctorName, doctor.getDoctorName());
+//        wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
+//        boolean update = doctorService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
 
-    @GetMapping("/invalid/{doctorId}")
-    @ApiOperation(value = "删除失效医生")
-    @RequiresAuthentication
-    public Result invalidDoctor(@PathVariable(name = "doctorId") Long doctorId) {
-        String cacheKey = Constants.RedisKey.DOCTOR + doctorId;
-        LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Doctor::getId, doctorId);
-        wrapper.set(Doctor::getStatus, 0);
-        wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
-        boolean update = doctorService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
+//    @GetMapping("/invalid/{doctorId}")
+//    @ApiOperation(value = "删除失效医生")
+//    @RequiresAuthentication
+//    public Result invalidDoctor(@PathVariable(name = "doctorId") Long doctorId) {
+//        String cacheKey = Constants.RedisKey.DOCTOR + doctorId;
+//        LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Doctor::getId, doctorId);
+//        wrapper.set(Doctor::getStatus, 0);
+//        wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
+//        boolean update = doctorService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
 
     @GetMapping("/find/{doctorId}")
     @ApiOperation(value = "查找医生")
