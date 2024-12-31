@@ -3,6 +3,9 @@ package com.zcc.highmyopia.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zcc.highmyopia.po.OrderDetail;
 import com.zcc.highmyopia.po.Visits;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author zcc
@@ -10,4 +13,5 @@ import com.zcc.highmyopia.po.Visits;
  * @Description
  */
 public interface IOrderDetailService extends IService<OrderDetail> {
+    List<OrderDetail> searchOrderDetail(String recipeNumber);
 }

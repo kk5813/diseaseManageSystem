@@ -41,5 +41,13 @@ public interface IRedisService {
      */
     void remove(String key);
 
+    /**
+     * 判断指定 key 的是否存在
+     *
+     * @param key 键
+     */
+    boolean isExist(String key);
+
+
 }
 

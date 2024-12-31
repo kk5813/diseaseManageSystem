@@ -36,4 +36,19 @@ public class RecipeEntity {
     private Long id;             // 处方ID
     private List<OrderDetail> orderDetail; // 处方（医嘱）信息
 
+    public static RecipeEntity poToVo(Recipe recipe, String deptName, String doctorName, String patientName, List<OrderDetail> orderDetail){
+        RecipeEntity build = RecipeEntity.builder().patientId(recipe.getPatientId())
+                .id(recipe.getId())
+                .recipeNumber(recipe.getRecipeNumber())
+                .recipeType(recipe.getRecipeType())
+                .billingTime(recipe.getBillingTime().toString())
+                .regNumber(recipe.getRegNumber())
+                .orderDetail(orderDetail)
+                .deptName(deptName)
+                .doctorName(doctorName)
+                .patientName(patientName)
+                .build();
+        return build;
+    }
+
 }

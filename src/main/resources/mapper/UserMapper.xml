@@ -12,5 +12,6 @@
         <if test="userName != null and userName != ''">
             and user_name like concat(#{userName}, '%')
         </if>
+        and user_status != -1
     </select>
 </mapper>

@@ -37,6 +37,8 @@ public enum ResultCode {
     ID_FIELD_MISSING(40005,"传入的参数缺失某个ID值字段"),
     PARAMS_FIELD_MISSING(40006,"json请求参数缺失，或者不完整"),
     JSON_PARSE_ERROR(40007,"json格式转化失败"),
+    TOKEN_NOT_EXIST(40008,"token不存在！"),
+    USER_LOGOUT(40009,"用户已经登出，请重新登录！"),
     ;
 
     private int code;

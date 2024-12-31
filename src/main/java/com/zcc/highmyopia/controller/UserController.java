@@ -3,6 +3,7 @@ package com.zcc.highmyopia.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.UserDto;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
@@ -134,7 +135,8 @@ public class UserController {
     @ApiOperation(value = "精确查找用户")
     @RequiresAuthentication
     public Result FindUser(@PathVariable(name = "userId") Long userId) {
-        User user = userService.getById(userId);
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        User user = userService.getOne(lambdaQueryWrapper.eq(User::getUserId,userId).ne(User::getUserStatus, Constants.UserStatus.DELETE));
         return Result.succ(user);
     }
     @PostMapping("/search")

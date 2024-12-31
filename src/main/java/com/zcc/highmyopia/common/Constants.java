@@ -36,4 +36,12 @@ public class Constants {
         public static int FOLLOW_SUCCESS = 1;
     }
 
+    public static class UserStatus{
+        public static int DELETE = -1;
+
+        public static int ADMIN = 0;
+
+        public static int COMMON = 1;
+    }
+
 }

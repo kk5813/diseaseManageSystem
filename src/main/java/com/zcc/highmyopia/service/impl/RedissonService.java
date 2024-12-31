@@ -37,5 +37,15 @@ public class RedissonService implements IRedisService {
     public void remove(String key) {
         redissonClient.getBucket(key).delete();
     }
+
+    @Override
+    public boolean isExist(String key) {
+        RBucket<String>  bucket = redissonClient.getBucket(key);
+        if (bucket == null || !bucket.isExists()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 

@@ -3,8 +3,12 @@ package com.zcc.highmyopia.shiro;
 import cn.hutool.core.date.StopWatch;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.lang.ResultCode;
+import com.zcc.highmyopia.service.TokenBlackListService;
 import com.zcc.highmyopia.util.JwtUtils;
+import com.zcc.highmyopia.util.ThrowUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
@@ -33,6 +37,9 @@ public class JwtFilter extends AuthenticatingFilter {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    TokenBlackListService tokenBlackListService;
 
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
@@ -65,7 +72,7 @@ public class JwtFilter extends AuthenticatingFilter {
             if (claim == null || jwtUtils.isTokenExpired(claim.getExpiration())) {
                 throw new ExpiredCredentialsException("token已失效，请重新登录");
             }
-
+            ThrowUtils.throwIf(tokenBlackListService.isInBlackList(jwt), new BusinessException(ResultCode.USER_LOGOUT));
             // 执行登录
             return executeLogin(servletRequest, servletResponse);
         }

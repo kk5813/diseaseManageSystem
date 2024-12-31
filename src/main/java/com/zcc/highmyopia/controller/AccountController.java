@@ -5,17 +5,22 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zcc.highmyopia.common.dto.LoginDto;
+import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IUserService;
+import com.zcc.highmyopia.service.TokenBlackListService;
 import com.zcc.highmyopia.util.JwtUtils;
+import com.zcc.highmyopia.util.ThrowUtils;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +37,9 @@ public class AccountController {
 
     private final IUserService userService;  // 用户服务，用于用户相关操作
     public final static Integer USER_DELETE = -1;
+
+    @Autowired
+    private TokenBlackListService tokenBlackListService;
 
     /**
      * 用户登录接口
@@ -62,6 +70,8 @@ public class AccountController {
 
         // 生成 JWT Token
         String jwt = jwtUtils.generateToken(user.getUserId(), user.getUserStatus());
+        //从黑名单里面移除
+        tokenBlackListService.removeBlackList(jwt);
         response.setHeader("Authorization", jwt);  // 设置 Authorization 响应头
         response.setHeader("Access-Control-Expose-Headers", "Authorization");  // 允许前端访问该头信息
         log.info("jwt:" + jwt);  // 打印生成的 JWT
@@ -81,12 +91,19 @@ public class AccountController {
      *
      * @return 退出结果
      */
-    @GetMapping("/logout")
     @ApiOperation(value = "登出")
+    @GetMapping("/logout")
     @RequiresAuthentication  // 确保用户已认证
-    public Result logout() {
+    public Result logout(@RequestHeader("Authorization") String token) {
         log.info("用户退出");  // 打印用户退出日志
+        Claims claimByToken = jwtUtils.getClaimByToken(token);
+        ThrowUtils.throwIf(claimByToken == null, new BusinessException(ResultCode.TOKEN_NOT_EXIST));
+        long expiration = claimByToken.getExpiration().getTime()- System.currentTimeMillis();
+        log.info(String.valueOf(expiration));
+        if(expiration > 0 ){
+            tokenBlackListService.addToBlackList(token,expiration);
+        }
         SecurityUtils.getSubject().logout();  // 执行 Shiro 的注销操作
-        return Result.succ(null);  // 返回成功结果
+        return Result.succ("退出登录成功");  // 返回成功结果
     }
 }
