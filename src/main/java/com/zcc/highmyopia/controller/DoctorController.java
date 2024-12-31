@@ -8,12 +8,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.po.Doctor;
 import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IDoctorService;
+import com.zcc.highmyopia.service.IRedisService;
 import com.zcc.highmyopia.service.IUserService;
 import com.zcc.highmyopia.shiro.AccountProfile;
 import com.zcc.highmyopia.util.JwtUtils;
@@ -24,6 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.validation.annotation.Validated;
@@ -50,14 +53,19 @@ public class DoctorController {
 
     private final IDoctorService doctorService;
 
+    private final IRedisService redisService;
+
     @PostMapping("/add")
     @ApiOperation(value = "添加医生")
     @RequiresAuthentication
     public Result addDoctor(@Validated @RequestBody Doctor doctor) {
+        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
         doctor.setCreateTime(LocalDateTime.now());
         doctor.setUpdateTime(LocalDateTime.now());
         doctor.setStatus(1);
-        doctorService.save(doctor);
+        boolean save = doctorService.save(doctor);
+        if (save)
+            redisService.setValue(cacheKey, doctor);
         return Result.succ(null);
     }
 
@@ -65,11 +73,14 @@ public class DoctorController {
     @ApiOperation(value = "编辑医生")
     @RequiresAuthentication
     public Result editDoctor(@RequestBody Doctor doctor) {
+        String cacheKey = Constants.RedisKey.DOCTOR + doctor.getId();
         LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Doctor::getId, doctor.getId());
         wrapper.set(Doctor::getDoctorName, doctor.getDoctorName());
         wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
-        doctorService.update(wrapper);
+        boolean update = doctorService.update(wrapper);
+        if (update)
+            redisService.remove(cacheKey);
         return Result.succ(null);
     }
 
@@ -77,11 +88,14 @@ public class DoctorController {
     @ApiOperation(value = "删除失效医生")
     @RequiresAuthentication
     public Result invalidDoctor(@PathVariable(name = "doctorId") Long doctorId) {
+        String cacheKey = Constants.RedisKey.DOCTOR + doctorId;
         LambdaUpdateWrapper<Doctor> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Doctor::getId, doctorId);
         wrapper.set(Doctor::getStatus, 0);
         wrapper.set(Doctor::getUpdateTime, LocalDateTime.now());
-        doctorService.update(wrapper);
+        boolean update = doctorService.update(wrapper);
+        if (update)
+            redisService.remove(cacheKey);
         return Result.succ(null);
     }
 
@@ -89,10 +103,14 @@ public class DoctorController {
     @ApiOperation(value = "查找医生")
     @RequiresAuthentication
     public Result FindDoctor(@PathVariable(name = "doctorId") Long doctorId) {
+        String cacheKey = Constants.RedisKey.DOCTOR + doctorId;
+        Doctor doctor = redisService.getValue(cacheKey);
+        if (doctor != null) return Result.succ(doctor);
         LambdaQueryWrapper<Doctor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Doctor::getId, doctorId);
-        Doctor one = doctorService.getOne(wrapper);
-        return Result.succ(one);
+        doctor = doctorService.getOne(wrapper);
+        redisService.setValue(cacheKey, doctor);
+        return Result.succ(doctor);
     }
 
 
