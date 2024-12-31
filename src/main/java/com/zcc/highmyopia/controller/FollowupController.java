@@ -75,15 +75,16 @@ public class FollowupController {
 //    public Result undoFollowup() {
 //        return Result.succ(followupMapper.selectUndoFollowUpList());
 //    }
-//    @GetMapping("/search")
-//    @RequiresAuthentication
-//    @ApiOperation(value = "模糊查询")
-//    public Result searchFollowup(@RequestParam(defaultValue = "") String patientId, @RequestParam(defaultValue = "") String dateStart,
-//                                 @RequestParam(defaultValue = "") String dateEnd, @RequestParam(defaultValue = "") Integer visitResult,
-//                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize){
-//        //followupService.SearchFollowup(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize);
-//        return Result.succ(followupService.SearchFollowPatient(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize));
-//    }
+
+    @GetMapping("/search")
+    @RequiresAuthentication
+    @ApiOperation(value = "模糊查询")
+    public Result searchFollowup(@RequestParam(defaultValue = "") String patientId, @RequestParam(defaultValue = "") String dateStart,
+                                 @RequestParam(defaultValue = "") String dateEnd, @RequestParam(defaultValue = "") Integer visitResult,
+                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize){
+        //followupService.SearchFollowup(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize);
+        return Result.succ(followupService.SearchFollowPatient(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize));
+    }
 
     @PostMapping("/addFollowup")
     @ApiOperation(value = "添加随访记录")

@@ -38,5 +38,10 @@
         from report_files
         where report_id = #{reportId}
     </select>
+    <select id="getReportFileById" resultType="com.zcc.highmyopia.po.ReportFiles"
+            parameterType="java.lang.Long">
+        select * from report_files
+        where report_id = #{id}
+    </select>
 
 </mapper>

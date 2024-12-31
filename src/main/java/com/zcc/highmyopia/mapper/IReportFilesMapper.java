@@ -22,4 +22,6 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     void updateReportFiles(ReportFiles reportFile);
 
     List<ReportFiles> queryBatch(Long reportId);
+
+    List<ReportFiles> getReportFileById(Long id);
 }

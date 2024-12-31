@@ -10,6 +10,10 @@ import com.zcc.highmyopia.service.IReportFilesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @Author zcc
  * @Date 2024/12/18
@@ -19,4 +23,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportFilesService extends ServiceImpl<IReportFilesMapper, ReportFiles> implements IReportFilesService {
 
+    @Resource
+    private IReportFilesMapper reportFilesMapper;
+
+    @Override
+    public List<ReportFiles> getReportFileById(Long id) {
+        return reportFilesMapper.getReportFileById(id);
+    }
 }
