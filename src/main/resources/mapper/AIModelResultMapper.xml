@@ -17,7 +17,7 @@
         <if test="userId != null and userId != ''">
             AND user_id = #{userId}
         </if>
-        <if test="diagnosis_process_id != null and diagnosis_process_id != ''">
+        <if test="diagnosisProcessId != null and diagnosisProcessId != ''">
             AND diagnosis_process_id = #{diagnosisProcessId}
         </if>
         ORDER BY create_time DESC

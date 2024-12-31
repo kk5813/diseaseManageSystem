@@ -1,10 +1,14 @@
 package com.zcc.highmyopia.common.vo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zcc.highmyopia.po.AIModelResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +30,6 @@ public class AIModelResultVO {
     private Long userId;
     private Long diagnosisProcessId;
     private String description;
-    // 接收多个 URL
     private List<String> urls;
     private String  createTime;
     private String updateTime;
@@ -40,10 +43,22 @@ public class AIModelResultVO {
                 .createTime(aiModelResult.getCreateTime().toString())
                 .updateTime(aiModelResult.getUpdateTime().toString())
                 .build();
-        if (aiModelResult.getUrls() != null && !aiModelResult.getUrls().isEmpty()){
-            String urlsAsString = "[" + String.join(",", aiModelResult.getUrls()) + "]";
-            aiModelResult.setUrls(urlsAsString);
+        if(StringUtils.isNotBlank(aiModelResult.getUrls())){
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                List<String> urlsList = objectMapper.readValue(aiModelResult.getUrls(), new TypeReference<List<String>>(){});
+                modelResultVO.setUrls(urlsList);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                modelResultVO.setUrls(null);
+            }
+        }else{
+            modelResultVO.setUrls(null);
         }
+//        if (aiModelResult.getUrls() != null && !aiModelResult.getUrls().isEmpty()){
+//            String urlsAsString = "[" + String.join(",", aiModelResult.getUrls()) + "]";
+//            aiModelResult.setUrls(urlsAsString);
+//        }
         return modelResultVO;
     }
 }

@@ -9,6 +9,7 @@ import com.zcc.highmyopia.common.dto.AIModelResultDTO;
 import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
+import com.zcc.highmyopia.common.vo.AIModelResultVO;
 import com.zcc.highmyopia.po.AIModelResult;
 import com.zcc.highmyopia.service.IAIModelResultService;
 import io.swagger.annotations.Api;
@@ -76,6 +77,9 @@ public class AIModelResultController {
 
         Page<AIModelResult> pageRequest = new Page<>(page, size);
         IPage<AIModelResult> aiModelResultIPage = aiModelResultService.selectByCondition(pageRequest, patientId, visitNumber, description, userId, diagnosisProcessId);
-        return Result.succ(aiModelResultIPage);
+        IPage<AIModelResultVO> modelResultVOIPage = aiModelResultIPage.convert(aiModelResult -> {
+            return AIModelResultVO.poToVo(aiModelResult);
+        });
+        return Result.succ(modelResultVOIPage);
     }
 }
