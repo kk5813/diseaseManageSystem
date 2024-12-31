@@ -1,9 +1,11 @@
 package com.zcc.highmyopia.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zcc.highmyopia.common.dto.CheckReportDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CheckReportVO;
 import com.zcc.highmyopia.common.vo.ReportFilesVO;
+import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -16,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -91,6 +90,37 @@ public class CheckReportsController {
                 .collect(Collectors.toList());
         return Result.succ(checkReportVOS);
     }
+
+    @GetMapping("reportFiles")
+    @ApiOperation(value = "病历时间线里获取患者检查报告")
+    @RequiresAuthentication
+    public Result findVisitsByPatientId(@RequestParam Long patientId,
+                                        @RequestParam String visitNumber){
+
+        List<CheckReports> checkReportsList = checkReportsService.getCheckReportById(patientId, visitNumber);
+        if (checkReportsList == null || checkReportsList.isEmpty()) return Result.succ(null);
+        List<CheckReportDTO> collect = checkReportsList.stream().map(
+                e -> {
+                    List<ReportFiles> reportFilesList = reportFilesService.getReportFileById(e.getId());
+                    reportFilesList.forEach(
+                            c -> {
+                                if (c.getType().equals("application/pdf") && c.getFilePath() != null){
+                                    String newPath = pdfPathToImgPath(c.getFilePath());
+                                    c.setFilePath(newPath);
+                                    c.setType("image/png");
+                                }
+                            }
+                    );
+                    return CheckReportDTO.builder()
+                            .checkReports(e)
+                            .reportFiles(reportFilesList)
+                            .build();
+                }
+        ).collect(Collectors.toList());
+
+        return Result.succ(collect);
+    }
+
 
     private String pdfPathToImgPath(String filePath){
         File file = new File(filePath);
