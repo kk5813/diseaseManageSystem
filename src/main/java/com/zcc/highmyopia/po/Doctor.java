@@ -25,20 +25,17 @@ public class Doctor implements Serializable {
     private Long id;  // 医生ID
 
     private Long siteId; // 科室ID
+
     @NotBlank(message = "医生姓名不能为空")
     private String doctorName;  // 医生姓名
 
     private Integer status;  // 逻辑删除状态
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime  updateTime;
 }

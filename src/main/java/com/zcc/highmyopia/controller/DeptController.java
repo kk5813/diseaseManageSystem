@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.service.IDeptService;
 import com.zcc.highmyopia.service.IRedisService;
+import io.lettuce.core.output.ValueValueListOutput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +41,10 @@ public class DeptController {
     @ApiOperation(value = "添加科室")
     @RequiresAuthentication
     public Result addDept(@Validated @RequestBody Dept dept) {
-        dept.setCreateTime(LocalDateTime.now());
-        dept.setUpdateTime(LocalDateTime.now());
-        deptService.save(dept);
+        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
+        boolean save = deptService.save(dept);
+        if (save)
+            redisService.setValue(cacheKey, dept);
         return Result.succ(null);
     }
 
@@ -49,11 +52,13 @@ public class DeptController {
     @ApiOperation(value = "编辑科室")
     @RequiresAuthentication
     public Result editDept(@RequestBody Dept dept) {
+        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
         LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Dept::getId, dept.getId());
         wrapper.set(Dept::getDeptName, dept.getDeptName());
-        wrapper.set(Dept::getUpdateTime, LocalDateTime.now());
-        deptService.update(wrapper);
+        boolean update = deptService.update(wrapper);
+        if (update)
+            redisService.remove(cacheKey);
         return Result.succ(null);
     }
 
@@ -61,11 +66,14 @@ public class DeptController {
     @ApiOperation(value = "失效科室")
     @RequiresAuthentication
     public Result invalidDept(@PathVariable(name = "deptId") Long deptId) {
+        String cacheKey = Constants.RedisKey.DEPT + deptId;
         LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Dept::getId, deptId);
         wrapper.set(Dept::getStatus, 0);
         wrapper.set(Dept::getUpdateTime, LocalDateTime.now());
-        deptService.update(wrapper);
+        boolean update = deptService.update(wrapper);
+        if (update)
+            redisService.remove(cacheKey);
         return Result.succ(null);
     }
 
@@ -73,10 +81,13 @@ public class DeptController {
     @ApiOperation(value = "查找科室")
     @RequiresAuthentication
     public Result FindDept(@PathVariable(name = "deptId") Long deptId) {
-        LambdaQueryWrapper<Dept> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Dept::getId, deptId);
-        Dept one = deptService.getOne(wrapper);
-        return Result.succ(one);
+        String cacheKey = Constants.RedisKey.DEPT + deptId;
+        Dept dept = redisService.getValue(cacheKey);
+        if (dept != null) return Result.succ(dept);
+
+        dept = deptService.getOne(new LambdaQueryWrapper<Dept>().eq(Dept::getId, deptId));
+        redisService.setValue(cacheKey, dept);
+        return Result.succ(dept);
     }
 
 

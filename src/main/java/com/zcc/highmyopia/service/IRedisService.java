@@ -33,5 +33,13 @@ public interface IRedisService {
      */
     <T> T getValue(String key);
 
+
+    /**
+     * 移除指定 key 的值
+     *
+     * @param key 键
+     */
+    void remove(String key);
+
 }
 

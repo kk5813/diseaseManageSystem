@@ -1,35 +1,33 @@
 package com.zcc.highmyopia.controller;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.esotericsoftware.minlog.Log;
+import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.ElementShowDTO;
 import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.PatientsVO;
-import com.zcc.highmyopia.po.PatientVisitSummaryView;
-import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
-import com.zcc.highmyopia.service.IPatientVisitSummaryService;
+import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.service.IPatientsService;
+import com.zcc.highmyopia.service.IRedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
  * <p>
@@ -51,6 +49,9 @@ public class PatientsController {
     @Autowired
     IPatientsMapper patientMapper;
 
+    @Resource
+    private IRedisService redisService;
+
     @ApiOperation(value = "获取患者列表")
     @GetMapping("/list")
     @RequiresAuthentication
@@ -65,7 +66,10 @@ public class PatientsController {
     @PostMapping("/edit")
     @RequiresAuthentication
     public Result editUser(@RequestBody Patients patient) {
-        patientService.saveOrUpdate(patient);
+        String cacheKey = Constants.RedisKey.PATIENTS + patient;
+        boolean saved = patientService.saveOrUpdate(patient);
+        if (saved)
+            redisService.remove(cacheKey);
         return Result.succ(null);
     }
 
@@ -73,8 +77,13 @@ public class PatientsController {
     @GetMapping("/find/{patientId}")
     @RequiresAuthentication
     public Result patientByPatientId(@PathVariable(name = "patientId") String patientId) {
-        Log.info("精准查询用户");
-        return Result.succ(patientMapper.selectPatientByPId(patientId));
+        String cacheKey = Constants.RedisKey.PATIENTS + patientId;
+        Patients patients = redisService.getValue(cacheKey);
+        if (patients != null) return Result.succ(patients);
+
+        patients = patientMapper.selectPatientByPId(patientId);
+        redisService.setValue(cacheKey, patients);
+        return Result.succ(patients);
     }
 
     @ApiOperation(value = "患者信息分页查询")
@@ -140,28 +149,14 @@ public class PatientsController {
         }
     }
 
-    @Autowired
-    private IPatientVisitSummaryService patientVisitSummaryService;
 
     @GetMapping("element_time_line")
     @RequiresAuthentication
     @ApiOperation(value = "展示病人就诊以及病历时间线")
-    public Result timeLineElement(@RequestParam(defaultValue = "") String visitNumber,
-                                  @RequestParam(required = false) Long patientId,
-                                  @RequestParam(defaultValue = "1") int pageNum,
-                                  @RequestParam(defaultValue = "10") int pageSize) {
-        Page<PatientVisitSummaryView> page = new Page<>(pageNum, pageSize);
-        IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, patientId, page);
-        return Result.succ(patientVisitSummaryByPage);
+    public Result timeLineElement(@RequestParam Long patientId){
+        List<ElementShowDTO> timeLineElement = patientService.timeLineElement(patientId);
+        return Result.succ(timeLineElement);
     }
-
-//    @GetMapping("element_time_line")
-//    @RequiresAuthentication
-//    @ApiOperation(value = "展示病人就诊以及病历时间线")
-//    public Result timeLineElement(@RequestParam Long patientId){
-//        List<ElementShowDTO> timeLineElement = patientService.timeLineElement(patientId);
-//        return Result.succ(timeLineElement);
-//    }
 
     @GetMapping("a")
     @RequiresAuthentication

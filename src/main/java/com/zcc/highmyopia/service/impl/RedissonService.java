@@ -32,5 +32,10 @@ public class RedissonService implements IRedisService {
     public <T> T getValue(String key) {
         return redissonClient.<T>getBucket(key).get();
     }
+
+    @Override
+    public void remove(String key) {
+        redissonClient.getBucket(key).delete();
+    }
 }
 
