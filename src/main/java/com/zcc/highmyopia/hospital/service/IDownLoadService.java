@@ -28,9 +28,9 @@ public abstract interface IDownLoadService {
     void getOutElementByVisitNumber(String beginData, String endData, List<String> visitNumbers) throws Exception;
 
     // 患者检验结果 getList
-    void getCheckResult(String beginData, String endData);
-    void getCheckResultByPatientId(String beginData, String endData, String patientId);
-    void getCheckResultByPatientId(String beginData, String endData, List<String> patientIds);
+    void getCheckReport(String beginData, String endData);
+    void getCheckReportByPatientId(String beginData, String endData, String patientId);
+    void getCheckReportByPatientId(String beginData, String endData, List<String> patientIds);
 
     void getPatientInfoByPatientId(List<String> patientIds) throws Exception;
     void getPatientInfoByPatientId(String patientId) throws Exception;

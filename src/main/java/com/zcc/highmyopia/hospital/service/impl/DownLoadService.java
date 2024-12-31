@@ -1,9 +1,10 @@
-package com.zcc.highmyopia.hospital.service;
+package com.zcc.highmyopia.hospital.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
+import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -249,7 +250,7 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResult(String beginData, String endData) {
+    public void getCheckReport(String beginData, String endData) {
         String path = "/api/report/getList";
         String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
                 .queryParam("physc_bdate", beginData)
@@ -269,10 +270,10 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResultByPatientId(String beginData, String endData, List<String> patientIds) {
+    public void getCheckReportByPatientId(String beginData, String endData, List<String> patientIds) {
         patientIds.forEach(patientId -> {
             try {
-                getCheckResultByPatientId(beginData, endData, patientId);
+                getCheckReportByPatientId(beginData, endData, patientId);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -280,7 +281,7 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getCheckResultByPatientId(String beginData, String endData, String patientId) {
+    public void getCheckReportByPatientId(String beginData, String endData, String patientId) {
         String path = "/api/report/getList";
         String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
                 .queryParam("physc_bdate", beginData)

@@ -3,8 +3,8 @@ package com.zcc.highmyopia.controller;
 import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
-import com.zcc.highmyopia.hospital.service.AsyncDownLoadService;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
+import com.zcc.highmyopia.hospital.service.IGetDataService;
 import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.IVisitsService;
 import io.swagger.annotations.Api;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author zcc
@@ -34,8 +33,8 @@ public class TodayController {
 
     private final ICheckReportsService checkReportsService;
     private final IDownLoadService downLoadService;
-    private final AsyncDownLoadService asyncDownLoadService;
     private final IVisitsService visitsService;
+    private final IGetDataService getDataService;
 
     /**
      * @Description 此方法为当天来的患者进行第三方库表查询
@@ -45,32 +44,11 @@ public class TodayController {
     @ApiOperation(value = "当天来的患者进行第三方库表查询")
     @RequiresAuthentication
     public Result onlySearch(@PathVariable(name = "patientId") Long patientId){
-        // 根据patientId查CheckReport
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String today = LocalDateTime.now().format(formatter);
-        // 1. 根据patientId查到这个人的CheckReport和FileUrl
-        downLoadService.getCheckResultByPatientId(today, today, String.valueOf(patientId));
-        // 2. 下载数据库中未下载的图像并保存到本地
+        downLoadService.getCheckReportByPatientId(today, today, String.valueOf(patientId));
         downLoadService.DownLoadReportImageBatch();
-
-        // 3. 异步先将原始图像的Path返回给前端
-
-        // 4. 调用深度学习模型诊断的服务并得到结果再次返回给前端数据
-
         return Result.succ(null);
-    }
-
-
-    @GetMapping("test")
-    @ApiOperation(value = "当天来的患者进行第三方库表查询")
-    @RequiresAuthentication
-    public Result testAsync() {
-        // 4. 异步执行图像下载和深度学习模型诊断
-        CompletableFuture<String> downloadTask = asyncDownLoadService.downloadReportImage();
-        CompletableFuture<String> modelTask = asyncDownLoadService.callDeepLearningModel();
-
-        // 不等待任务完成，立即返回响应
-        return Result.succ("Tasks have been started, you can query later for the results.");
     }
 
     @PostMapping("CategoryCount")
@@ -80,6 +58,14 @@ public class TodayController {
         log.info("收到请求");
         List<CategoryGroupCountVO> categoryGroupCountVOList = visitsService.categoryCount(categoryCountDTO);
         return Result.succ(categoryGroupCountVOList);
+    }
+
+    @GetMapping("get_test_data")
+    @ApiOperation(value = "getTest")
+    @RequiresAuthentication
+    public Result getTestData(){
+        getDataService.getDataTest();
+        return Result.succ(null);
     }
 
 }

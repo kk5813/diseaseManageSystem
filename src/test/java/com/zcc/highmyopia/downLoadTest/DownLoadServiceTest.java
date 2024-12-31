@@ -96,10 +96,10 @@ public class DownLoadServiceTest {
 
     // 单独保存单个用户
     @Test
-    void test_getCheckResult() throws Exception {
+    void test_getCheckReport() throws Exception {
         LocalDateTime start = LocalDateTime.now();
         System.out.println(start);
-        downLoadService.getCheckResultByPatientId("20241219", "20241219", "1869575479859933185");
+        downLoadService.getCheckReportByPatientId("20241219", "20241219", "1869575479859933185");
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
     }
@@ -107,7 +107,7 @@ public class DownLoadServiceTest {
     void test_addCheckResult() {
         LocalDateTime start = LocalDateTime.now();
         System.out.println(start);
-        downLoadService.getCheckResult("20241219", "20241219");
+        downLoadService.getCheckReport("20241219", "20241219");
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
     }
