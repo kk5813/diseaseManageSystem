@@ -66,6 +66,7 @@ public class PatientsController {
         patientsVO.setTotal((long) patientList.size());
         return Result.succ(patientsVO);
     }
+
     @ApiOperation(value = " 编辑患者")
     @PostMapping("/edit")
     @RequiresAuthentication
@@ -167,10 +168,10 @@ public class PatientsController {
         return Result.succ(patientVisitSummaryByPage);
     }
 
-    @GetMapping("a")
-    @RequiresAuthentication
-    @ApiOperation(value = "病人计划随访日期时间")
-    public Result addToFollowUp(){
-        return Result.succ(null);
-    }
+//    @GetMapping("a")
+//    @RequiresAuthentication
+//    @ApiOperation(value = "病人计划随访日期时间")
+//    public Result addToFollowUp(){
+//        return Result.succ(null);
+//    }
 }

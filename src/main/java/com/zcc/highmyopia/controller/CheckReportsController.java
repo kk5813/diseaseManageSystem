@@ -71,7 +71,7 @@ public class CheckReportsController {
 //                    List<ReportFiles> reportFilesList = reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
 //                                    .eq(ReportFiles::getReportId, reportId));
                     List<ReportFiles> reportFilesList = reportFilesMapper.queryBatch(reportId);
-
+                    if (reportFilesList == null || reportFilesList.isEmpty()) return checkReportVO;
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();

@@ -37,45 +37,45 @@ public class DeptController {
     private final IDeptService deptService;
     private final IRedisService redisService;
 
-    @PostMapping("/add")
-    @ApiOperation(value = "添加科室")
-    @RequiresAuthentication
-    public Result addDept(@Validated @RequestBody Dept dept) {
-        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
-        boolean save = deptService.save(dept);
-        if (save)
-            redisService.setValue(cacheKey, dept);
-        return Result.succ(null);
-    }
-
-    @PostMapping("/edit")
-    @ApiOperation(value = "编辑科室")
-    @RequiresAuthentication
-    public Result editDept(@RequestBody Dept dept) {
-        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
-        LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Dept::getId, dept.getId());
-        wrapper.set(Dept::getDeptName, dept.getDeptName());
-        boolean update = deptService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
-
-    @GetMapping("/invalid/{deptId}")
-    @ApiOperation(value = "失效科室")
-    @RequiresAuthentication
-    public Result invalidDept(@PathVariable(name = "deptId") Long deptId) {
-        String cacheKey = Constants.RedisKey.DEPT + deptId;
-        LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Dept::getId, deptId);
-        wrapper.set(Dept::getStatus, 0);
-        wrapper.set(Dept::getUpdateTime, LocalDateTime.now());
-        boolean update = deptService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
+//    @PostMapping("/add")
+//    @ApiOperation(value = "添加科室")
+//    @RequiresAuthentication
+//    public Result addDept(@Validated @RequestBody Dept dept) {
+//        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
+//        boolean save = deptService.save(dept);
+//        if (save)
+//            redisService.setValue(cacheKey, dept);
+//        return Result.succ(null);
+//    }
+//
+//    @PostMapping("/edit")
+//    @ApiOperation(value = "编辑科室")
+//    @RequiresAuthentication
+//    public Result editDept(@RequestBody Dept dept) {
+//        String cacheKey = Constants.RedisKey.DEPT + dept.getId();
+//        LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Dept::getId, dept.getId());
+//        wrapper.set(Dept::getDeptName, dept.getDeptName());
+//        boolean update = deptService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
+//
+//    @GetMapping("/invalid/{deptId}")
+//    @ApiOperation(value = "失效科室")
+//    @RequiresAuthentication
+//    public Result invalidDept(@PathVariable(name = "deptId") Long deptId) {
+//        String cacheKey = Constants.RedisKey.DEPT + deptId;
+//        LambdaUpdateWrapper<Dept> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Dept::getId, deptId);
+//        wrapper.set(Dept::getStatus, 0);
+//        wrapper.set(Dept::getUpdateTime, LocalDateTime.now());
+//        boolean update = deptService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
 
     @GetMapping("/find/{deptId}")
     @ApiOperation(value = "查找科室")

@@ -42,48 +42,48 @@ public class FollowupController {
     @Autowired
     IFollowupMapper followupMapper;
 
-    /**
-     * 今日未随访
-     * @return
-     */
-    @GetMapping("/todayUndo")
-    @ApiOperation(value = "今日未随访")
-    @RequiresAuthentication
-    public Result todayUndoFollowup() {
-        return Result.succ(followupMapper.selectToDayFollowUpList());
-    }
-
-    /**
-     *
-     * 超期未随访
-     * @return
-     */
-    @GetMapping("/overdue")
-    @ApiOperation(value = "超期未随访")
-    @RequiresAuthentication
-    public Result overdueFollowup() {
-        return Result.succ(followupMapper.selectOverdueFollowUpList());
-    }
-
-    /**
-     * 全部未随访
-     * @return
-     */
-    @GetMapping("/undo")
-    @RequiresAuthentication
-    @ApiOperation(value = "全部未随访")
-    public Result undoFollowup() {
-        return Result.succ(followupMapper.selectUndoFollowUpList());
-    }
-    @GetMapping("/search")
-    @RequiresAuthentication
-    @ApiOperation(value = "模糊查询")
-    public Result searchFollowup(@RequestParam(defaultValue = "") String patientId, @RequestParam(defaultValue = "") String dateStart,
-                                 @RequestParam(defaultValue = "") String dateEnd, @RequestParam(defaultValue = "") Integer visitResult,
-                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize){
-        //followupService.SearchFollowup(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize);
-        return Result.succ(followupService.SearchFollowPatient(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize));
-    }
+//    /**
+//     * 今日未随访
+//     * @return
+//     */
+//    @GetMapping("/todayUndo")
+//    @ApiOperation(value = "今日未随访")
+//    @RequiresAuthentication
+//    public Result todayUndoFollowup() {
+//        return Result.succ(followupMapper.selectToDayFollowUpList());
+//    }
+//
+//    /**
+//     *
+//     * 超期未随访
+//     * @return
+//     */
+//    @GetMapping("/overdue")
+//    @ApiOperation(value = "超期未随访")
+//    @RequiresAuthentication
+//    public Result overdueFollowup() {
+//        return Result.succ(followupMapper.selectOverdueFollowUpList());
+//    }
+//
+//    /**
+//     * 全部未随访
+//     * @return
+//     */
+//    @GetMapping("/undo")
+//    @RequiresAuthentication
+//    @ApiOperation(value = "全部未随访")
+//    public Result undoFollowup() {
+//        return Result.succ(followupMapper.selectUndoFollowUpList());
+//    }
+//    @GetMapping("/search")
+//    @RequiresAuthentication
+//    @ApiOperation(value = "模糊查询")
+//    public Result searchFollowup(@RequestParam(defaultValue = "") String patientId, @RequestParam(defaultValue = "") String dateStart,
+//                                 @RequestParam(defaultValue = "") String dateEnd, @RequestParam(defaultValue = "") Integer visitResult,
+//                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize){
+//        //followupService.SearchFollowup(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize);
+//        return Result.succ(followupService.SearchFollowPatient(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize));
+//    }
 
     @PostMapping("/addFollowup")
     @ApiOperation(value = "添加随访记录")

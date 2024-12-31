@@ -37,48 +37,48 @@ public class SiteController {
     private final ISiteService SiteService;
     private final IRedisService redisService;
 
-    @PostMapping("/add")
-    @ApiOperation(value = "添加眼别")
-    @RequiresAuthentication
-    public Result addSite(@Validated @RequestBody Site site) {
-        String cacheKey = Constants.RedisKey.SITE + site.getId();
-        site.setUpdateTime(LocalDateTime.now());
-        site.setCreateTime(LocalDateTime.now());
-        boolean save = SiteService.save(site);
-        if (save)
-            redisService.setValue(cacheKey, site);
-        return Result.succ(null);
-    }
-
-    @PostMapping("/edit")
-    @ApiOperation(value = "编辑眼别")
-    @RequiresAuthentication
-    public Result editSite(@RequestBody Site site) {
-        String cacheKey = Constants.RedisKey.SITE + site.getId();
-        LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Site::getId, site.getId());
-        wrapper.set(Site::getSiteName, site.getSiteName());
-        wrapper.set(Site::getUpdateTime, LocalDateTime.now());
-        boolean update = SiteService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
-
-    @GetMapping("/invalid/{siteId}")
-    @ApiOperation(value = "失效眼别")
-    @RequiresAuthentication
-    public Result invalidSite(@PathVariable(name = "siteId") Long siteId) {
-        String cacheKey = Constants.RedisKey.SITE + siteId;
-        LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Site::getId, siteId);
-        wrapper.set(Site::getStatus, 0);
-        wrapper.set(Site::getUpdateTime, LocalDateTime.now());
-        boolean update = SiteService.update(wrapper);
-        if (update)
-            redisService.remove(cacheKey);
-        return Result.succ(null);
-    }
+//    @PostMapping("/add")
+//    @ApiOperation(value = "添加眼别")
+//    @RequiresAuthentication
+//    public Result addSite(@Validated @RequestBody Site site) {
+//        String cacheKey = Constants.RedisKey.SITE + site.getId();
+//        site.setUpdateTime(LocalDateTime.now());
+//        site.setCreateTime(LocalDateTime.now());
+//        boolean save = SiteService.save(site);
+//        if (save)
+//            redisService.setValue(cacheKey, site);
+//        return Result.succ(null);
+//    }
+//
+//    @PostMapping("/edit")
+//    @ApiOperation(value = "编辑眼别")
+//    @RequiresAuthentication
+//    public Result editSite(@RequestBody Site site) {
+//        String cacheKey = Constants.RedisKey.SITE + site.getId();
+//        LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Site::getId, site.getId());
+//        wrapper.set(Site::getSiteName, site.getSiteName());
+//        wrapper.set(Site::getUpdateTime, LocalDateTime.now());
+//        boolean update = SiteService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
+//
+//    @GetMapping("/invalid/{siteId}")
+//    @ApiOperation(value = "失效眼别")
+//    @RequiresAuthentication
+//    public Result invalidSite(@PathVariable(name = "siteId") Long siteId) {
+//        String cacheKey = Constants.RedisKey.SITE + siteId;
+//        LambdaUpdateWrapper<Site> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.eq(Site::getId, siteId);
+//        wrapper.set(Site::getStatus, 0);
+//        wrapper.set(Site::getUpdateTime, LocalDateTime.now());
+//        boolean update = SiteService.update(wrapper);
+//        if (update)
+//            redisService.remove(cacheKey);
+//        return Result.succ(null);
+//    }
 
     @GetMapping("/find/{siteId}")
     @ApiOperation(value = "查找眼别")
