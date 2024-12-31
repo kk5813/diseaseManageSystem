@@ -1,6 +1,8 @@
 package com.zcc.highmyopia.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.esotericsoftware.minlog.Log;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.ElementShowDTO;
@@ -8,7 +10,9 @@ import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.PatientsVO;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
+import com.zcc.highmyopia.po.PatientVisitSummaryView;
 import com.zcc.highmyopia.po.Patients;
+import com.zcc.highmyopia.service.IPatientVisitSummaryService;
 import com.zcc.highmyopia.service.IPatientsService;
 import com.zcc.highmyopia.service.IRedisService;
 import io.swagger.annotations.Api;
@@ -149,13 +153,18 @@ public class PatientsController {
         }
     }
 
-
+    @Autowired
+    private IPatientVisitSummaryService patientVisitSummaryService;
     @GetMapping("element_time_line")
     @RequiresAuthentication
     @ApiOperation(value = "展示病人就诊以及病历时间线")
-    public Result timeLineElement(@RequestParam Long patientId){
-        List<ElementShowDTO> timeLineElement = patientService.timeLineElement(patientId);
-        return Result.succ(timeLineElement);
+    public Result timeLineElement(@RequestParam(defaultValue = "") String visitNumber,
+                                  @RequestParam(required = false) Long patientId,
+                                  @RequestParam(defaultValue = "1") int pageNum,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
+        Page<PatientVisitSummaryView> page = new Page<>(pageNum, pageSize);
+        IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, patientId, page);
+        return Result.succ(patientVisitSummaryByPage);
     }
 
     @GetMapping("a")
