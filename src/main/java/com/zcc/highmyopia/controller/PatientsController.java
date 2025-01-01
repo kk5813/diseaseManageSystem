@@ -71,10 +71,12 @@ public class PatientsController {
     @PostMapping("/edit")
     @RequiresAuthentication
     public Result editUser(@RequestBody Patients patient) {
-        String cacheKey = Constants.RedisKey.PATIENTS + patient;
+        String cacheKey = Constants.RedisKey.PATIENTS + patient.getId();
         boolean saved = patientService.saveOrUpdate(patient);
-        if (saved)
+        if (saved) {
+            log.info("清理redis缓存{}", cacheKey);
             redisService.remove(cacheKey);
+        }
         return Result.succ(null);
     }
 
@@ -160,11 +162,11 @@ public class PatientsController {
     @RequiresAuthentication
     @ApiOperation(value = "展示病人就诊以及病历时间线")
     public Result timeLineElement(@RequestParam(defaultValue = "") String visitNumber,
-                                  @RequestParam(required = false) Long patientId,
+                                  @RequestParam(required = false) String patientId,
                                   @RequestParam(defaultValue = "1") int pageNum,
                                   @RequestParam(defaultValue = "10") int pageSize) {
         Page<PatientVisitSummaryView> page = new Page<>(pageNum, pageSize);
-        IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, patientId, page);
+        IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, Long.valueOf(patientId), page);
         return Result.succ(patientVisitSummaryByPage);
     }
 

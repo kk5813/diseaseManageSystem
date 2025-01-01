@@ -1,7 +1,6 @@
 package com.zcc.highmyopia.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zcc.highmyopia.po.Dept;
 import com.zcc.highmyopia.po.ReportFiles;
 
 import java.util.List;
@@ -12,5 +11,5 @@ import java.util.List;
  * @Description
  */
 public interface IReportFilesService extends IService<ReportFiles> {
-    List<ReportFiles> getReportFileById(Long id);
+    List<ReportFiles> getReportFilePDFById(Long id);
 }

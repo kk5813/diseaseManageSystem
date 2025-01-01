@@ -5,7 +5,6 @@ import com.zcc.highmyopia.common.dto.CheckReportDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CheckReportVO;
 import com.zcc.highmyopia.common.vo.ReportFilesVO;
-import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -24,7 +23,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -94,17 +92,17 @@ public class CheckReportsController {
     @GetMapping("reportFiles")
     @ApiOperation(value = "病历时间线里获取患者检查报告")
     @RequiresAuthentication
-    public Result findVisitsByPatientId(@RequestParam Long patientId,
+    public Result findVisitsByPatientId(@RequestParam String patientId,
                                         @RequestParam String visitNumber){
-
-        List<CheckReports> checkReportsList = checkReportsService.getCheckReportById(patientId, visitNumber);
+        log.info("参数为patientId:{}, visitNumber:{}", patientId, visitNumber);
+        List<CheckReports> checkReportsList = checkReportsService.getCheckReportById(Long.valueOf(patientId), visitNumber);
         if (checkReportsList == null || checkReportsList.isEmpty()) return Result.succ(null);
         List<CheckReportDTO> collect = checkReportsList.stream().map(
                 e -> {
-                    List<ReportFiles> reportFilesList = reportFilesService.getReportFileById(e.getId());
+                    List<ReportFiles> reportFilesList = reportFilesService.getReportFilePDFById(e.getId());
                     reportFilesList.forEach(
                             c -> {
-                                if (c.getType().equals("application/pdf") && c.getFilePath() != null){
+                                if (c.getFilePath() != null){
                                     String newPath = pdfPathToImgPath(c.getFilePath());
                                     c.setFilePath(newPath);
                                     c.setType("image/png");
@@ -117,7 +115,7 @@ public class CheckReportsController {
                             .build();
                 }
         ).collect(Collectors.toList());
-
+        log.info("{}", collect);
         return Result.succ(collect);
     }
 

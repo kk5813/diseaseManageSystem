@@ -295,6 +295,18 @@ class HighmyopiaApplicationTests {
         }
     }
 
+    @Test
+    public void redisSet(){
+        String cacheKey = String.valueOf(1);
+        redissonService.setValue(cacheKey, "!");
+    }
+
+    @Test
+    public void redisRemove(){
+        String cacheKey = String.valueOf(1);
+        redissonService.remove(cacheKey);
+    }
+
 
 }
 

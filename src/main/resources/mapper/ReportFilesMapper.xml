@@ -41,7 +41,7 @@
     <select id="getReportFileById" resultType="com.zcc.highmyopia.po.ReportFiles"
             parameterType="java.lang.Long">
         select * from report_files
-        where report_id = #{id}
+        where report_id = #{id} and type = 'application/pdf' and is_down_load = 1
     </select>
 
 </mapper>

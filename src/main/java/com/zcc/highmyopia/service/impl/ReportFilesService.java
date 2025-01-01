@@ -27,7 +27,7 @@ public class ReportFilesService extends ServiceImpl<IReportFilesMapper, ReportFi
     private IReportFilesMapper reportFilesMapper;
 
     @Override
-    public List<ReportFiles> getReportFileById(Long id) {
+    public List<ReportFiles> getReportFilePDFById(Long id) {
         return reportFilesMapper.getReportFileById(id);
     }
 }
