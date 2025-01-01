@@ -7,12 +7,16 @@ import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -32,10 +36,18 @@ public class LogicTreeNode implements ILogicTreeNode {
 
         // 发送API请求后端flask模型服务(模拟并得到结果)
         // 请求参数为filePath
-        String url = "http://127.0.0.1:4523/m1/3365319-628336-default/api/";
+        String url = "http://localhost:4091";
         url += api;
         log.info("url {}", url);
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        // 创建请求体，封装 filePath
+        Map<String, String> jsonMap = new HashMap<>();
+        // 创建请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        jsonMap.put("imagePath", filePath);
+        String jsonBody = JSON.toJSONString(jsonMap);
+        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
         int statusCode = response.getStatusCodeValue();
         if (statusCode != 200)
             throw new AppException(statusCode, "请求模型服务失败");

@@ -51,6 +51,7 @@ public class ModelDiseaseController {
     @ApiOperation("模型诊断接口")
     @RequiresAuthentication
     public Result diagnose(@RequestBody DiagnoseEntity diagnose){
+        log.info("诊断接口运行");
         List<DiagnoseResultEntity> diagnoseResultEntityList = diagnoseService.diagnose(diagnose);
         return Result.succ(diagnoseResultEntityList);
     }

@@ -7,6 +7,7 @@ import com.zcc.highmyopia.AI.model.valobj.RuleTreeNodeVO;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeVO;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.*;
 import com.zcc.highmyopia.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,9 @@ public class DiagnoseRepository implements IDiagnoseRepository {
     @Resource
     private IModelLineService modelLineService;
 
+    @Resource
+    private IReportFilesMapper reportFilesMapper;
+
 //    @Override
 //    public List<ModelNode> getModel() {
 //        String cacheKey = Constants.RedisKey.MODEL;
@@ -82,8 +86,7 @@ public class DiagnoseRepository implements IDiagnoseRepository {
 
     @Override
     public List<ReportFiles> getReportFile(Long id) {
-        return reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
-                .eq(ReportFiles::getReportId, id));
+        return reportFilesMapper.getReportFile(id);
     }
 
     @Override

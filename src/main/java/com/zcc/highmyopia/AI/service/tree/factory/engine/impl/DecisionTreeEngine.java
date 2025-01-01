@@ -40,8 +40,8 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
         while (nextNode != null){
             RuleTreeNodeVO ruleTreeNodeVO = treeNodeMap.get(nextNode);
             DiagnoseResultEntity diagnoseResult = logicTreeNode.logic(nextNode,
-                    //url.get(ruleTreeNodeVO.getInput()),
-                    null,
+                    url.get(ruleTreeNodeVO.getInput()),
+//                    null,
                     ruleTreeNodeVO.getApi());
             diagnoseResultEntities.add(diagnoseResult);
 
@@ -52,9 +52,9 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
     }
 
     // 决策
-    private Integer nextNode(String result, List<RuleTreeNodeLineVO> ruleTreeNodeVOList){
-        if (ruleTreeNodeVOList == null || ruleTreeNodeVOList.isEmpty()) return null;
-        for (RuleTreeNodeLineVO nodeVO : ruleTreeNodeVOList) {
+    private Integer nextNode(String result, List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList){
+        if (ruleTreeNodeLineVOList == null || ruleTreeNodeLineVOList.isEmpty()) return null;
+        for (RuleTreeNodeLineVO nodeVO : ruleTreeNodeLineVOList) {
             // 结果集
             if (nodeVO.getLimitValue().contains(result))
                 return nodeVO.getModelTo();
