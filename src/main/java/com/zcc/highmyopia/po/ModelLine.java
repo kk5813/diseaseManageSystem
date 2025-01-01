@@ -28,6 +28,8 @@ public class ModelLine {
 
     private Integer modelTo;
 
+    private Integer useOutputUrl;
+
     private String limitValue;
 
     private String description;

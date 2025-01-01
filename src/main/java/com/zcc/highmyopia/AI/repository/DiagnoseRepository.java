@@ -107,6 +107,7 @@ public class DiagnoseRepository implements IDiagnoseRepository {
                     .modelFrom(modelLine.getModelFrom())
                     .modelTo(modelLine.getModelTo())
                     .limitValue(modelLine.getLimitValue())
+                    .useOutputUrl(modelLine.getUseOutputUrl())
                     .build();
             List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList = treeNodeLineMap.computeIfAbsent(modelLine.getModelFrom(), k -> new ArrayList<>());
             ruleTreeNodeLineVOList.add(ruleTreeNodeLineVO);
