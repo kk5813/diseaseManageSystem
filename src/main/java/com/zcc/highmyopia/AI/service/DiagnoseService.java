@@ -39,10 +39,14 @@ public class DiagnoseService implements IDiagnoseService {
     public List<DiagnoseResultEntity> diagnose(DiagnoseEntity diagnoseEntity) {
         Long patientId = diagnoseEntity.getPatientId();
         List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
+        // 暂时多项相同的检查换成第一个
+        List<CheckReports> values = new ArrayList<>(checkReports.stream()
+                .collect(Collectors.toMap(CheckReports::getItemName, checkReport -> checkReport, (existing, replacement) -> existing))
+                .values());
         RuleTreeVO ruleTreeVO = diagnoseRepository.getRuleTreeVOByDiseaseId(diagnoseEntity.getDiseaseId());
         //  光学相干断层成像（OCT）,扫描激光眼底检查(SLO)
         String input = ruleTreeVO.getInput();
-        List<CheckReports> collect = checkReports.stream().filter(e -> !input.contains(e.getItemName())).collect(Collectors.toList());
+        List<CheckReports> collect = values.stream().filter(e -> !input.contains(e.getItemName())).collect(Collectors.toList());
         if (collect.size() != input.split(Constants.SPLIT).length)
             throw new AppException(400, "用户检查项目不够");
         Map<String, String> url = new HashMap<>();
