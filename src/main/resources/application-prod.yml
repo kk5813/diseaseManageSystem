@@ -1,6 +1,6 @@
 # DataSource Config
 server:
-  port: 8081
+  port: 8088
 
 spring:
   redis:
@@ -76,7 +76,7 @@ highmyopia:
 hospital:
   AHisHost: http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
-  filePath: /zcc/DownLoad/project
+  filePath: /opt/resources/images
   # 这个路径是在原来filePath后面+pdfImg
   pdf2ImgPath: \pdfImg
   # 本地图片映射路径

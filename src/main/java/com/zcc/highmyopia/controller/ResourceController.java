@@ -43,9 +43,11 @@ public class ResourceController {
 
     @GetMapping("/images/{filename}")
     public ResponseEntity<?> getImage(@PathVariable String filename) {
+
         // 创建一个资源对象，指向E盘的项目目录
         ThrowUtils.throwIf(StringUtils.isBlank(filename), ResultCode.PATHVARIABLE_NULL);
-        File file = new File(targetPath+"/" + filename);
+        File file = new File(targetPath + "/" + filename);
+        log.info("请求的资源filePath:{}",targetPath + "/" + filename);
         ThrowUtils.throwIf(!file.exists(), new BusinessException(ResultCode.RESOURCE_NOT_FOUND));
         Resource resource = new FileSystemResource(file);
 
