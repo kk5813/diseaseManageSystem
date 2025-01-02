@@ -71,15 +71,13 @@ public class DiagnoseRepository implements IDiagnoseRepository {
                 .lt(CheckReports::getCheckTime, LocalDate.now().plusDays(1).atStartOfDay())); // 下一天的开始时间
         if (list == null) return new ArrayList<>();
 
-        List<CheckReports> latestCheckReports = new ArrayList<>(list.stream()
+        // 返回最新的记录列表
+        return new ArrayList<>(list.stream()
                 .collect(Collectors.toMap(
                         CheckReports::getItemName, e -> e,
                         (existing, replacement) -> existing.getCheckTime().isAfter(replacement.getCheckTime()) ? existing : replacement // 比较 checkTime，保留最新的
                 ))
                 .values());
-
-        // 返回最新的记录列表
-        return latestCheckReports;
     }
 
 

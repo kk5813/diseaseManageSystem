@@ -7,6 +7,7 @@ import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,16 @@ public class LogicTreeNode implements ILogicTreeNode {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${hospital.flask_path}")
+    private String flaskPath;
+
     // 处理
     @Override
     public DiagnoseResultEntity logic(Integer modelId, String filePath, String api) {
 
         // 发送API请求后端flask模型服务(模拟并得到结果)
         // 请求参数为filePath
-        String url = "http://localhost:4091";
+        String url = flaskPath;
         url += api;
         log.info("url {}", url);
         // 创建请求体，封装 filePath

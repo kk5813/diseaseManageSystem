@@ -81,6 +81,7 @@ hospital:
   pdf2ImgPath: \pdfImg
   # 本地图片映射路径
   localImage: /images
+  flask_path: http://localhost:4091
 
   hospId: 1824
   appKey: Cdm_1824

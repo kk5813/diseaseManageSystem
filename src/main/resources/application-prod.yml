@@ -13,7 +13,18 @@ spring:
     url: jdbc:mysql://43.136.178.202:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: mysql9344!
-
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: HikariPool-1
+#  web:
+#    resources:
+#      # 将E盘的图片目录映射为http://localhost:8081/images/访问, classpath:/static/：保留了默认的静态资源目录(优先级：从左到右)
+#      static-locations: file:/E:/Download/project/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,
+#      add-mappings: true
 # 应用配置
 app:
   config:
@@ -41,10 +52,12 @@ redis:
 
 mybatis-plus:
   mapper-locations:
-    classpath:/mapper/*.xml
-    classpath:/mapper/old/*.xml
-#  configuration:
-#    map-underscore-to-camel-case: false
+    - classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # map-underscore-to-camel-case: false
+
+
 
 shiro-redis:
   enabled: true
@@ -61,8 +74,33 @@ highmyopia:
     header: Authorization
 
 hospital:
+  AHisHost: http://sit.aierchina.com:8710/external-api
+  APacsHost: http://10.0.225.6:8083
+  filePath: /zcc/DownLoad/project
+  # 这个路径是在原来filePath后面+pdfImg
+  pdf2ImgPath: \pdfImg
+  # 本地图片映射路径
+  localImage: /images
+
   hospId: 1824
   appKey: Cdm_1824
   appSecret: ywgp.lbol
-  AHisHost: http://sit.aierchina.com:8710/external-api
-  APacsHost: http://10.0.225.6:8083
+
+  vision-hospId: 9999
+  vision-appKey: aviseq_9999
+  vision-appSecret: lsj.z4HzPyAA
+  flask_path: http://43.136.178.202:4091
+
+
+
+# 接口文档配置
+# 访问 http://localhost:8081/doc.html
+knife4j:
+  enable-token: true
+  token-header-name: Authorization
+  # 这里的token是jwt令牌
+  token-value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNCIsInN0YXR1cyI6MSwiaWF0IjoxNzM1NjE2NDk2LCJleHAiOjE3MzYyMjEyOTZ9.XJf1fsdCBRT6mhN4FEHjV4m8d7emkQO5HTOMduDVh4hbVwoitMqWnuuD9TYOeHdkWkPCprKleNSIBPUcx5T3Xw
+#  basic: #开启密码验证
+#    enable: true
+#    username: root
+#    password: 123456
