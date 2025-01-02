@@ -101,7 +101,7 @@ public class PDFToImg {
         if(!destPath.exists()){
             destPath.mkdirs();
         }
-        pdf2Image("E:\\Download\\project","E:\\Download\\project\\test","xajd_grpyjh.pdf",PNG, DPI_MID);
+        pdf2Image("E:\\Download\\project","E:\\Download\\project\\test","3f580d06-6a8a-4ddf-828a-64e12f9aa6d0.pdf",PNG, DPI_MID);
     }
 
 }

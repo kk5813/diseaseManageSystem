@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AIModelResultServiceImpl extends ServiceImpl<IAIModelResultMapper, AIModelResult> implements IAIModelResultService {
+public class AIModelResultService extends ServiceImpl<IAIModelResultMapper, AIModelResult> implements IAIModelResultService {
 
     @Autowired
     private IAIModelResultMapper aiModelResultMapper;

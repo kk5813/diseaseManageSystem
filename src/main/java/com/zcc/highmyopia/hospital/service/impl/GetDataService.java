@@ -44,7 +44,7 @@ public class GetDataService implements IGetDataService {
         log.info("定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中");
         try {
             // 1. 下载所有的当天就诊信息
-            List<VisitEntity> visits = downLoadService.getPatientVisit(dataNoSplit, dataNoSplit);
+            List<VisitEntity> visits = downLoadService.getVisits(dataNoSplit, dataNoSplit);
             if (visits == null || visits.isEmpty()) {
                 log.warn("未获取到当天的就诊信息");
                 return;
@@ -67,7 +67,7 @@ public class GetDataService implements IGetDataService {
             downLoadService.getOutElementByVisitNumber(dataSplit, dataSplit, visitNumbersList);
 
             // 6.下载检验结果
-            downLoadService.getReportDetail(dataSplit, dataSplit);
+            downLoadService.getCheckResult(dataSplit, dataSplit);
 
             // 7.下载视力眼压
             downLoadService.getElementVisionByVisitNumber(dataSplit, dataSplit, patientIdsList);
@@ -82,11 +82,14 @@ public class GetDataService implements IGetDataService {
     }
 
     @Override
-    public void getDataTest() {
+    public void getDataTest(String beginData, String endData) {
+        String beginDataSplit = beginData.substring(0, 4) + "-" + beginData.substring(4, 6) + "-" + beginData.substring(6);
+        String endDataSplit = endData.substring(0, 4) + "-" + endData.substring(4, 6) + "-" + endData.substring(6);
+
         log.info("定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中");
         try {
             // 1. 下载所有的当天就诊信息
-            List<VisitEntity> visits = downLoadService.getPatientVisit("20240603", "20240730");
+            List<VisitEntity> visits = downLoadService.getVisits(beginData, beginData);
             if (visits == null || visits.isEmpty()) {
                 log.warn("未获取到当天的就诊信息");
                 return;
@@ -100,19 +103,19 @@ public class GetDataService implements IGetDataService {
             downLoadService.getPatientInfoByPatientId(patientIdsList);
 
             // 3. 获取当天的所有处方信息
-            downLoadService.getRecipe("20240801", "20241125");
+            downLoadService.getRecipe(beginData, beginData);
 
             // 4.下载检查报告信息
-            downLoadService.getCheckReportByPatientId("20241219", "20241219", "1869575479859933185");
+            downLoadService.getCheckReportByPatientId(beginData, beginData, patientIdsList);
 
             // 5.下载门诊病历信息
-            downLoadService.getOutElementByVisitNumber("2024-06-26", "20240725", "MZ202407071064");
+            downLoadService.getOutElementByVisitNumber(beginDataSplit, endDataSplit, visitNumbersList);
 
             // 6.下载检验结果
-            downLoadService.getReportDetail("2024-08-01", "2024-11-15");
+            downLoadService.getCheckResult(beginDataSplit, endDataSplit);
 
             // 7.下载视力眼压
-            downLoadService.getElementVisionByVisitNumber("20241219", "20241219", "1869575479859933185");
+            downLoadService.getElementVisionByVisitNumber(beginData, beginData, visitNumbersList);
 
             // 8. 批量下载图片到本地位置
             downLoadService.DownLoadReportImageBatch();

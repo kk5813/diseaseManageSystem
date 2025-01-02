@@ -9,5 +9,5 @@ public interface IGetDataService {
 
     void getTodayData();
 
-    void getDataTest();
+    void getDataTest(String beginData, String endData);
 }

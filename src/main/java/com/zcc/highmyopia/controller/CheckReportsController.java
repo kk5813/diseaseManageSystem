@@ -41,10 +41,12 @@ public class CheckReportsController {
     private final IReportFilesService reportFilesService;
     private final IReportFilesMapper reportFilesMapper;
     @Value("${hospital.pdf2ImgPath}")
-    private String PDFToImgRelativePath;
+    private static String PDFToImgRelativePath;
 
     @Value("${hospital.localImage}")
-    private String ImagePathLocalHost;
+    private static String ImagePathLocalHost;
+
+
 
     @GetMapping("find/{patientId}")
     @ApiOperation(value = "获取患者检查报告")
@@ -120,7 +122,7 @@ public class CheckReportsController {
     }
 
 
-    private String pdfPathToImgPath(String filePath){
+    static String pdfPathToImgPath(String filePath){
         File file = new File(filePath);
         File parentFile = file.getParentFile();
         int dot = file.getName().lastIndexOf(".");
@@ -130,8 +132,10 @@ public class CheckReportsController {
         log.info(path.toString());
         return path.toString();
     }
-    private String LocalPathToVirtualPath(String filePath){
+    static String LocalPathToVirtualPath(String filePath){
         File file = new File(filePath);
         return Paths.get(ImagePathLocalHost,file.getName()).toString();
     }
+
+
 }

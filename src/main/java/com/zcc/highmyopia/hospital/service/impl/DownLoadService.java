@@ -21,7 +21,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author zcc
@@ -59,7 +61,7 @@ public class DownLoadService implements IDownLoadService {
 
     // 患者就诊信息
     @Override
-    public List<VisitEntity> getPatientVisit(String beginData, String endData) throws Exception {
+    public List<VisitEntity> getVisits(String beginData, String endData) throws Exception {
         String path = "/api/interface/medical/getPatientVisit";
         Map<String, String> query = new HashMap<>();
         query.put("diagBdate", beginData);
@@ -108,7 +110,7 @@ public class DownLoadService implements IDownLoadService {
 
     // 检查结果 CheckResult
     @Override
-    public void getReportDetail(String beginData, String endData, String visitNumber) throws Exception {
+    public void getCheckResult(String beginData, String endData, String visitNumber) throws Exception {
         String path = "/alis/interface/reportDetail/getReportDetail";
         Map<String, String> r = new HashMap<>();
         r.put("auditDateBegin", beginData);
@@ -132,15 +134,15 @@ public class DownLoadService implements IDownLoadService {
     }
 
     @Override
-    public void getReportDetail(String beginData, String endData) throws Exception {
-        getReportDetail(beginData,endData, "");
+    public void getCheckResult(String beginData, String endData) throws Exception {
+        getCheckResult(beginData,endData, "");
     }
 
     @Override
-    public void getReportDetail(String beginData, String endData, List<String> visitNumbers) throws Exception {
+    public void getCheckResult(String beginData, String endData, List<String> visitNumbers) throws Exception {
         visitNumbers.forEach(visitNumber -> {
             try {
-                getReportDetail(beginData, endData, visitNumber);
+                getCheckResult(beginData, endData, visitNumber);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -206,6 +208,21 @@ public class DownLoadService implements IDownLoadService {
 
     @Override
     public void getElementVisionByVisitNumber(String beginData, String endData, String visitNumber) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 假设日期格式为 "yyyyMMdd"
+        try {
+            Date beginDate = sdf.parse(beginData);
+            Date endDate = sdf.parse(endData);
+
+            long diffInMillies = endDate.getTime() - beginDate.getTime();
+            long diffInDays = TimeUnit.MILLISECONDS.toDays(diffInMillies); // 将毫秒转为天数
+
+            // 判断差值是否超过一个月
+            if (diffInDays > 30) {
+                throw new IllegalArgumentException("日期间隔超过一个月");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (StringUtils.isBlank(visitNumber))
             throw new AppException(400, "visitNumber字段必传");
         String path = "/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
@@ -251,6 +268,21 @@ public class DownLoadService implements IDownLoadService {
 
     @Override
     public void getCheckReport(String beginData, String endData) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd"); // 假设日期格式为 "yyyyMMdd"
+        try {
+            Date beginDate = sdf.parse(beginData);
+            Date endDate = sdf.parse(endData);
+
+            long diffInMillies = endDate.getTime() - beginDate.getTime();
+            long diffInDays = TimeUnit.MILLISECONDS.toDays(diffInMillies); // 将毫秒转为天数
+
+            // 判断差值是否超过一个月
+            if (diffInDays > 30) {
+                throw new IllegalArgumentException("日期间隔超过一个月");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String path = "/api/report/getList";
         String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
                 .queryParam("physc_bdate", beginData)
@@ -352,7 +384,7 @@ public class DownLoadService implements IDownLoadService {
             }
             // 更新状态为已下载
             reportFile.setIsDownLoad(1);  // 标记文件已下载
-            reportFile.setFilePath(targetFile.getAbsolutePath());  // 设置文件路径
+            reportFile.setFilePath(targetFile.getAbsolutePath());  // 设置文件的相对路径
             saveRepository.updateReportFiles(reportFile);  // 更新数据库
         } catch (IOException e) {
             e.printStackTrace();

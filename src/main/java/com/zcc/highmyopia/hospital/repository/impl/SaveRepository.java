@@ -2,6 +2,7 @@ package com.zcc.highmyopia.hospital.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.mapper.*;
@@ -47,9 +48,7 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveVisits(List<VisitEntity> visitEntities) {
-        if (visitEntities == null || visitEntities.isEmpty()) {
-            return;
-        }
+        if (visitEntities == null || visitEntities.isEmpty()) return;
         // 封装实体
         List<Visits> visitsList = new ArrayList<>();
         // 去重
@@ -194,6 +193,7 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveElement(ElementEntity elementEntity) {
+        if (elementEntity == null) return;
         Element element = ElementEntity.entityToPo(elementEntity);
         try {
             elementService.saveOrUpdate(element);
@@ -206,6 +206,7 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveCheckReportsAndReportFiles(CheckReportsEntity checkReportsEntity) {
+        if (checkReportsEntity == null) return;
         transactionTemplate.execute(status -> {
            try {
                CheckReports checkReports = CheckReportsEntity.entityToPo(checkReportsEntity);
@@ -228,6 +229,8 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveCheckReportsAndReportFiles(List<CheckReportsEntity> checkReportsEntities) {
+        if (checkReportsEntities == null || checkReportsEntities.isEmpty())
+            throw new AppException(400,"当天没数据");
         transactionTemplate.execute(status -> {
             try {
                 List<CheckReports> checkReportsList = new ArrayList<>();
@@ -268,6 +271,7 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void updateReportFiles(ReportFiles reportFile) {
+        if (reportFile == null) return;
         reportFilesMapper.update(reportFile,
                 new LambdaUpdateWrapper<ReportFiles>()
                         .eq(ReportFiles::getId, reportFile.getId())
@@ -288,13 +292,11 @@ public class SaveRepository implements ISaveRepository {
 
     @Override
     public void saveElementVision(List<ElementVisionEntity> visionEntities) {
-        if (visionEntities == null || visionEntities.isEmpty())
-            return;
-
-        List<ElementVision> elementVisions = visionEntities.stream()
-                .map(ElementVisionEntity::entityToPo).collect(Collectors.toList());
+        if (visionEntities == null || visionEntities.isEmpty()) return;
 
         try {
+            List<ElementVision> elementVisions = visionEntities.stream()
+                    .map(ElementVisionEntity::entityToPo).collect(Collectors.toList());
             elementVisionService.saveOrUpdateBatch(elementVisions);
         }catch (Exception e){
             log.error("视力眼压数据保存失败", e);

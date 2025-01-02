@@ -20,4 +20,6 @@ public class DiagnoseEntity {
 
     private Integer diseaseId;
 
+    private Integer userId;
+
 }

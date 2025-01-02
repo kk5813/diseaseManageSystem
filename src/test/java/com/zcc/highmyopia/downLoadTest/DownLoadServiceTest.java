@@ -55,13 +55,15 @@ public class DownLoadServiceTest {
     LocalDateTime today = LocalDateTime.now();
     String dataSplit = today.format(formatterWithSplit);
     String dataNoSplit = today.format(formatterNoSplit);
+
+    // 就诊信息
     @Test
     void test_GetVisit() throws Exception {
-        List<VisitEntity> patientVisit = downLoadService.getPatientVisit("20240603", "20240730");
+        List<VisitEntity> patientVisit = downLoadService.getVisits("20240603", "20240730");
         System.out.println(patientVisit);
     }
 
-    // 测试
+    // 患者信息
     @Test
     void test_getPatientsInfo() throws Exception {
         List<Visits> list = visitsService.list();
@@ -76,41 +78,94 @@ public class DownLoadServiceTest {
                 throw new RuntimeException(ex);
             }
         });
-
     }
 
+    // 处方信息 y有问题
     @Test
     void test_GetRecipe() throws Exception {
-        downLoadService.getRecipe("20240801", "20241125");
-        //downLoadService.getRecipe("20241219", "20241219");
-    }
-    @Test
-    void test_GetReportResult() throws Exception {
-        downLoadService.getReportDetail("2024-08-01", "2024-11-15");
+        //downLoadService.getRecipe("20240801", "20241125");
+        downLoadService.getRecipe("20240603", "20240730");
     }
 
+    // 检验结果
+    @Test
+    void test_GetCheckResult() throws Exception {
+        // downLoadService.getCheckResult("2024-08-01", "2024-11-15");
+        downLoadService.getCheckResult("2024-06-03", "2024-07-30");
+    }
+
+    // 门诊信息
     @Test
     void test_GetElement() throws Exception {
-        downLoadService.getOutElementByVisitNumber("2024-06-26", "20240725", "MZ202407071064");
+//        List<Visits> list = visitsService.list();
+//        List<Visits> values = new ArrayList<>(list.stream()
+//                .collect(Collectors.toMap(Visits::getVisitNumber, e -> e, (existing, replacement) -> existing))
+//                .values());
+//        log.info("visitNumber_num:{}", values.size());
+//        values.forEach(e -> {
+//            try {
+//                downLoadService.getOutElementByVisitNumber("2024-06-03",
+//                        "2024-07-30",
+//                        e.getVisitNumber());
+//            } catch (Exception ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        });
+          downLoadService.getOutElementByVisitNumber("2024-06-26",
+                        "20240725",
+                        "MZ202407071064");
     }
 
-    // 单独保存单个用户
+    // timeout问题
+    @Test
+    void getElementVision(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        List<Visits> list = visitsService.list();
+        List<Visits> values = new ArrayList<>(list.stream()
+                .collect(Collectors.toMap(Visits::getVisitNumber, e -> e, (existing, replacement) -> existing))
+                .values());
+        log.info("visitNumber_num:{}", values.size());
+        values.forEach(e -> {
+            try {
+                downLoadService.getElementVisionByVisitNumber("2024-06-11",
+                        "2024-07-10",
+                        e.getVisitNumber());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    // 单独保存单个用户的报告
     @Test
     void test_getCheckReport() throws Exception {
-        LocalDateTime start = LocalDateTime.now();
-        System.out.println(start);
-        downLoadService.getCheckReportByPatientId("20241219", "20241219", "1869575479859933185");
-        LocalDateTime end = LocalDateTime.now();
-        System.out.println(end);
+
+        List<Visits> list = visitsService.list();
+        List<Visits> values = new ArrayList<>(list.stream()
+                .collect(Collectors.toMap(Visits::getVisitNumber, e -> e, (existing, replacement) -> existing))
+                .values());
+        log.info("visitNumber_num:{}", values.size());
+        values.forEach(e -> {
+            try {
+                downLoadService.getCheckReportByPatientId("2024-06-03",
+                        "2024-07-30",
+                        String.valueOf(e.getPatientId()));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
+
+    // 单独保存日期范围内的
     @Test
     void test_addCheckResult() {
         LocalDateTime start = LocalDateTime.now();
         System.out.println(start);
-        downLoadService.getCheckReport("20241219", "20241219");
+        downLoadService.getCheckReport("20240801", "20240801");
         LocalDateTime end = LocalDateTime.now();
         System.out.println(end);
     }
+
     @Test
     void test_downLoadOne(){
         List<ReportFiles> list = reportFilesMapper.queryBatch(33L);
@@ -130,22 +185,7 @@ public class DownLoadServiceTest {
     @Resource
     private IVisitsService visitsService;
 
-    @Test
-    void getElementVision(){
-        List<Visits> list = visitsService.list();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        list.forEach( e -> {
-            String visitNumber = e.getVisitNumber();
-            LocalDateTime diagTime = e.getDiagTime();
-            String date = diagTime.format(formatter);
-            try {
-                downLoadService.getElementVisionByVisitNumber(date,date, visitNumber);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        });
 
-    }
 
 
 
