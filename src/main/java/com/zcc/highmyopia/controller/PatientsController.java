@@ -20,11 +20,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -118,15 +120,22 @@ public class PatientsController {
 
     @ApiOperation(value = "患者信息批量导出")
     @GetMapping("/export")
-    @RequiresAuthentication
-    public void exportCSV(HttpServletResponse response) {
+    //@RequiresAuthentication
+    public void exportCSV(HttpServletRequest request, HttpServletResponse response) {
         List<Patients> patients = patientService.searchPatients(new PatientsDTO());
-
-        response.setContentType("text/csv");
+        String userAgent = request.getHeader("User-Agent");
+        String charsetName = String.valueOf(StandardCharsets.UTF_8);
+        response.setContentType("text/csv;");
+        if(StringUtils.isNotBlank(userAgent)){
+            if(userAgent.contains("windows") || userAgent.contains("Windows")){
+                charsetName = "GBK";
+                response.setContentType("text/csv; charset=GBK");
+            }
+        }
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            try (Writer writer = new OutputStreamWriter(byteArrayOutputStream, StandardCharsets.UTF_8);
+            try (Writer writer = new OutputStreamWriter(byteArrayOutputStream, charsetName);
                  CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("id", "name", "sexName", "birthday", "idNumber", "phone"))) {
 
                 // 遍历患者数据并写入 CSV
