@@ -127,6 +127,7 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
+        System.out.println(resp.getBody().toString());
         List<CheckResultsEntity> checkResultsEntityList = JSON.parseArray(
                 JSON.parseObject(body).getJSONArray("data").toString(),
                 CheckResultsEntity.class);
