@@ -17,11 +17,12 @@ import java.util.Map;
  */
 public class test {
     HashMap<String,String> Maps = new HashMap<>();
-    String host="http://sit.aierchina.com:8710/external-api";
+    String host="http://acloud.aierchina.com:8010/external-api";
 
     String hospId = "1824";
     String appKey = "Cdm_1824";
-    String appSecret="0ihd.e4zc";
+//    String appSecret="0ihd.e4zc";
+    String appSecret="h2md.scxm";
 
     /**
      * 请求host: http://sit.aierchina.com:8710/external-api
@@ -30,12 +31,12 @@ public class test {
      * 接口描述：该接口用于查询患者基本信息和就诊信息
      *  @Description : 请求参数，返回参数名和类型，均无问题
      *  @available : True
-     *  @Date : 2024-12-18
+     *  @Date : 2024-03-11 ok
      *  @tester :aigao
      */
     @Test
     public  void testPatientVisit() throws Exception {
-        String host = "http://sit.aierchina.com:8710/external-api";
+        //String host = "http://sit.aierchina.com:8710/external-api";
         String path = "/api/interface/medical/getPatientVisit";
         int connectTimeout=7200;
 //        String hospId ="1824";
@@ -45,10 +46,10 @@ public class test {
 //        String appSecret="0ihd.e4zc";
 //        //String appSecret = "0ihd.e4zc";
         Map<String,String> querys = new HashMap<>();
-        querys.put("diagBdate","20241126");
-        querys.put("diagEdate","20241127");
-//        querys.put("diagBdate","20250306");
-//        querys.put("diagEdate","20250307");
+//        querys.put("diagBdate","20241126");
+//        querys.put("diagEdate","20241127");
+        querys.put("diagBdate","20250306");
+        querys.put("diagEdate","20250307");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
@@ -66,12 +67,12 @@ public class test {
      * 接口描述：该接口用于查询患者处方信息
      *  @Description : 请求参数，返回参数名和类型，均无问题
      *  @available : True
-     *  @Date : 2024-12-18
+     *  @Date : 2024-03-11 ok
      *  @tester :aigao
      */
     @Test
     public  void testGetRecope() throws Exception {
-        String host="http://sit.aierchina.com:8710/external-api";
+        //String host="http://sit.aierchina.com:8710/external-api";
         String path = "/api/interface/medical/getOutpRecipe";
         int connectTimeout=7200;
 //        String hospId ="1824";
@@ -80,8 +81,10 @@ public class test {
 ////        String appSecret="ywgp.lbol";
 
         Map<String,String> querys = new HashMap<>();
-        querys.put("billingBdate","20241126");
-        querys.put("billingEdate","20241127");
+//        querys.put("billingBdate","20241126");
+//        querys.put("billingEdate","20241127");
+        querys.put("billingBdate","20250306");
+        querys.put("billingEdate","20250307");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
@@ -100,12 +103,12 @@ public class test {
      * @Description : 请求参数，返回参数名和类型，均无问题
      * @specail : 这个接口可以不传 visitNumber
      * @available : True
-     * @Date : 2024-12-18
+     * @Date : 2024-03-11 ok
      * @tester :aigao
      */
     @Test
     public  void testGetReportDetail() throws Exception {
-        String host="http://sit.aierchina.com:8710/external-api";
+        //String host="http://sit.aierchina.com:8710/external-api";
 //        String host="http://sit.aierchina.com:8707";
         String path = "/alis/interface/reportDetail/getReportDetail";
         int connectTimeout = 7200;
@@ -115,8 +118,10 @@ public class test {
 ////        String appKey = "cdm_1824";
 //        String appSecret="0ihd.e4zc";
         Map<String, String> r = new HashMap<>();
-        r.put("auditDateBegin", "2024-11-13");
-        r.put("auditDateEnd", "2024-11-15");
+//        r.put("auditDateBegin", "2024-11-13");
+//        r.put("auditDateEnd", "2024-11-15");
+        r.put("auditDateBegin","2025-03-06");
+        r.put("auditDateEnd","2025-03-07");
 //        r.put("visitNumber", "1134234324");
         String reqJson = JsonUtil.toJson(r);
 
@@ -155,9 +160,12 @@ public class test {
 
 
         Map<String,String> querys = new HashMap<>();
-        querys.put("aemr_bdate","2024-06-26");
-        querys.put("aemr_edate","20240725");
-        querys.put("Visit_number","MZ202407071064");
+//        querys.put("aemr_bdate","2024-06-26");
+//        querys.put("aemr_edate","20240725");
+        querys.put("aemr_bdate","2025-03-06");
+        querys.put("aemr_edate","2025-03-07");
+        querys.put("Visit_number","MZ202503060249");
+//        querys.put("Visit_number","MZ202407071064");
         String reqJson = JsonUtil.toJson(querys);
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
@@ -174,12 +182,12 @@ public class test {
      * 接口描述：该接口用于查询患者敏感信息（电话）
      *  @Description : 请求参数，返回参数名无问题，参数返回类型中sex为string而非int
      *  @available : True | error
-     *  @Date : 2024-12-18
+     *  @Date : 2024-03-11 ok
      *  @tester :aigao
     */
     @Test
     public  void testGetInfo() throws Exception {
-        String host="http://sit.aierchina.com:8710/external-api";
+        //String host="http://sit.aierchina.com:8710/external-api";
         String path = "/api/interface/patientInfo/getById";
         int connectTimeout=7200;
 //        String hospId ="1824";
@@ -215,17 +223,20 @@ public class test {
      */
     @Test
     public  void testgetAutoVisionByVisitNumber() throws Exception {
-        String host = "http://sit.aierchina.com:8710";
-        String path = "/external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
+       // String host = "http://sit.aierchina.com:8710/external-api";
+        String path = "/avis/interface/deviceDocking/getAutoVisionByVisitNumber";
         int connectTimeout=7200;
 //        String HospId = "9999";
 //        String appKey = "aviseq_9999";
 //        String appSecret = "lsj.z4HzPyAA";
 
         Map<String,String> querys = new HashMap<>();
-        querys.put("checkBdate","2024-06-29");
-        querys.put("checkEdate","2024-07-08");
-        querys.put("visitNumber","MZ202407070797");
+//        querys.put("checkBdate","2024-06-29");
+//        querys.put("checkEdate","2024-07-08");
+        querys.put("checkBdate","2025-03-06");
+        querys.put("checkEdate","2025-03-07");
+        // querys.put("visitNumber","MZ202407070797");
+        querys.put("visitNumber","MZ202503060249");
         String reqJson = JsonUtil.toJson(querys);
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();

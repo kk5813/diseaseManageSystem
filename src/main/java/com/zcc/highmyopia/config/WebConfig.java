@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 解决跨域问题的配置类，允许前端发起跨域请求
  */
 @Configuration  // 标识该类是一个配置类，Spring 会自动加载该配置
-@EnableRetry  //@Retryable注解的value参数指定触发重试的异常类型。当方法执行抛出这些异常中的任何一个时，会触发重试逻辑。
+//@EnableRetry  //@Retryable注解的value参数指定触发重试的异常类型。当方法执行抛出这些异常中的任何一个时，会触发重试逻辑。
 public class WebConfig implements WebMvcConfigurer {
 
     /**
