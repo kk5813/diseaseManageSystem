@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,6 +32,8 @@ public class GetDataTask {
     // 执行内容
     public void exec() throws Exception {
         log.info("定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中");
-        getDataService.getTodayData();
+        //getDataService.getTodayData();
+
+        getDataService.getDataToday();
     }
 }

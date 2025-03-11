@@ -85,8 +85,9 @@ public class PDFToImg {
             }
             g.dispose();
             int dot = file.getName().lastIndexOf('.');
+            File file1 = new File(destPath, fileName.substring(0, dot) + type);
             // 将合并的图片保存为文件
-            ImageIO.write(combinedImage, type, new File(destPath, fileName.substring(0,dot) + "." + type));
+            ImageIO.write(combinedImage, type, new File(destPath, fileName.substring(0,dot) + type));
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -97,11 +98,11 @@ public class PDFToImg {
     }
 
     public static void main(String[] args) throws IOException {
-        File destPath = new File("E:\\Download\\project\\test");
+        File destPath = new File("E:\\Download\\project\\test1");
         if(!destPath.exists()){
             destPath.mkdirs();
         }
-        pdf2Image("E:\\Download\\project","E:\\Download\\project\\test","3f580d06-6a8a-4ddf-828a-64e12f9aa6d0.pdf",PNG, DPI_MID);
+        pdf2Image("E:\\Download\\project","E:\\Download\\project\\test1","2c1fbd96-1ab1-40ce-bc9a-82a0ebb55db6.pdf",PNG, DPI_MID);
     }
 
 }

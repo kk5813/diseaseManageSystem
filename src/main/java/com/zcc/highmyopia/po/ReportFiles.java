@@ -27,12 +27,12 @@ import java.time.LocalDateTime;
 @TableName("report_files")
 public class ReportFiles {
 
-    private Long id;
-    private Long reportId;
-    private String type;
-    private String url;
-    private Integer isDownLoad;
-    private String filePath; // 确保是 String 类型
+        private Long id;
+        private Long reportId;
+        private String type;
+        private String url;
+        private Integer isDownLoad;
+        private String filePath; // 确保是 String 类型
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

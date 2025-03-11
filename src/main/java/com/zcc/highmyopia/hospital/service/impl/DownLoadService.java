@@ -2,6 +2,8 @@ package com.zcc.highmyopia.hospital.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.common.exception.BusinessException;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
@@ -9,6 +11,7 @@ import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.util.PDFToImg;
+import com.zcc.highmyopia.util.ThrowUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +79,7 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200) {
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         }
+
         String body = resp.getBody();
         // 解析 JSON 响应体
         List<VisitEntity> visitEntities = JSON.parseArray(

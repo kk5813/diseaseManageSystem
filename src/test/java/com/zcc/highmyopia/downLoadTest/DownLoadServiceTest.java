@@ -59,7 +59,7 @@ public class DownLoadServiceTest {
     // 就诊信息
     @Test
     void test_GetVisit() throws Exception {
-        List<VisitEntity> patientVisit = downLoadService.getVisits("20240603", "20240730");
+        List<VisitEntity> patientVisit = downLoadService.getVisits("20241126", "20241127");
         System.out.println(patientVisit);
     }
 

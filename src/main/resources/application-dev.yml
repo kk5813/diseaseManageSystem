@@ -77,7 +77,7 @@ hospital:
   AHisHost: http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
   filePath: E:\Download\project
-  # 这个路径是在原来filePath后面+pdfImg
+  # 这个路径是在原来filePath后面+pdfImg,这里加了个后\
   pdf2ImgPath: \pdfImg
   # 本地图片映射路径
   localImage: /images
@@ -104,3 +104,8 @@ knife4j:
 #    enable: true
 #    username: root
 #    password: 123456
+
+
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug

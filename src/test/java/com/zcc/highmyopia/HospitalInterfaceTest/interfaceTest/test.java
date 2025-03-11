@@ -47,6 +47,8 @@ public class test {
         Map<String,String> querys = new HashMap<>();
         querys.put("diagBdate","20241126");
         querys.put("diagEdate","20241127");
+//        querys.put("diagBdate","20250306");
+//        querys.put("diagEdate","20250307");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
@@ -78,8 +80,8 @@ public class test {
 ////        String appSecret="ywgp.lbol";
 
         Map<String,String> querys = new HashMap<>();
-        querys.put("billingBdate","20241101");
-        querys.put("billingEdate","20241105");
+        querys.put("billingBdate","20241126");
+        querys.put("billingEdate","20241127");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();

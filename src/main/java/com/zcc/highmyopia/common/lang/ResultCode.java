@@ -39,6 +39,23 @@ public enum ResultCode {
     JSON_PARSE_ERROR(40007,"json格式转化失败"),
     TOKEN_NOT_EXIST(40008,"token不存在！"),
     USER_LOGOUT(40009,"用户已经登出，请重新登录！"),
+
+
+    Y_saveByPatientID(80001,"saveByPatientID,发生异常，异常PatientID="),
+    Y_saveCheckResult(80002,"saveCheckResult,保存检查结果失败"),
+    Y_saveElementVision(80003,"saveElementVision,视力眼压数据保存失败"),
+    Y_saveElement(80004,"saveElement,保存门诊病历失败"),
+    Y_saveByVisitNumber(80005,"saveByVisitNumber,发生异常，异常VisitNumber="),
+    Y_saveRecipeAndOrderDetail(80006,"saveRecipeAndOrderDetail,发生异常"),
+
+    Z_getPatientVisit(90001, "请求/api/interface/medical/getPatientVisit 就诊接口失败！"),
+    Z_getById(90002,"请求/api/interface/patientInfo/getById 敏感信息接口失败"),
+    Z_getList(90003, "请求/api/report/getList 图片接口失败"),
+    Z_getAutoVisionByVisitNumber(90004,"请求/avis/interface/deviceDocking/getAutoVisionByVisitNumber 视力眼压接口失败"),
+    Z_getReportDetail(90005,"请求/alis/interface/reportDetail/getReportDetail 检查报告（文字）失败"),
+    Z_getOutpElementByCondition(90006,"请求/api/aemro/outpElement/getOutpElementByCondition 门诊病例接口失败"),
+    Z_getOutpRecipe(90007,"请求/api/interface/medical/getOutpRecipe 门诊处方接口失败"),
+    Z_gdownloadPage(90008,"下载图片出现异常！"),
     ;
 
     private int code;
