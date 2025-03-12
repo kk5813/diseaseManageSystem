@@ -7,10 +7,17 @@ import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.CategoryCountDTO;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
+import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
+import com.zcc.highmyopia.hospital.entity.PatientEntity;
+import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
+import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
 import com.zcc.highmyopia.hospital.service.IDownLoadService;
 import com.zcc.highmyopia.hospital.service.IGetDataService;
+import com.zcc.highmyopia.hospital.service.impl.DataDownloaderProxy;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.Doctor;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -25,6 +32,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 
 /**
@@ -52,7 +61,14 @@ public class TodayController {
     private final IVisitsService visitsService;
     private final IGetDataService getDataService;
     private final IDiagnoseRepository diagnoseRepository;
-
+    private final DataDownloaderProxy dataDownloaderProxy;
+    private  IDownLoadDataUtils downLoadDataUtils;
+    private final ISaveToDataBase saveToDataBase;
+    DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @PostConstruct
+    public void init() {
+        downLoadDataUtils = dataDownloaderProxy.createProxy();
+    }
     @Value("${hospital.filePath}")
     private String filePath;
 
@@ -63,14 +79,30 @@ public class TodayController {
     @GetMapping("onlySearch/{patientId}")
     @ApiOperation(value = "当天来的患者进行第三方库表查询")
     @RequiresAuthentication
-    public Result onlySearch(@PathVariable(name = "patientId") Long patientId){
+    public Result onlySearch(@PathVariable(name = "patientId") Long patientId) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String today = LocalDateTime.now().format(formatter);
 //        downLoadService.getCheckReportByPatientId(today, today, String.valueOf(patientId));
 //        downLoadService.DownLoadReportImageBatch();
         // 拿到图片并返回
-        List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
-
+        LocalDateTime current = LocalDateTime.now();
+        String curdataSplit = current.format(formatterWithSplit);
+//        List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
+        String patientID = String.valueOf(patientId);
+        List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByPatientId(curdataSplit,curdataSplit, patientID);
+        saveToDataBase.saveByPatientID(patientID, null, checkReportsEntities);
+        try{
+            // todo 这里有点问题，且写法不优
+            downLoadDataUtils.DownLoadReportImageBatch();
+        }catch (Exception e){
+            log.error("批量导入图片到本地发生异常",e);
+            throw e;
+        }
+        List<CheckReports> checkReports = new ArrayList<>();
+        for (CheckReportsEntity checkReportsEntity : checkReportsEntities) {
+            CheckReports checkReport = CheckReportsEntity.entityToPo(checkReportsEntity);
+            checkReports.add(checkReport);
+        }
         // 暂时多项相同的检查换成第一个
         List<CheckReports> values = new ArrayList<>(checkReports.stream()
                 .collect(Collectors.toMap(CheckReports::getItemName, checkReport -> checkReport, (existing, replacement) -> existing))
@@ -88,6 +120,7 @@ public class TodayController {
                 url.put(itemName, GetRelativePath(reportFiles1.getFilePath()));
             }
         });
+
         System.out.println(url);
         return Result.succ(url);
     }

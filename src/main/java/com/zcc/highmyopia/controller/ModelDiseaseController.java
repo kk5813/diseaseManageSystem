@@ -54,6 +54,8 @@ public class ModelDiseaseController {
     @RequiresAuthentication
     public Result diagnose(@RequestBody DiagnoseEntity diagnose){
         log.info("诊断接口运行");
+        // 1.发http 请求flask接口 pdf 转图片并识别眼别，
+        // 2.活动list, 左右眼图片，然后分布进行检查。
         List<DiagnoseResultEntity> diagnoseResultEntityList = diagnoseService.diagnose(diagnose);
         // 诊断接口写库表
 //        AIModelResult aiModelResult = new AIModelResult();
