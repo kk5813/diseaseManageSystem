@@ -27,4 +27,9 @@ public interface IDownLoadDataUtils {
 
     List<RecipeEntity> getRecipe(String beginData, String endData) throws Exception;
 
+    // 这里是既在下载内容，又在保存数据库
+    void DownLoadReportImageBatch();
+
+    void DownLoadReportImage(ReportFiles reportFile);
+
 }

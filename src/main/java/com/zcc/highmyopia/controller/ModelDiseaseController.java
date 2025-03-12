@@ -1,24 +1,13 @@
 package com.zcc.highmyopia.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.errorprone.annotations.Var;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 import com.zcc.highmyopia.AI.service.IDiagnoseService;
-import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.lang.Result;
-import com.zcc.highmyopia.po.AIModelResult;
 import com.zcc.highmyopia.po.ModelDisease;
-import com.zcc.highmyopia.po.Site;
-import com.zcc.highmyopia.po.User;
 import com.zcc.highmyopia.service.IAIModelResultService;
 import com.zcc.highmyopia.service.IModelDiseaseService;
-import com.zcc.highmyopia.service.ISiteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.zcc.highmyopia.controller.CheckReportsController.LocalPathToVirtualPath;
 
 /**
  * @Author zcc

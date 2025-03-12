@@ -361,35 +361,35 @@ public class DownLoadService implements IDownLoadService {
         String fileType = reportFile.getType();
         fileType = fileType.split("/")[1];
 
-        // 从 reportFile 获取文件名，假设 reportFile 对象有 getFileName() 方法
-        String fileName = UUID.randomUUID() + "." + fileType;
-
-        File targetFile = new File(targetPath, fileName);  // 拼接文件路径和文件名
-
+//        // 从 reportFile 获取文件名，假设 reportFile 对象有 getFileName() 方法
+//        String fileName = UUID.randomUUID() + "." + fileType;
+        String path = reportFile.getFilePath();
+        File targetFile = new File(path);
+        String fileName = targetFile.getName();
         // 确保目标目录存在
         if (!targetFile.getParentFile().exists()) {
             targetFile.getParentFile().mkdirs();  // 创建目标目录
         }
-        //创建新的目录单独存PDF转换后的图片
-        String PDFToImgPath = targetPath + PDFToImgRelativePath;
-        File destPath = new File(PDFToImgPath);
-        log.info("写入路径为：" + PDFToImgPath);
-        if(!destPath.exists()){
-            destPath.mkdirs();
-        }
+//        //创建新的目录单独存PDF转换后的图片
+//        String PDFToImgPath = targetPath + PDFToImgRelativePath;
+//        File destPath = new File(PDFToImgPath);
+//        log.info("写入路径为：" + PDFToImgPath);
+//        if(!destPath.exists()){
+//            destPath.mkdirs();
+//        }
         // 将文件内容写入到指定路径
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             if (fileBytes != null) {
                 fos.write(fileBytes);
                 // 同时将pdf转化为image
-                if(fileName.endsWith(".pdf")) {
-                    log.info("保存为图片");
-                    PDFToImg.pdf2Image(targetPath, PDFToImgPath, fileName, PDFToImg.PNG, PDFToImg.DPI_MID);
-                }
+//                if(fileName.endsWith(".pdf")) {
+//                    log.info("保存为图片");
+//                    PDFToImg.pdf2Image(targetPath, PDFToImgPath, fileName, PDFToImg.PNG, PDFToImg.DPI_MID);
+//                }
             }
             // 更新状态为已下载
             reportFile.setIsDownLoad(1);  // 标记文件已下载
-            reportFile.setFilePath(targetFile.getAbsolutePath());  // 设置文件的相对路径
+            //reportFile.setFilePath(targetFile.getAbsolutePath());  // 设置文件的相对路径
             saveRepository.updateReportFiles(reportFile);  // 更新数据库
         } catch (IOException e) {
             e.printStackTrace();

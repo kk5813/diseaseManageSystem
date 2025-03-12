@@ -1,6 +1,8 @@
 package com.zcc.highmyopia.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zcc.highmyopia.common.dto.CheckReportDTO;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CheckReportVO;
@@ -46,17 +48,27 @@ public class CheckReportsController {
     @Value("${hospital.localImage}")
     private static String ImagePathLocalHost;
 
+    @Value("${hospital.filePath}")
+    private String targetPath;
 
 
+    // todo 修改
     @GetMapping("find/{patientId}")
     @ApiOperation(value = "获取患者检查报告")
     @RequiresAuthentication
-    public Result findVisitsByPatientId(@PathVariable(name = "patientId") Long patientId){
-        // 查询符合 patientId 的所有记录
-        List<CheckReports> list = checkReportsService.list(
-                new LambdaQueryWrapper<CheckReports>()
-                        .eq(CheckReports::getPatientId, patientId)
-        );
+    public Result findVisitsByPatientId(@PathVariable(name = "patientId" ) Long patientId,
+                                        @RequestParam(defaultValue = "") String startTime ,
+                                        @RequestParam(defaultValue = "") String endTime){
+        // 查询符合 patientId startTime  endTime 的所有记录
+        LambdaQueryWrapper<CheckReports> checkReportsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        checkReportsLambdaQueryWrapper.eq(CheckReports::getPatientId, patientId);
+        if(StringUtils.isNotEmpty(startTime)){
+            checkReportsLambdaQueryWrapper.ge(CheckReports::getCheckTime, startTime);
+        }
+        if(StringUtils.isNotEmpty(endTime)){
+            checkReportsLambdaQueryWrapper.le(CheckReports::getCheckTime,endTime);
+        }
+        List<CheckReports> list = checkReportsService.list( checkReportsLambdaQueryWrapper);
         List<CheckReportVO> checkReportVOS = list.stream()
                 .map(checkReport -> {
                     Long reportId = checkReport.getId();
@@ -69,18 +81,13 @@ public class CheckReportsController {
                     // 查询文件
 //                    List<ReportFiles> reportFilesList = reportFilesService.list(new LambdaQueryWrapper<ReportFiles>()
 //                                    .eq(ReportFiles::getReportId, reportId));
-                    List<ReportFiles> reportFilesList = reportFilesMapper.queryBatch(reportId);
+                    List<ReportFiles> reportFilesList = reportFilesMapper.getReportFileByReportID(reportId);
                     if (reportFilesList == null || reportFilesList.isEmpty()) return checkReportVO;
                     List<ReportFilesVO> reportFilesVOS = reportFilesList.stream()
                             .map(reportFile -> {
                                 ReportFilesVO reportFilesVO = new ReportFilesVO();
-                                if((reportFile.getType().equals("application/pdf"))){
-                                     reportFilesVO.setFilePath(pdfPathToImgPath(reportFile.getFilePath()));
-                                     reportFilesVO.setType("image/png");
-                                }else{
-                                    reportFilesVO.setType(reportFile.getType());
-                                    reportFilesVO.setFilePath(LocalPathToVirtualPath(reportFile.getFilePath()));
-                                }
+                                reportFilesVO.setType(reportFile.getType());
+                                reportFilesVO.setFilePath(LocalPathToVirtualPath(reportFile.getFilePath()));
                                 return reportFilesVO;
                             })
                             .collect(Collectors.toList());
@@ -102,15 +109,15 @@ public class CheckReportsController {
         List<CheckReportDTO> collect = checkReportsList.stream().map(
                 e -> {
                     List<ReportFiles> reportFilesList = reportFilesService.getReportFilePDFById(e.getId());
-                    reportFilesList.forEach(
-                            c -> {
-                                if (c.getFilePath() != null){
-                                    String newPath = pdfPathToImgPath(c.getFilePath());
-                                    c.setFilePath(newPath);
-                                    c.setType("image/png");
-                                }
-                            }
-                    );
+//                    reportFilesList.forEach(
+//                            c -> {
+//                                if (c.getFilePath() != null){
+//                                    String newPath = pdfPathToImgPath(c.getFilePath());
+//                                    c.setFilePath(newPath);
+//                                    c.setType("image/png");
+//                                }
+//                            }
+//                    );
                     return CheckReportDTO.builder()
                             .checkReports(e)
                             .reportFiles(reportFilesList)
@@ -132,9 +139,16 @@ public class CheckReportsController {
         log.info(path.toString());
         return path.toString();
     }
-    static String LocalPathToVirtualPath(String filePath){
-        File file = new File(filePath);
-        return Paths.get(ImagePathLocalHost,file.getName()).toString();
+    public String LocalPathToVirtualPath(String filePathA){
+//        File file = new File(filePath);
+//        return Paths.get(ImagePathLocalHost,file.getName()).toString();
+        // 将全局根目录和文件绝对路径转换为Path对象
+        Path rootPath = Paths.get(targetPath).toAbsolutePath().normalize();
+        Path filePath = Paths.get(filePathA).toAbsolutePath().normalize();
+
+        // 计算相对路径
+        Path relativePath = rootPath.relativize(filePath);
+        return relativePath.toString();
     }
 
 

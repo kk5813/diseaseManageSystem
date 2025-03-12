@@ -6,6 +6,7 @@ import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
+import com.zcc.highmyopia.hospital.utils.PathGenerateUtil;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.*;
 import com.zcc.highmyopia.service.*;
@@ -48,6 +49,7 @@ public class SaveToDataBase implements ISaveToDataBase {
     private final IPatientsService patientsService;
     private final IOrderDetailService orderDetailService;
     private final IElementVisionService elementVisionService;
+    private final PathGenerateUtil pathGenerateUtil;
 
     private final IReportFilesMapper reportFilesMapper;
     @Override
@@ -170,9 +172,16 @@ public class SaveToDataBase implements ISaveToDataBase {
 
                     Long reportId = checkReports.getId();
                     List<ReportFiles> files = checkReportsEntity.getFiles();
+                    /*
+                    *1.根据patientID 获取到报告以后，立刻根据patientID，checkTime,itemName
+                    * 构建出/{病人ID}/{年}/{月}/{检查项目名称}/{文件名}
+                    * */
                     files.forEach(file -> {
                         file.setReportId(reportId);
                         file.setIsDownLoad(0);
+                        String type = file.getType().split("/")[1];
+                        String path = pathGenerateUtil.generatePath(checkReportsEntity.getPatientId(), checkReportsEntity.getCheckTime(), checkReportsEntity.getItemName(), type);
+                        file.setFilePath(path);
                     });
                     reportFilesList.addAll(files);
                 }

@@ -3,8 +3,10 @@ package com.zcc.highmyopia.hospital.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.hospital.entity.*;
+import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
@@ -246,5 +248,45 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
                 JSON.parseObject(body).getJSONArray("data").toString(),
                 RecipeEntity.class);
         return recipeEntities;
+    }
+
+    private final ISaveRepository saveRepository;
+    @Override
+    public void DownLoadReportImageBatch() {
+        List<ReportFiles> reportFiles = saveRepository.getNotDownLoadFiles();
+        reportFiles.forEach(this::DownLoadReportImage);
+    }
+
+    @Override
+    public void DownLoadReportImage(ReportFiles reportFile) {
+
+        String urls = APacsHost + reportFile.getUrl();  // 获取文件的URL
+
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(urls, byte[].class);
+        int statusCode = response.getStatusCodeValue();
+        ThrowUtils.throwIf(statusCode != 200, new BusinessException(ResultCode.Z_gdownloadPage));
+        byte[] fileBytes = response.getBody();  // 获取文件内容的字节数组
+
+        String path = reportFile.getFilePath();
+        File targetFile = new File(path);
+        // 确保目标目录存在
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();  // 创建目标目录
+        }
+        // 将文件内容写入到指定路径, 默认行为：覆盖文件， 故不考虑图片已在的情况
+        try (FileOutputStream fos = new FileOutputStream(targetFile)) {
+            if (fileBytes != null) {
+                fos.write(fileBytes);
+            }
+            // 更新状态为已下载
+            reportFile.setIsDownLoad(1);  // 标记文件已下载
+            saveRepository.updateReportFiles(reportFile);  // 更新数据库
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("文件保存失败",e);
+            //throw new RuntimeException("文件保存失败", e);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

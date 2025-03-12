@@ -26,4 +26,6 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     List<ReportFiles> getReportFileById(Long id);
 
     List<ReportFiles> getReportFile(Long id);
+
+    List<ReportFiles> getReportFileByReportID(Long reportId);
 }

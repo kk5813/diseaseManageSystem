@@ -33,7 +33,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.zcc.highmyopia.controller.CheckReportsController.LocalPathToVirtualPath;
 
 /**
  * @Author zcc
@@ -82,10 +81,10 @@ public class TodayController {
             if (reportFiles != null && !reportFiles.isEmpty()) {
                 ReportFiles reportFiles1 = reportFiles.get(0);
                 String itemName = e.getItemName();
-                if (reportFiles1.getType().equals("application/pdf")){
-                    reportFiles1.setFilePath(CheckReportsController.pdfPathToImgPath(reportFiles1.getUrl()));
-                    reportFiles1.setType("image/png");
-                }
+//                if (reportFiles1.getType().equals("application/pdf")){
+//                    reportFiles1.setFilePath(CheckReportsController.pdfPathToImgPath(reportFiles1.getUrl()));
+//                    reportFiles1.setType("image/png");
+//                }
                 url.put(itemName, GetRelativePath(reportFiles1.getFilePath()));
             }
         });

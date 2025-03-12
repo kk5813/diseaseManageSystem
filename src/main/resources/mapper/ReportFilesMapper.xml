@@ -8,7 +8,7 @@
         <result column="file_type" property="type" jdbcType="VARCHAR"/>
         <result column="file_url" property="url" jdbcType="LONGVARCHAR"/>  <!-- TEXT 类型映射为 LONGVARCHAR -->
         <result column="is_download" property="isDownLoad" jdbcType="SMALLINT"/>
-        <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+        <result column="file_path" property="filePath" jdbcType="LONGVARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -46,6 +46,10 @@
     <select id="getReportFile" resultType="com.zcc.highmyopia.po.ReportFiles" parameterType="java.lang.Long">
         select * from report_files
         where report_id = #{id}
+    </select>
+    <select id="getReportFileByReportID" resultType="com.zcc.highmyopia.po.ReportFiles">
+        select * from report_files
+        where report_id = #{reportId} and is_down_load = 1
     </select>
 
 </mapper>
