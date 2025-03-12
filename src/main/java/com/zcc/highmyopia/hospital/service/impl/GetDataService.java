@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,11 +35,15 @@ public class GetDataService implements IGetDataService {
     DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter formatterNoSplit = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    private final DataDownloaderProxy dataDownloaderProxy;
     private final IDownLoadService downLoadService;
     private final ISaveRepository repository;
-    private final IDownLoadDataUtils downLoadDataUtils;
+    private IDownLoadDataUtils downLoadDataUtils;
     private final ISaveToDataBase saveToDataBase;
-
+    @PostConstruct
+    public void init() {
+        downLoadDataUtils = dataDownloaderProxy.createProxy();
+    }
 
     // 获取前一天的日期和时间
 
@@ -54,7 +59,7 @@ public class GetDataService implements IGetDataService {
     // todo : 测试代码块，后面删了就可以了
     {
         // 定义目标日期字符串
-        String targetDate = "20241127";
+        String targetDate = "20241121";
         // 创建日期格式化器
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         // 将字符串解析为 LocalDate
@@ -165,7 +170,7 @@ public class GetDataService implements IGetDataService {
             // 记录日志：Recipe_flag存储失败
             log.error("Recipe_flag存储失败");
         }
-        log.info("{}下载完成",yesterday.toString());
+        log.info("{}下载完成",LocalDateTime.now().toString());
 
         // todo 后续改进：从并发角度，1.x 必须先指向完， 2，3，4可以并行执行， 5需要等待2，3，4执行完， 6需要等待5执行完, 最后打7日志
 

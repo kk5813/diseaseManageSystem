@@ -57,15 +57,49 @@ public class VisitsController {
                 .collect(Collectors.toList());
         return Result.succ(visitEntities);
     }
+//    @GetMapping("/page")
+//    @ApiOperation(value = "分页查询患者就诊信息")
+//    @RequiresAuthentication
+//    public Result getVisitsPage(@RequestParam(defaultValue = "1") int pageNumber,
+//                                @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName,
+//                                @RequestParam(defaultValue = "") String startTime , @RequestParam(defaultValue = "") String endTime,
+//                                @RequestParam(defaultValue = "") Long patientID){
+//        log.info("分页查询接口调用");
+//        IPage<Visits> visitsPage = visitsService.getVisitsPage(pageNumber, pageSize, diagName,startTime,endTime, patientID);
+//        log.info("原分页查询正常");
+//        List<Visits> records = visitsPage.getRecords();
+//        List<VisitEntity> visitEntities = records.stream()
+//                .map( visit -> {
+//                    Patients patient = patientsService.getPatientById(visit.getPatientId());
+//                    Dept dept = deptService.getDeptById(visit.getDeptId());
+//                    Doctor doctor = doctorService.getDoctorById(visit.getDoctorId());
+//                    Site site = siteService.getSiteById(visit.getSiteId());
+//                    if (patient == null || dept == null || doctor == null || site == null)
+//                        throw new AppException(401, "信息未找到");
+//                    return VisitEntity.poToEntity(visit, patient, doctor, dept, site);
+//                })
+//                .collect(Collectors.toList());
+//        // record对象
+//        IPage<VisitEntity> visitEntityIPage = new Page<>();
+//
+//        // 设置新的分页信息
+//        visitEntityIPage.setRecords(visitEntities);
+//        visitEntityIPage.setTotal(visitsPage.getTotal());
+//        visitEntityIPage.setPages(visitsPage.getPages());
+//        visitEntityIPage.setCurrent(visitsPage.getCurrent());
+//        visitEntityIPage.setSize(visitsPage.getSize());
+//        return Result.succ(visitEntityIPage);
+//    }
+
     @GetMapping("/page")
-    @ApiOperation(value = "分页查询患者就诊信息")
+    @ApiOperation("分页查询患者就诊信息with科室名")
     @RequiresAuthentication
-    public Result getVisitsPage(@RequestParam(defaultValue = "1") int pageNumber,
-                                @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName,
-                                @RequestParam(defaultValue = "") String startTime , @RequestParam(defaultValue = "") String endTime,
-                                @RequestParam(defaultValue = "") Long patientID){
+    public Result getVisitsByDeptName(@RequestParam(defaultValue = "1") int pageNumber,
+                                      @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String diagName,
+                                      @RequestParam(defaultValue = "") String startTime , @RequestParam(defaultValue = "") String endTime,
+                                      @RequestParam(defaultValue = "") Long patientID,  @RequestParam(defaultValue = "") String deptName){
         log.info("分页查询接口调用");
-        IPage<Visits> visitsPage = visitsService.getVisitsPage(pageNumber, pageSize, diagName,startTime,endTime, patientID);
+        IPage<Visits> visitsPage = visitsService.getVisitsPageWithDeptName(pageNumber, pageSize, diagName,startTime,endTime, patientID,deptName);
         log.info("原分页查询正常");
         List<Visits> records = visitsPage.getRecords();
         List<VisitEntity> visitEntities = records.stream()
@@ -89,6 +123,7 @@ public class VisitsController {
         visitEntityIPage.setCurrent(visitsPage.getCurrent());
         visitEntityIPage.setSize(visitsPage.getSize());
         return Result.succ(visitEntityIPage);
+
     }
 
 //    @GetMapping("/search")

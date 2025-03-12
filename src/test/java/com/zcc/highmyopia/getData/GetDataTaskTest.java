@@ -29,8 +29,8 @@ public class GetDataTaskTest {
     public void testExec_ShouldCallGetTodayData() throws Exception {
         // 执行 exec 方法
         //getDataService.getDataTest("20241126","20241127");
-        //System.out.println(getDataService.getDataToday());
-        getDataService.saveRecipeInfo();
+        System.out.println(getDataService.getDataToday());
+        //getDataService.saveRecipeInfo();
 //        try{
 //            downLoadService.DownLoadReportImageBatch();
 //        }catch (Exception e){

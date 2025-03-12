@@ -18,5 +18,7 @@ import java.util.List;
 public interface IVisitsService extends IService<Visits> {
     List<CategoryGroupCountVO> categoryCount(CategoryCountDTO categoryCountDTO);
 
-    IPage<Visits> getVisitsPage(int page, int size, String diagName ,String startTime, String endTime,Long patientID);
+    // IPage<Visits> getVisitsPage(int page, int size, String diagName ,String startTime, String endTime,Long patientID);
+    IPage<Visits> getVisitsPageWithDeptName(int page, int size, String diagName ,String startTime, String endTime,Long patientID,String deptName);
+
 }

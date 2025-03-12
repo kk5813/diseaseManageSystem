@@ -18,10 +18,10 @@ import java.util.Map;
 public class test {
     HashMap<String,String> Maps = new HashMap<>();
     String host="http://acloud.aierchina.com:8010/external-api";
-
+    //String host = "http://sit.aierchina.com:8710/external-api";
     String hospId = "1824";
     String appKey = "Cdm_1824";
-//    String appSecret="0ihd.e4zc";
+    //String appSecret="0ihd.e4zc";
     String appSecret="h2md.scxm";
 
     /**
@@ -46,10 +46,10 @@ public class test {
 //        String appSecret="0ihd.e4zc";
 //        //String appSecret = "0ihd.e4zc";
         Map<String,String> querys = new HashMap<>();
-//        querys.put("diagBdate","20241126");
-//        querys.put("diagEdate","20241127");
-        querys.put("diagBdate","20250306");
-        querys.put("diagEdate","20250307");
+        querys.put("diagBdate","20241120");
+        querys.put("diagEdate","20241121");
+//        querys.put("diagBdate","20250306");
+//        querys.put("diagEdate","20250307");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();

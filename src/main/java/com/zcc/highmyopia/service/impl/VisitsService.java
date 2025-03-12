@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import oracle.sql.INTERVALDS;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -44,6 +45,9 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
     private IVisitsMapper visitsMapper;
     @Autowired
     private DispatcherServlet dispatcherServlet;
+
+    @Resource
+    private IDeptMapper deptMapper;
 
     @Override
     public List<CategoryGroupCountVO> categoryCount(CategoryCountDTO categoryCountDTO) {
@@ -90,8 +94,28 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
         return categoryGroupCountVOList;
     }
 
+//    @Override
+//    public IPage<Visits> getVisitsPage(int page, int size, String diagName,String startTime, String endTime, Long patientID) {
+//        LambdaQueryWrapper<Visits> visitsLambdaQueryWrapper = Wrappers.lambdaQuery();
+//        Page<Visits> visitsPage = new Page<>(page, size);
+//        if (StringUtils.isNotBlank(diagName)) {
+//            visitsLambdaQueryWrapper.like(Visits::getDiagName, diagName);
+//        }
+//        if (StringUtils.isNotBlank(startTime)) {
+//            visitsLambdaQueryWrapper.ge(Visits::getDiagTime, startTime);
+//        }
+//        if (StringUtils.isNotBlank(endTime)) {
+//            visitsLambdaQueryWrapper.le(Visits::getDiagTime, endTime);
+//        }
+//        if (patientID != null && StringUtils.isNotBlank(patientID.toString())) {
+//            visitsLambdaQueryWrapper.eq(Visits::getPatientId, patientID);
+//        }
+//        IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
+//        return visitsIPage;
+//    }
+
     @Override
-    public IPage<Visits> getVisitsPage(int page, int size, String diagName,String startTime, String endTime, Long patientID) {
+    public IPage<Visits> getVisitsPageWithDeptName(int page, int size, String diagName, String startTime, String endTime, Long patientID, @Param("deptName") String deptName) {
         LambdaQueryWrapper<Visits> visitsLambdaQueryWrapper = Wrappers.lambdaQuery();
         Page<Visits> visitsPage = new Page<>(page, size);
         if (StringUtils.isNotBlank(diagName)) {
@@ -105,6 +129,14 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
         }
         if (patientID != null && StringUtils.isNotBlank(patientID.toString())) {
             visitsLambdaQueryWrapper.eq(Visits::getPatientId, patientID);
+        }
+        if(StringUtils.isNotBlank(deptName)){
+            LambdaQueryWrapper<Dept> deptLambdaQueryWrapper  = Wrappers.lambdaQuery();
+            deptLambdaQueryWrapper.like(Dept::getDeptName, deptName)
+                    .select(Dept::getId);
+            List<Dept> depts = deptMapper.selectList(deptLambdaQueryWrapper);
+            List<Long> collect = depts.stream().map(x -> x.getId()).distinct().collect(Collectors.toList());
+            visitsLambdaQueryWrapper.in(Visits::getDeptId,collect);
         }
         IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
         return visitsIPage;
