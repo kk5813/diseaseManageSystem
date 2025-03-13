@@ -93,7 +93,7 @@ public class CheckReportsController {
                             .collect(Collectors.toList());
                     checkReportVO.setFiles(reportFilesVOS);
                     return checkReportVO;
-                })
+                }).filter(checkReport-> checkReport.getFiles() != null && !checkReport.getFiles().isEmpty())
                 .collect(Collectors.toList());
         return Result.succ(checkReportVOS);
     }

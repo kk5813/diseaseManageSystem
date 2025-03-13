@@ -49,7 +49,7 @@
     </select>
     <select id="getReportFileByReportID" resultType="com.zcc.highmyopia.po.ReportFiles">
         select * from report_files
-        where report_id = #{reportId} and is_down_load = 1
+        where report_id = #{reportId} and is_down_load = 1 and type = 'application/pdf'
     </select>
 
 </mapper>
