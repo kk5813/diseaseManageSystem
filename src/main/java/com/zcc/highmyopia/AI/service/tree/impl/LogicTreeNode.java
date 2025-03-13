@@ -53,7 +53,7 @@ public class LogicTreeNode implements ILogicTreeNode {
     }
 
     public static String HttpPOST(String api, Map<String, String> map){
-        String url = flaskPath + api;
+        String url = "http://localhost:4091" + api;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         String jsonBody = JSON.toJSONString(map);

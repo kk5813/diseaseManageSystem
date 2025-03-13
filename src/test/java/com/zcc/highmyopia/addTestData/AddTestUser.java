@@ -36,7 +36,7 @@ public class AddTestUser {
     @Test
     public  void add() {
         User user = new User();
-        user.setCreator("aigao");
+        user.setCreator("zcc");
         user.setCreateTime(LocalDateTime.now());
         String salt = SaltUtil.getSalt();
         String password = SecureUtil.md5(salt + SecureUtil.md5("hos9344"));
@@ -49,7 +49,7 @@ public class AddTestUser {
         userService.saveOrUpdate(user);
     }
     // 生成1000个用户
-    private static final int TOTAL_USERS = 1000;
+    private static final int TOTAL_USERS = 1;
 
     // 存储已存在的UserLoginName
     private static final Set<String> existingLoginNames = new HashSet<>();
