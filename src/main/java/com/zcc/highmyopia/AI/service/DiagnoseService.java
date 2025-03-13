@@ -1,23 +1,23 @@
 package com.zcc.highmyopia.AI.service;
 
+import com.alibaba.fastjson.JSON;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeVO;
 import com.zcc.highmyopia.AI.repository.IDiagnoseRepository;
 import com.zcc.highmyopia.AI.service.tree.factory.DefaultTreeFactory;
 import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine;
+import com.zcc.highmyopia.AI.service.tree.impl.LogicTreeNode;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +36,7 @@ public class DiagnoseService implements IDiagnoseService {
     private DefaultTreeFactory treeFactory;
 
     @Override
-    public List<DiagnoseResultEntity> diagnose(DiagnoseEntity diagnoseEntity) {
+    public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity) {
         Long patientId = Long.valueOf(diagnoseEntity.getPatientId());
         List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
         // 暂时多项相同的检查换成第一个
@@ -58,7 +58,20 @@ public class DiagnoseService implements IDiagnoseService {
             String itemName = e.getItemName();
             url.put(itemName, reportFiles1.getFilePath());
         });
-        DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
-        return decisionTreeEngine.process(url);
+        // 现在只写一个SLO
+        String filePath = url.get("扫描激光眼底检查(SLO)");
+        // 发送HTTP请求
+        Map<String, String> jsonMap = new HashMap<>();
+        String body = LogicTreeNode.HttpPOST("/api/site", jsonMap);
+        List<DiagnoseResultEntity> lists = JSON.parseArray(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONObject("data").toString(),
+                DiagnoseResultEntity.class);
+        List<List<DiagnoseResultEntity>> res = new ArrayList<>();
+        for (DiagnoseResultEntity list : lists) {
+            DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
+            List<DiagnoseResultEntity> process = decisionTreeEngine.process(url);
+            res.add(process);
+        }
+        return res;
     }
 }

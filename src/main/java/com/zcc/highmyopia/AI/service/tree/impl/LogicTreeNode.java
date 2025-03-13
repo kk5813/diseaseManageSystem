@@ -29,10 +29,10 @@ import java.util.Objects;
 @Component
 public class LogicTreeNode implements ILogicTreeNode {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${hospital.flask_path}")
-    private String flaskPath;
+    private static String flaskPath;
 
     // 处理
     @Override
@@ -40,25 +40,28 @@ public class LogicTreeNode implements ILogicTreeNode {
 
         // 发送API请求后端flask模型服务(模拟并得到结果)
         // 请求参数为filePath
-        String url = flaskPath;
-        url += api;
-        log.info("url {}", url);
+//        String url = flaskPath;
+//        url += api;
+        log.info("url {}", api);
         // 创建请求体，封装 filePath
         Map<String, String> jsonMap = new HashMap<>();
-        // 创建请求头
+        jsonMap.put("imagePath", filePath);
+        String body = HttpPOST(api, jsonMap);
+        return JSON.parseObject(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONObject("data").toString(),
+                DiagnoseResultEntity.class);
+    }
+
+    public static String HttpPOST(String api, Map<String, String> map){
+        String url = flaskPath + api;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        jsonMap.put("imagePath", filePath);
-        String jsonBody = JSON.toJSONString(jsonMap);
+        String jsonBody = JSON.toJSONString(map);
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
         int statusCode = response.getStatusCodeValue();
         if (statusCode != 200)
             throw new AppException(statusCode, "请求模型服务失败");
-        String body = response.getBody();
-        System.out.println(body);
-        return JSON.parseObject(
-                Objects.requireNonNull(JSON.parseObject(body)).getJSONObject("data").toString(),
-                DiagnoseResultEntity.class);
+        return response.getBody();
     }
 }
