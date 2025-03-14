@@ -62,14 +62,19 @@ public class DiagnoseService implements IDiagnoseService {
         String filePath = url.get("扫描激光眼底检查(SLO)");
         // 发送HTTP请求
         Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("imagePath", filePath);
         String body = LogicTreeNode.HttpPOST("/api/site", jsonMap);
         List<DiagnoseResultEntity> lists = JSON.parseArray(
-                Objects.requireNonNull(JSON.parseObject(body)).getJSONObject("data").toString(),
+                JSON.parseObject(body).getJSONArray("data").toString(),
                 DiagnoseResultEntity.class);
         List<List<DiagnoseResultEntity>> res = new ArrayList<>();
         for (DiagnoseResultEntity list : lists) {
+            Map<String, String> OneSiteUrl = new HashMap<>();
+            OneSiteUrl.put("扫描激光眼底检查(SLO)", list.getUrl());
             DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
-            List<DiagnoseResultEntity> process = decisionTreeEngine.process(url);
+            List<DiagnoseResultEntity> process = new ArrayList<>();
+            process.add(list);
+            process.addAll(decisionTreeEngine.process(OneSiteUrl));
             res.add(process);
         }
         return res;
