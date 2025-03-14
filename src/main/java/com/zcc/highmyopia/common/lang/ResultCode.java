@@ -39,6 +39,7 @@ public enum ResultCode {
     JSON_PARSE_ERROR(40007,"json格式转化失败"),
     TOKEN_NOT_EXIST(40008,"token不存在！"),
     USER_LOGOUT(40009,"用户已经登出，请重新登录！"),
+    VISIT_NUMBER_IS_NULL(40010,"visitNumber 为空，后续操作失败"),
 
 
     Y_saveByPatientID(80001,"saveByPatientID,发生异常，异常PatientID="),
@@ -56,6 +57,7 @@ public enum ResultCode {
     Z_getOutpElementByCondition(90006,"请求/api/aemro/outpElement/getOutpElementByCondition 门诊病例接口失败"),
     Z_getOutpRecipe(90007,"请求/api/interface/medical/getOutpRecipe 门诊处方接口失败"),
     Z_gdownloadPage(90008,"下载图片出现异常！"),
+    Z_getCheckReportByVisitNumberNew(90009,"请求/api/report/getList 通过visit_number 获取图片接口失败"),
     ;
 
     private int code;

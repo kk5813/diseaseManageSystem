@@ -273,6 +273,8 @@ public class SaveToDataBase implements ISaveToDataBase {
         }
     }
 
+
+
     // @Transactional 要作用到非私有方法上
     @Transactional(rollbackFor = Exception.class)
     public void saveCheckResult(List<CheckResultsEntity> checkResultsEntityList) {
@@ -318,4 +320,65 @@ public class SaveToDataBase implements ISaveToDataBase {
 
     }
 
+    @Override
+    public List<ReportFiles> getNotDownLoadFiles() {
+        return reportFilesMapper.getNotDownLoad();
+    }
+
+    @Override
+    public List<ReportFiles> getNotDownLoadFilesByVisitNumber(String visitNumber) {
+        return reportFilesMapper.getNotDownLoadByVisitNumber(visitNumber);
+    }
+
+    @Override
+    public void updateReportFiles(ReportFiles reportFile) {
+        if (reportFile == null) return;
+        reportFilesMapper.update(reportFile,
+                new LambdaUpdateWrapper<ReportFiles>()
+                        .eq(ReportFiles::getId, reportFile.getId())
+                        .set(ReportFiles::getIsDownLoad, reportFile.getIsDownLoad())
+                        .set(ReportFiles::getFilePath, reportFile.getFilePath()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<CheckReports> saveCheckReportsByVisitNumber(String visitNumber, List<CheckReportsEntity> checkReportsEntities) {
+        List<ReportFiles> reportFilesList = new ArrayList<>();
+        List<CheckReports> checkReportsList = new ArrayList<>();
+        try{
+            if(checkReportsEntities != null && !checkReportsEntities.isEmpty()){
+                for (CheckReportsEntity checkReportsEntity : checkReportsEntities) {
+                    CheckReports checkReports = CheckReportsEntity.entityToPo(checkReportsEntity);
+                    checkReportsList.add(checkReports);
+                }
+                // 报告已存
+                checkReportsService.saveOrUpdateBatch(checkReportsList);
+                for (int i = 0; i < checkReportsEntities.size(); i++) {
+                    CheckReportsEntity checkReportsEntity = checkReportsEntities.get(i);
+                    CheckReports checkReports = checkReportsList.get(i);
+
+                    Long reportId = checkReports.getId();
+                    List<ReportFiles> files = checkReportsEntity.getFiles();
+                    /*
+                     *1.根据patientID 获取到报告以后，立刻根据patientID，checkTime,itemName
+                     * 构建出/{病人ID}/{年}/{月}/{检查项目名称}/{文件名}
+                     * */
+                    files.forEach(file -> {
+                        file.setReportId(reportId);
+                        file.setIsDownLoad(0);
+                        String type = file.getType().split("/")[1];
+                        String path = pathGenerateUtil.generatePath(checkReportsEntity.getPatientId(), checkReportsEntity.getCheckTime(), checkReportsEntity.getItemName(), type);
+                        file.setFilePath(path);
+                    });
+                    reportFilesList.addAll(files);
+                }
+                reportFilesService.saveOrUpdateBatch(reportFilesList);
+            }
+        }catch(Exception e){
+            log.error("VisitNumber={}的病人信息保存失败，涉及表check_report,report_file",visitNumber);
+            ResultCode ySaveByPatientID = ResultCode.Y_saveByPatientID;
+            throw new BusinessException(ySaveByPatientID.getCode(),ySaveByPatientID.getInfo()+visitNumber);
+        }
+        return checkReportsList;
+    }
 }

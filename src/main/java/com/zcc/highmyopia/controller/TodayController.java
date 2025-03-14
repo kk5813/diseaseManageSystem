@@ -1,5 +1,7 @@
 package com.zcc.highmyopia.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeVO;
 import com.zcc.highmyopia.AI.repository.DiagnoseRepository;
 import com.zcc.highmyopia.AI.repository.IDiagnoseRepository;
@@ -22,12 +24,15 @@ import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.Doctor;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.service.ICheckReportsService;
+import com.zcc.highmyopia.service.IReportFilesService;
 import com.zcc.highmyopia.service.IVisitsService;
 import com.zcc.highmyopia.util.PDFToImg;
+import com.zcc.highmyopia.util.ThrowUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +69,8 @@ public class TodayController {
     private final DataDownloaderProxy dataDownloaderProxy;
     private  IDownLoadDataUtils downLoadDataUtils;
     private final ISaveToDataBase saveToDataBase;
+
+    private final IReportFilesService reportFilesService;
     DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @PostConstruct
     public void init() {
@@ -125,6 +132,53 @@ public class TodayController {
         return Result.succ(url);
     }
 
+
+    /**
+     * @Description 此方法为当天来的患者的就诊号进行第三方库表查询
+     * @param visitNumber
+     */
+    @GetMapping("onlySearchByVisitNumber")
+    @ApiOperation(value = "当天来的患者通过就诊号来进行第三方库表查询")
+    @RequiresAuthentication
+    public Result onlySearchByVisitNumber(@RequestParam String visitNumber, @RequestParam(defaultValue = "false") String isNeedDownLoad) throws Exception {
+        ThrowUtils.throwIf(StringUtils.isBlank(visitNumber), ResultCode.VISIT_NUMBER_IS_NULL);
+        List<CheckReports> checkReports = null;
+        // 一方面可以防止多次下载，一方面也能特定下载
+        if("false".equals(isNeedDownLoad)){
+            LambdaQueryWrapper<CheckReports> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(CheckReports::getVisitNumber,visitNumber);
+            checkReports = checkReportsService.list(queryWrapper);
+        }
+        // 如果数据库中没有找到，则去下载
+        if(checkReports == null || checkReports.isEmpty()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String curdataSplit = LocalDateTime.now().format(formatter);
+
+            List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(curdataSplit, curdataSplit, visitNumber);
+            checkReports = saveToDataBase.saveCheckReportsByVisitNumber(visitNumber, checkReportsEntities);
+            try{
+                downLoadDataUtils.DownLoadReportImageBatchByVisitNumber(visitNumber);
+            }catch (Exception e){
+                log.error("批量导入图片到本地发生异常",e);
+                throw e;
+            }
+        }
+        // 暂时多项相同的检查换成第一个
+        List<CheckReports> values = new ArrayList<>(checkReports.stream()
+                .collect(Collectors.toMap(CheckReports::getItemName, checkReport -> checkReport, (existing, replacement) -> existing))
+                .values());
+        Map<String, String> url = new HashMap<>();
+        values.forEach(e -> {
+            List<ReportFiles> reportFiles = diagnoseRepository.getReportFile(e.getId());
+            if (reportFiles != null && !reportFiles.isEmpty()) {
+                ReportFiles reportFiles1 = reportFiles.get(0);
+                String itemName = e.getItemName();
+                url.put(itemName, GetRelativePath(reportFiles1.getFilePath()));
+            }
+        });
+        System.out.println(url);
+        return Result.succ(url);
+    }
     @PostMapping("CategoryCount")
     @ApiOperation(value = "分门别类患病人数统计")
     @RequiresAuthentication

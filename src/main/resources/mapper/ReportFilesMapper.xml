@@ -38,7 +38,7 @@
         from report_files
         where report_id = #{reportId}
     </select>
-    <select id="getReportFileById" resultType="com.zcc.highmyopia.po.ReportFiles"
+    <select id="getReportFilePDFById" resultType="com.zcc.highmyopia.po.ReportFiles"
             parameterType="java.lang.Long">
         select * from report_files
         where report_id = #{id} and type = 'application/pdf' and is_down_load = 1
@@ -50,6 +50,19 @@
     <select id="getReportFileByReportID" resultType="com.zcc.highmyopia.po.ReportFiles">
         select * from report_files
         where report_id = #{reportId} and is_down_load = 1 and type = 'application/pdf'
+    </select>
+    <select id="getNotDownLoadByVisitNumber" resultType="com.zcc.highmyopia.po.ReportFiles">
+        select * from hospital_db.report_files
+        where report_id in (select id from check_reports where visit_number = #{visitNumber} )  and is_down_load = 0;
+    </select>
+    <select id="getNotDownLoadByPatientID" resultType="com.zcc.highmyopia.po.ReportFiles">
+        select * from hospital_db.report_files
+        where report_id in (select id from check_reports where patient_id = #{patientID} ) and is_down_load = 0;
+    </select>
+
+    <select id="getReportFileByVisitNumber" resultType="com.zcc.highmyopia.po.ReportFiles">
+        select * from hospital_db.report_files
+        where report_id in (select id from check_reports where visit_number = #{visitNumber} )  and is_down_load = 1;
     </select>
 
 </mapper>

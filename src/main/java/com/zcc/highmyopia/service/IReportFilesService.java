@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface IReportFilesService extends IService<ReportFiles> {
     List<ReportFiles> getReportFilePDFById(Long id);
+
+    List<ReportFiles> getReportFileByVisitNumber(String visitNumber);
 }

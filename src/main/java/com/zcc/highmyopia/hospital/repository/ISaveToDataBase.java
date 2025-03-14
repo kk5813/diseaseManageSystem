@@ -1,6 +1,7 @@
 package com.zcc.highmyopia.hospital.repository;
 
 import com.zcc.highmyopia.hospital.entity.*;
+import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
 
 import java.util.List;
@@ -23,5 +24,13 @@ public interface ISaveToDataBase {
     void saveByVisitNumber(VisitEntity visitEntity, List<ElementVisionEntity> elementVisionEntities, List<CheckResultsEntity> checkResultsEntities, List<ElementEntity> elementEntities);
 
     void saveRecipeAndOrderDetail(List<RecipeEntity> recipeEntities);
+
+    List<ReportFiles> getNotDownLoadFiles();
+
+    List<ReportFiles> getNotDownLoadFilesByVisitNumber(String visitNumber);
+
+    void updateReportFiles(ReportFiles reportFile);
+
+    List<CheckReports> saveCheckReportsByVisitNumber(String visitNumber, List<CheckReportsEntity> checkReportsEntities);
 
 }

@@ -7,6 +7,7 @@ import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.hospital.entity.*;
 import com.zcc.highmyopia.hospital.repository.ISaveRepository;
+import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
 import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
 import com.zcc.highmyopia.hospital.utils.Response;
@@ -141,6 +142,29 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
         return checkReportsEntities;
     }
 
+    @Override
+    public List<CheckReportsEntity> getCheckReportByVisitNumberNew(String beginData, String endData, String visitNumber) throws Exception {
+        String path = "/api/report/getList";
+        String url = UriComponentsBuilder.fromHttpUrl(APacsHost + path)
+                .queryParam("physc_bdate", beginData)
+                .queryParam("physc_edate", endData)
+                .queryParam("visit_number", visitNumber)
+                .toUriString();
+
+        System.out.println("请求的URL: " + url);
+
+        // 发送GET请求
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        int statusCode = response.getStatusCodeValue();
+        ThrowUtils.throwIf(statusCode !=200, ResultCode.Z_getCheckReportByVisitNumberNew);
+        String body = response.getBody();
+        List<CheckReportsEntity> checkReportsEntities = JSON.parseArray(
+                Objects.requireNonNull(JSON.parseObject(body)).getJSONArray("data").toString(),
+                CheckReportsEntity.class);
+        return checkReportsEntities;
+    }
+
     // 获取视力眼压的接口
     @Override
     @Retryable(value = {SocketTimeoutException.class}, maxAttempts = 3)
@@ -250,10 +274,16 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
         return recipeEntities;
     }
 
-    private final ISaveRepository saveRepository;
+    private final ISaveToDataBase saveToDataBase;
     @Override
     public void DownLoadReportImageBatch() {
-        List<ReportFiles> reportFiles = saveRepository.getNotDownLoadFiles();
+        List<ReportFiles> reportFiles = saveToDataBase.getNotDownLoadFiles();
+        reportFiles.forEach(this::DownLoadReportImage);
+    }
+
+    @Override
+    public void DownLoadReportImageBatchByVisitNumber(String visitNumber) throws Exception {
+        List<ReportFiles> reportFiles = saveToDataBase.getNotDownLoadFilesByVisitNumber(visitNumber);
         reportFiles.forEach(this::DownLoadReportImage);
     }
 
@@ -280,7 +310,7 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
             }
             // 更新状态为已下载
             reportFile.setIsDownLoad(1);  // 标记文件已下载
-            saveRepository.updateReportFiles(reportFile);  // 更新数据库
+            saveToDataBase.updateReportFiles(reportFile);  // 更新数据库
         } catch (IOException e) {
             e.printStackTrace();
             log.error("文件保存失败",e);

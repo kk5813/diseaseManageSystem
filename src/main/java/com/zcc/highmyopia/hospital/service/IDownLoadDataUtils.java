@@ -19,6 +19,8 @@ public interface IDownLoadDataUtils {
 
     List<CheckReportsEntity> getCheckReportByPatientId(String beginData, String endData, String patientId) throws Exception;
 
+    List<CheckReportsEntity> getCheckReportByVisitNumberNew(String beginData, String endData, String visitNumber) throws Exception;
+
     List<ElementVisionEntity> getElementVisionByVisitNumber(String beginData, String endData, String visitNumber) throws Exception;
 
     List<CheckResultsEntity> getCheckResultByVisitNumber(String beginData, String endData, String visitNumber) throws Exception;
@@ -29,6 +31,8 @@ public interface IDownLoadDataUtils {
 
     // 这里是既在下载内容，又在保存数据库
     void DownLoadReportImageBatch();
+
+    void DownLoadReportImageBatchByVisitNumber(String visitNumber) throws Exception;
 
     void DownLoadReportImage(ReportFiles reportFile);
 

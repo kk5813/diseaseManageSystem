@@ -21,9 +21,7 @@ public interface ISaveRepository {
 
     void saveCheckReportsAndReportFiles(CheckReportsEntity checkReportsEntity);
     void saveCheckReportsAndReportFiles(List<CheckReportsEntity> checkReportsEntities);
-
     List<ReportFiles> getNotDownLoadFiles();
-
     void updateReportFiles(ReportFiles reportFile);
 
     void savePatientInfo(PatientEntity patientEntity);

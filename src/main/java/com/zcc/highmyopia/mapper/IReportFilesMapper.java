@@ -19,13 +19,19 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
 
     List<ReportFiles> getNotDownLoad();
 
+    List<ReportFiles> getNotDownLoadByVisitNumber(String visitNumber);
+
+    List<ReportFiles> getNotDownLoadByPatientID(Long patientID);
+
     void updateReportFiles(ReportFiles reportFile);
 
     List<ReportFiles> queryBatch(Long reportId);
 
-    List<ReportFiles> getReportFileById(Long id);
+    List<ReportFiles> getReportFilePDFById(Long id);
 
     List<ReportFiles> getReportFile(Long id);
 
     List<ReportFiles> getReportFileByReportID(Long reportId);
+
+    List<ReportFiles> getReportFileByVisitNumber(String visitNumber);
 }
