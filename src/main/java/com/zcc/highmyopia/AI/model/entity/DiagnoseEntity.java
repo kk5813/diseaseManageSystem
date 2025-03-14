@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DiagnoseEntity {
 
-    private String patientId;
+    private String visitNumber;
 
     private Integer diseaseId;
 

@@ -4,7 +4,9 @@ package com.zcc.highmyopia.controller;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 import com.zcc.highmyopia.AI.service.IDiagnoseService;
+import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.po.ModelDisease;
 import com.zcc.highmyopia.service.IAIModelResultService;
 import com.zcc.highmyopia.service.IModelDiseaseService;
@@ -52,12 +54,17 @@ public class ModelDiseaseController {
     @PostMapping("diagnose")
     @ApiOperation("模型诊断接口")
     @RequiresAuthentication
-    public Result diagnose(@RequestBody DiagnoseEntity diagnose){
+    public Result diagnose(@RequestBody DiagnoseEntity diagnose) {
         log.info("诊断接口运行");
         // 1.发http 请求flask接口 pdf 转图片并识别眼别，
 
         // 2.活动list, 左右眼图片，然后分布进行检查。
-        List<List<DiagnoseResultEntity>> diagnoseResultEntityLists = diagnoseService.diagnose(diagnose);
+        List<List<DiagnoseResultEntity>> diagnoseResultEntityLists = null;
+        try {
+            diagnoseResultEntityLists = diagnoseService.diagnose(diagnose);
+        } catch (Exception e) {
+            throw new BusinessException(ResultCode.VISIT_NUMBER_NODATA);
+        }
         // 诊断接口写库表
 //        AIModelResult aiModelResult = new AIModelResult();
 //        aiModelResult.setPatientId(Long.valueOf(diagnose.getPatientId()));

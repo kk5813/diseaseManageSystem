@@ -13,4 +13,6 @@ import java.util.List;
  */
 public interface ICheckReportsService extends IService<CheckReports> {
     List<CheckReports> getCheckReportById(Long patientId, String visitNumber);
+
+    List<CheckReports> getCheckReportByVisitNumber(String visitNumber);
 }

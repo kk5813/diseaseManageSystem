@@ -40,6 +40,7 @@ public enum ResultCode {
     TOKEN_NOT_EXIST(40008,"token不存在！"),
     USER_LOGOUT(40009,"用户已经登出，请重新登录！"),
     VISIT_NUMBER_IS_NULL(40010,"visitNumber 为空，后续操作失败"),
+    VISIT_NUMBER_NODATA(40011, "此 visitNumber 获取不到任何数据"),
 
 
     Y_saveByPatientID(80001,"saveByPatientID,发生异常，异常PatientID="),

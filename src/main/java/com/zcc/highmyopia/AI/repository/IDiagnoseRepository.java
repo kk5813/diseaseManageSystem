@@ -15,6 +15,8 @@ public interface IDiagnoseRepository {
 
     List<CheckReports> getCheckReport(Long patientId);
 
+    List<CheckReports> getCheckReportByVisitNumber(String visitNumber);
+
     List<ReportFiles> getReportFile(Long id);
 
     RuleTreeVO getRuleTreeVOByDiseaseId(Integer diseaseId);

@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface IDiagnoseService {
 
-    List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity);
+    List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity) throws Exception;
 
 }

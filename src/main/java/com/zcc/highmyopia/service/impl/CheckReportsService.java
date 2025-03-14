@@ -30,4 +30,9 @@ public class CheckReportsService extends ServiceImpl<ICheckReportsMapper, CheckR
     public List<CheckReports> getCheckReportById(Long patientId, String visitNumber) {
         return checkReportsMapper.getCheckReportById(patientId, visitNumber);
     }
+
+    @Override
+    public List<CheckReports> getCheckReportByVisitNumber(String visitNumber) {
+        return checkReportsMapper.getCheckReportByVisitNumber(visitNumber);
+    }
 }

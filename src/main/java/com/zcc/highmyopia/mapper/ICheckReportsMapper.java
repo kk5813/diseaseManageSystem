@@ -18,4 +18,6 @@ public interface ICheckReportsMapper extends BaseMapper<CheckReports> {
     int insert(CheckReports checkReports);
 
     List<CheckReports> getCheckReportById(Long patientId, String visitNumber);
+
+    List<CheckReports> getCheckReportByVisitNumber(String visitNumber);
 }

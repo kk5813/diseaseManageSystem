@@ -1,6 +1,7 @@
 package com.zcc.highmyopia.AI.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.sun.media.sound.MidiOutDeviceProvider;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeNodeLineVO;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeNodeVO;
@@ -80,6 +81,10 @@ public class DiagnoseRepository implements IDiagnoseRepository {
                 .values());
     }
 
+    @Override
+    public List<CheckReports> getCheckReportByVisitNumber(String visitNumber) {
+        return checkReportsService.getCheckReportByVisitNumber(visitNumber);
+    }
 
 
     @Override

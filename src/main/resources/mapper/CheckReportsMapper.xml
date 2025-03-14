@@ -6,4 +6,25 @@
         select * from check_reports
         where patient_id = #{patientId} and visit_number = #{visitNumber}
     </select>
+    <select id="getCheckReportByVisitNumber" resultType="com.zcc.highmyopia.po.CheckReports">
+        select * from check_reports where visit_number = #{visitNumber}
+#         SELECT
+#             cr.id,
+#             cr.patient_id,
+#             cr.item_code,
+#             cr.item_name,
+#             cr.check_time,
+#             cr.visit_number,
+#             cr.create_time,
+#             cr.update_time
+#         FROM
+#             check_reports cr
+#                 INNER JOIN
+#             report_files rf
+#             ON
+#                 cr.id = rf.report_id
+#         WHERE
+#             cr.visit_number = #{visitNumber}
+#           AND rf.is_down_load = 1;
+    </select>
 </mapper>

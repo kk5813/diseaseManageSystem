@@ -1,6 +1,8 @@
 package com.zcc.highmyopia.AI.service;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 import com.zcc.highmyopia.AI.model.valobj.RuleTreeVO;
@@ -10,13 +12,22 @@ import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine
 import com.zcc.highmyopia.AI.service.tree.impl.LogicTreeNode;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
+import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
+import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
+import com.zcc.highmyopia.hospital.service.impl.DataDownloaderProxy;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
+import com.zcc.highmyopia.service.IReportFilesService;
+import com.zcc.highmyopia.util.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,10 +46,38 @@ public class DiagnoseService implements IDiagnoseService {
     @Resource
     private DefaultTreeFactory treeFactory;
 
+    private IDownLoadDataUtils downLoadDataUtils;
+    @Resource
+    private  ISaveToDataBase saveToDataBase;
+    @Resource
+    private  DataDownloaderProxy dataDownloaderProxy;
+    DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @PostConstruct
+    public void init() {
+        downLoadDataUtils = dataDownloaderProxy.createProxy();
+    }
+
     @Override
-    public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity) {
-        Long patientId = Long.valueOf(diagnoseEntity.getPatientId());
-        List<CheckReports> checkReports =  diagnoseRepository.getCheckReport(patientId);
+    public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity) throws Exception {
+        String visitNumber = diagnoseEntity.getVisitNumber();
+        // todo 这里只是简单的查询了visitNumber 在报告中是否出现，没有判断是否已经下载，一方面report_file表过于大，sql时间会很长，另一方面即使判断下载也可能出现文件不存在的情况。意义不大
+        List<CheckReports> checkReports =  diagnoseRepository.getCheckReportByVisitNumber(visitNumber);
+
+        // 如果数据库中没有找到，则去下载
+        // todo 这里耦合了
+        if(checkReports == null || checkReports.isEmpty()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String curdataSplit = LocalDateTime.now().format(formatter);
+
+            List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(curdataSplit, curdataSplit, visitNumber);
+            checkReports = saveToDataBase.saveCheckReportsByVisitNumber(visitNumber, checkReportsEntities);
+            try{
+                downLoadDataUtils.DownLoadReportImageBatchByVisitNumber(visitNumber);
+            }catch (Exception e){
+                log.error("批量导入图片到本地发生异常",e);
+                throw e;
+            }
+        }
         // 暂时多项相同的检查换成第一个
         List<CheckReports> values = new ArrayList<>(checkReports.stream()
                 .collect(Collectors.toMap(CheckReports::getItemName, checkReport -> checkReport, (existing, replacement) -> existing))
