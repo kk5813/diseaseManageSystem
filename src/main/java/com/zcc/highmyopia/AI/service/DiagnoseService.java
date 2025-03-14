@@ -72,7 +72,9 @@ public class DiagnoseService implements IDiagnoseService {
             Map<String, String> OneSiteUrl = new HashMap<>();
             OneSiteUrl.put("扫描激光眼底检查(SLO)", list.getUrl());
             DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
-            List<DiagnoseResultEntity> process = decisionTreeEngine.process(OneSiteUrl);
+            List<DiagnoseResultEntity> process = new ArrayList<>();
+            process.add(list);
+            process.addAll(decisionTreeEngine.process(OneSiteUrl));
             res.add(process);
         }
         return res;
