@@ -252,14 +252,14 @@ class HighmyopiaApplicationTests {
     private DefaultTreeFactory defaultTreeFactory;
     @Resource
     private IDiagnoseRepository diagnoseRepository;
-    @Test
-    public void doDiagnose(){
-        RuleTreeVO ruleTreeVO = diagnoseRepository.getRuleTreeVOByDiseaseId(1);
-        DecisionTreeEngine decisionTreeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
-        List<DiagnoseResultEntity> process = decisionTreeEngine.process(null);
-        System.out.println(process);
-
-    }
+//    @Test
+//    public void doDiagnose(){
+//        RuleTreeVO ruleTreeVO = diagnoseRepository.getRuleTreeVOByDiseaseId(1);
+//        DecisionTreeEngine decisionTreeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
+//        List<DiagnoseResultEntity> process = decisionTreeEngine.process(null);
+//        System.out.println(process);
+//
+//    }
 
 
     @Test

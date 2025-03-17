@@ -4,6 +4,7 @@ package com.zcc.highmyopia.controller;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseEntity;
 import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
 import com.zcc.highmyopia.AI.service.IDiagnoseService;
+import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.lang.ResultCode;
@@ -62,7 +63,10 @@ public class ModelDiseaseController {
         List<List<DiagnoseResultEntity>> diagnoseResultEntityLists = null;
         try {
             diagnoseResultEntityLists = diagnoseService.diagnose(diagnose);
-        } catch (Exception e) {
+        }catch (AppException e){
+            throw new AppException(500, "模型服务请求失败");
+        }
+        catch (Exception e) {
             throw new BusinessException(ResultCode.VISIT_NUMBER_NODATA);
         }
         // 诊断接口写库表

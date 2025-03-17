@@ -12,5 +12,5 @@ import java.util.Map;
  */
 public interface IDecisionTreeEngine {
 
-    List<DiagnoseResultEntity> process(Map<String, String> url);
+    List<DiagnoseResultEntity> process(Map<String, String> url, String visitNumber);
 }

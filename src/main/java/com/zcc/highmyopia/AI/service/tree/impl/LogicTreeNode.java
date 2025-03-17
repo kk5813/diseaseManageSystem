@@ -32,28 +32,28 @@ public class LogicTreeNode implements ILogicTreeNode {
     private static final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${hospital.flask_path}")
-    private static String flaskPath;
+    private String flaskPath;
 
     // 处理
     @Override
-    public DiagnoseResultEntity logic(Integer modelId, String filePath, String api) {
+    public DiagnoseResultEntity logic(Integer modelId, String filePath, String api, String visitNumber) {
 
         // 发送API请求后端flask模型服务(模拟并得到结果)
         // 请求参数为filePath
-//        String url = flaskPath;
-//        url += api;
+        String url = flaskPath;
+        url += api;
         log.info("url {}", api);
         // 创建请求体，封装 filePath
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("imagePath", filePath);
-        String body = HttpPOST(api, jsonMap);
+        jsonMap.put("visitNumber", visitNumber);
+        String body = HttpPOST(url, jsonMap);
         return JSON.parseObject(
                 Objects.requireNonNull(JSON.parseObject(body)).getJSONObject("data").toString(),
                 DiagnoseResultEntity.class);
     }
 
-    public static String HttpPOST(String api, Map<String, String> map){
-        String url = "http://localhost:4091" + api;
+    public static String HttpPOST(String url, Map<String, String> map){
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         String jsonBody = JSON.toJSONString(map);
