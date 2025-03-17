@@ -1,6 +1,6 @@
 # DataSource Config
 server:
-  port: 8088
+  port: 8082
 
 spring:
   redis:
@@ -74,7 +74,7 @@ highmyopia:
     header: Authorization
 
 hospital:
-  AHisHost: http://sit.aierchina.com:8710/external-api
+  AHisHost: http://acloud.aierchina.com:8010/external-api  # http://sit.aierchina.com:8710/external-api
   APacsHost: http://10.0.225.6:8083
   filePath: /opt/resources/images
   # 这个路径是在原来filePath后面+pdfImg
@@ -84,7 +84,7 @@ hospital:
 
   hospId: 1824
   appKey: Cdm_1824
-  appSecret: 0ihd.e4zc
+  appSecret: h2md.scxm
 
   vision-hospId: 9999
   vision-appKey: aviseq_9999

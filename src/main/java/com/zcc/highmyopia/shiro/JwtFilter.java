@@ -106,7 +106,9 @@ public class JwtFilter extends AuthenticatingFilter {
             httpServletResponse.setStatus(org.springframework.http.HttpStatus.OK.value());
             return false;
         }
-        return super.preHandle(request, response);
+        boolean b = super.preHandle(request, response);
+        log.info("preHandle是否放行:{}",  b);
+        return b;
     }
 
 
@@ -134,7 +136,8 @@ public class JwtFilter extends AuthenticatingFilter {
 
         // 调用父类方法继续执行过滤器链
         boolean continueChain = super.onPreHandle(request, response, mappedValue);
-
+        log.info("JwtFilter: Request start, path: {}", ((HttpServletRequest) request).getRequestURI());
+        log.info("onPreHandle是否放行:{}",  continueChain);
         // 返回是否继续执行过滤器链
         return continueChain;
     }

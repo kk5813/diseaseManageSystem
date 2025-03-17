@@ -40,11 +40,8 @@ public class WebConfig implements WebMvcConfigurer {
     // 1. 添加多个静态资源目录映射
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(ImagePathLocalHost+"/**")
-                //addResourceHandler("/images/**")
-                .addResourceLocations("file:/"+targetPath+"/")
-                //.addResourceLocations("file:/E:/Download/project/")
-                .setCachePeriod(3600);
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:/opt/resources/images/");
         // 设置缓存时间为3600秒
 
         registry.addResourceHandler("/static/**")

@@ -57,37 +57,37 @@ public class GetDataService implements IGetDataService {
     String curdataNoSplit = current.format(formatterNoSplit);
 
     // todo : 测试代码块，后面删了就可以了
-    {
-        // 定义目标日期字符串
-        String targetDate = "20241121";
-        // 创建日期格式化器
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        // 将字符串解析为 LocalDate
-        LocalDate date = LocalDate.parse(targetDate, formatter);
-        // 将 LocalDate 转换为 LocalDateTime（假设时间为 00:00:00）
-        LocalDateTime current = date.atStartOfDay();
-        // 输出结果
-        System.out.println(current);
-        yesterday = current.minusDays(1);
-        yesdataSplit = yesterday.format(formatterWithSplit);
-        curdataSplit = current.format(formatterWithSplit);
-        curdataNoSplit = current.format(formatterNoSplit);
-        yesdataNoSplit = yesterday.format(formatterNoSplit);
-    }
+//    {
+//        // 定义目标日期字符串
+//        String targetDate = "20241121";
+//        // 创建日期格式化器
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//        // 将字符串解析为 LocalDate
+//        LocalDate date = LocalDate.parse(targetDate, formatter);
+//        // 将 LocalDate 转换为 LocalDateTime（假设时间为 00:00:00）
+//        LocalDateTime current = date.atStartOfDay();
+//        // 输出结果
+//        System.out.println(current);
+//        yesterday = current.minusDays(1);
+//        yesdataSplit = yesterday.format(formatterWithSplit);
+//        curdataSplit = current.format(formatterWithSplit);
+//        curdataNoSplit = current.format(formatterNoSplit);
+//        yesdataNoSplit = yesterday.format(formatterNoSplit);
+//    }
     @Override
     public State getDataToday()  {
         // todo : 测试时注释下就OK
-        // 定义目标日期字符串
-        String targetDate = "20241121";
-        // 创建日期格式化器
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        // 将字符串解析为 LocalDate
-        LocalDate date = LocalDate.parse(targetDate, formatter);
-        // 将 LocalDate 转换为 LocalDateTime（假设时间为 00:00:00）
-        LocalDateTime current = date.atStartOfDay();
-        // 输出结果
-        System.out.println(current);
-        //current = LocalDateTime.now();
+//        // 定义目标日期字符串
+//        String targetDate = "20241121";
+//        // 创建日期格式化器
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//        // 将字符串解析为 LocalDate
+//        LocalDate date = LocalDate.parse(targetDate, formatter);
+//        // 将 LocalDate 转换为 LocalDateTime（假设时间为 00:00:00）
+//        LocalDateTime current = date.atStartOfDay();
+//        // 输出结果
+//        System.out.println(current);
+        current = LocalDateTime.now();
         yesterday = current.minusDays(1);
         yesdataSplit = yesterday.format(formatterWithSplit);
         curdataSplit = current.format(formatterWithSplit);
