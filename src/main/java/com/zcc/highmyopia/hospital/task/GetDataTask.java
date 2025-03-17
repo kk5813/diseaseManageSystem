@@ -28,7 +28,7 @@ public class GetDataTask {
 
     private final IGetDataService getDataService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 20 0 * * ?")
     // 执行内容
     public void exec() throws Exception {
         log.info("定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中");

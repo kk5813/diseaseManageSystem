@@ -46,10 +46,10 @@ public class test {
 //        String appSecret="0ihd.e4zc";
 //        //String appSecret = "0ihd.e4zc";
         Map<String,String> querys = new HashMap<>();
-        querys.put("diagBdate","20241120");
-        querys.put("diagEdate","20241121");
-//        querys.put("diagBdate","20250306");
-//        querys.put("diagEdate","20250307");
+//        querys.put("diagBdate","20241120");
+//        querys.put("diagEdate","20241121");
+        querys.put("diagBdate","20250316");
+        querys.put("diagEdate","20250317");
         String reqJson ="";
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
