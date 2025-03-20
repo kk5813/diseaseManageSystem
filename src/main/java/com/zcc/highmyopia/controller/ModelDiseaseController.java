@@ -55,16 +55,19 @@ public class ModelDiseaseController {
     @PostMapping("diagnose")
     @ApiOperation("模型诊断接口")
     @RequiresAuthentication
-    public Result diagnose(@RequestBody DiagnoseEntity diagnose) {
+    public Result diagnose(@RequestBody DiagnoseEntity diagnose, @RequestParam(defaultValue = "false") String isNeedDownLoad) {
         log.info("诊断接口运行");
         // 1.发http 请求flask接口 pdf 转图片并识别眼别，
 
         // 2.活动list, 左右眼图片，然后分布进行检查。
         List<List<DiagnoseResultEntity>> diagnoseResultEntityLists = null;
         try {
-            diagnoseResultEntityLists = diagnoseService.diagnose(diagnose);
+            diagnoseResultEntityLists = diagnoseService.diagnose(diagnose, isNeedDownLoad);
         }catch (AppException e){
             throw new AppException(500, "模型服务请求失败");
+        }
+        catch (BusinessException e){
+            throw e;
         }
         catch (Exception e) {
             throw new BusinessException(ResultCode.VISIT_NUMBER_NODATA);

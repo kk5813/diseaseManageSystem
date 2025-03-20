@@ -12,15 +12,19 @@ import com.zcc.highmyopia.AI.service.tree.factory.engine.impl.DecisionTreeEngine
 import com.zcc.highmyopia.AI.service.tree.impl.LogicTreeNode;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.exception.AppException;
+import com.zcc.highmyopia.common.exception.BusinessException;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.hospital.entity.CheckReportsEntity;
 import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
 import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
 import com.zcc.highmyopia.hospital.service.impl.DataDownloaderProxy;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.ReportFiles;
+import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.IReportFilesService;
 import com.zcc.highmyopia.util.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,6 +53,8 @@ public class DiagnoseService implements IDiagnoseService {
 
     private IDownLoadDataUtils downLoadDataUtils;
     @Resource
+    private ICheckReportsService checkReportsService;
+    @Resource
     private  ISaveToDataBase saveToDataBase;
     @Resource
     private  DataDownloaderProxy dataDownloaderProxy;
@@ -61,25 +67,34 @@ public class DiagnoseService implements IDiagnoseService {
     }
 
     @Override
-    public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity) throws Exception {
+    public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity, String isNeedDownLoad) throws Exception {
         String visitNumber = diagnoseEntity.getVisitNumber();
+        ThrowUtils.throwIf(StringUtils.isBlank(visitNumber), ResultCode.VISIT_NUMBER_IS_NULL);
         // todo 这里只是简单的查询了visitNumber 在报告中是否出现，没有判断是否已经下载，一方面report_file表过于大，sql时间会很长，另一方面即使判断下载也可能出现文件不存在的情况。意义不大
-        List<CheckReports> checkReports =  diagnoseRepository.getCheckReportByVisitNumber(visitNumber);
-
+        // List<CheckReports> checkReports =  diagnoseRepository.getCheckReportByVisitNumber(visitNumber);
+        List<CheckReports> checkReports = null;
+        // 一方面可以防止多次下载，一方面也能特定下载
+        if("false".equals(isNeedDownLoad)){
+            LambdaQueryWrapper<CheckReports> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(CheckReports::getVisitNumber,visitNumber);
+            checkReports = checkReportsService.list(queryWrapper);
+        }
         // 如果数据库中没有找到，则去下载
-        // todo 这里耦合了
         if(checkReports == null || checkReports.isEmpty()){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            String curdataSplit = LocalDateTime.now().format(formatter);
-
+            String curdataSplit = DiagnoseService.parseVisitNumber(visitNumber);
             List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(curdataSplit, curdataSplit, visitNumber);
             checkReports = saveToDataBase.saveCheckReportsByVisitNumber(visitNumber, checkReportsEntities);
             try{
                 downLoadDataUtils.DownLoadReportImageBatchByVisitNumber(visitNumber);
             }catch (Exception e){
                 log.error("批量导入图片到本地发生异常",e);
-                throw e;
+                throw new BusinessException(ResultCode.Z_DownLoadReportImageBatchByVisitNumber);
             }
+        }
+        // 后续更多操作
+        if(checkReports == null || checkReports.isEmpty() ){
+            log.error("数据为空");
+            throw new BusinessException(ResultCode.VISIR_NUMBER_NODATA_AFTER_DOWNLOAD);
         }
         // 暂时多项相同的检查换成第一个
         List<CheckReports> values = new ArrayList<>(checkReports.stream()
@@ -122,5 +137,20 @@ public class DiagnoseService implements IDiagnoseService {
             res.add(process);
         }
         return res;
+    }
+
+    public static String parseVisitNumber(String visitNumber) {
+        try {
+            if (visitNumber == null || visitNumber.length() < 10) {
+                // 如果 visitNumber 为空或长度不足10，返回当天日期
+                return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            }
+            // 提取 visitNumber 中的日期部分（假设格式为 XXyyyyMMdd...）
+            String datePart = visitNumber.substring(2, 10); // 提取从索引2开始的8位字符
+            return datePart;
+        } catch (Exception e) {
+            // 如果解析失败或格式不正确，返回当天日期
+            return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        }
     }
 }

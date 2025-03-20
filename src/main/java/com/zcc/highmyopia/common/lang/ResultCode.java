@@ -41,6 +41,7 @@ public enum ResultCode {
     USER_LOGOUT(40009,"用户已经登出，请重新登录！"),
     VISIT_NUMBER_IS_NULL(40010,"visitNumber 为空，后续操作失败"),
     VISIT_NUMBER_NODATA(40011, "此 visitNumber 获取不到任何数据"),
+    VISIR_NUMBER_NODATA_AFTER_DOWNLOAD(40012,"这个visitNumber 经过下载数据后，没有得到任何数据。"),
 
 
     Y_saveByPatientID(80001,"saveByPatientID,发生异常，异常PatientID="),
@@ -59,6 +60,7 @@ public enum ResultCode {
     Z_getOutpRecipe(90007,"请求/api/interface/medical/getOutpRecipe 门诊处方接口失败"),
     Z_gdownloadPage(90008,"下载图片出现异常！"),
     Z_getCheckReportByVisitNumberNew(90009,"请求/api/report/getList 通过visit_number 获取图片接口失败"),
+    Z_DownLoadReportImageBatchByVisitNumber(90010,"批量导入图片到本地发生异常DownLoadReportImageBatchByVisitNumber"),
     ;
 
     private int code;
