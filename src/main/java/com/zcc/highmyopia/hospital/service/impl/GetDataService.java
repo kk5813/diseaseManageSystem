@@ -76,6 +76,7 @@ public class GetDataService implements IGetDataService {
 //    }
     @Override
     public State getDataToday()  {
+//        // todo : 测试时注释下就OK
         // todo : 测试时注释下就OK
 //        // 定义目标日期字符串
 //        String targetDate = "20241121";
@@ -98,7 +99,9 @@ public class GetDataService implements IGetDataService {
         // 1.先下载/api/interface/medical/getPatientVisit， 获取患者就诊信息 List<VisitEntity> visits
         List<VisitEntity> visits = null;
         try{
-             visits = downLoadDataUtils.getVisits(yesdataNoSplit, curdataNoSplit);
+            System.out.println(yesterday);
+            System.out.println(curdataNoSplit);
+            visits = downLoadDataUtils.getVisits(yesdataNoSplit, curdataNoSplit);
         }catch (Exception e){
             log.error("当天患者就诊信息下载失败",e);
             return State.ONE_VISIT;
