@@ -9,6 +9,6 @@ import com.zcc.highmyopia.AI.model.entity.DiagnoseResultEntity;
  */
 public interface ILogicTreeNode {
 
-    DiagnoseResultEntity logic(Integer modelId, String filePath, String api);
+    DiagnoseResultEntity logic(Integer modelId, String filePath, String api, String visitNumber);
 
 }

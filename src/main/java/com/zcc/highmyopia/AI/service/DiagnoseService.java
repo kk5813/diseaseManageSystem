@@ -22,6 +22,7 @@ import com.zcc.highmyopia.service.IReportFilesService;
 import com.zcc.highmyopia.util.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.HttpPost;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +53,8 @@ public class DiagnoseService implements IDiagnoseService {
     @Resource
     private  DataDownloaderProxy dataDownloaderProxy;
     DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @Value("${hospital.flask_path}")
+    private String flaskPath;
     @PostConstruct
     public void init() {
         downLoadDataUtils = dataDownloaderProxy.createProxy();
@@ -102,7 +105,9 @@ public class DiagnoseService implements IDiagnoseService {
         // 发送HTTP请求
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("imagePath", filePath);
-        String body = LogicTreeNode.HttpPOST("/api/site", jsonMap);
+        jsonMap.put("visitNumber", diagnoseEntity.getVisitNumber());
+        String siteUrl = flaskPath + "/api/site";
+        String body = LogicTreeNode.HttpPOST(siteUrl, jsonMap);
         List<DiagnoseResultEntity> lists = JSON.parseArray(
                 JSON.parseObject(body).getJSONArray("data").toString(),
                 DiagnoseResultEntity.class);
@@ -113,7 +118,7 @@ public class DiagnoseService implements IDiagnoseService {
             DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
             List<DiagnoseResultEntity> process = new ArrayList<>();
             process.add(list);
-            process.addAll(decisionTreeEngine.process(OneSiteUrl));
+            process.addAll(decisionTreeEngine.process(OneSiteUrl, diagnoseEntity.getVisitNumber()));
             res.add(process);
         }
         return res;

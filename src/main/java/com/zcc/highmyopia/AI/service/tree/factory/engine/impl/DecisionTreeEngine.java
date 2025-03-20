@@ -36,7 +36,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
 
     // 处理节点经过的流程
     @Override
-    public List<DiagnoseResultEntity> process(Map<String, String> url) {
+    public List<DiagnoseResultEntity> process(Map<String, String> url, String visitNumber) {
         List<DiagnoseResultEntity> diagnoseResultEntities = new ArrayList<>();
         //获取基础信息
         nextNode nextNode = DecisionTreeEngine.nextNode.builder()
@@ -45,15 +45,16 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
                 .build();
         Map<Integer, RuleTreeNodeVO> treeNodeMap = ruleTreeVO.getTreeNodeMap();
         String inputUrl = "";
-        while (nextNode != null){
+        while (nextNode != null) {
             RuleTreeNodeVO ruleTreeNodeVO = treeNodeMap.get(nextNode.getNextNode());
-            if (nextNode.getUseOutputUrl() == 1 && !diagnoseResultEntities.isEmpty()){
+            if (nextNode.getUseOutputUrl() == 1 && !diagnoseResultEntities.isEmpty()) {
                 inputUrl = diagnoseResultEntities.get(diagnoseResultEntities.size() - 1).getUrl();
-            }else
+            } else
                 inputUrl = url.get(ruleTreeNodeVO.getInput());
             DiagnoseResultEntity diagnoseResult = logicTreeNode.logic(nextNode.getNextNode(),
                     inputUrl,
-                    ruleTreeNodeVO.getApi());
+                    ruleTreeNodeVO.getApi(),
+                    visitNumber);
             diagnoseResultEntities.add(diagnoseResult);
 
             nextNode = nextNode(diagnoseResult.getResultInfo(), ruleTreeNodeVO.getTreeNodeLineVOList());
@@ -63,7 +64,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
     }
 
     // 决策
-    private nextNode nextNode(String result, List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList){
+    private nextNode nextNode(String result, List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList) {
         if (ruleTreeNodeLineVOList == null || ruleTreeNodeLineVOList.isEmpty()) return null;
         for (RuleTreeNodeLineVO nodeVO : ruleTreeNodeLineVOList) {
             // 结果集
@@ -80,7 +81,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class nextNode{
+    public static class nextNode {
 
         private Integer nextNode;
 
