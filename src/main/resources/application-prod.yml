@@ -48,7 +48,7 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
-      password: 93449344
+#      password: 93449344
 
 mybatis-plus:
   mapper-locations:
