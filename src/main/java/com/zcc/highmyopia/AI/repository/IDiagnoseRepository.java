@@ -20,4 +20,6 @@ public interface IDiagnoseRepository {
     List<ReportFiles> getReportFile(Long id);
 
     RuleTreeVO getRuleTreeVOByDiseaseId(Integer diseaseId);
+
+    int getDownLoadReportFileCountByVisitNumber(String visitNumber);
 }

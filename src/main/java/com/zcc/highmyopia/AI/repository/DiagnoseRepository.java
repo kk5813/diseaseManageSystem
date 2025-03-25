@@ -141,4 +141,9 @@ public class DiagnoseRepository implements IDiagnoseRepository {
         return ruleTreeVODB;
     }
 
+    @Override
+    public int getDownLoadReportFileCountByVisitNumber(String visitNumber) {
+        return reportFilesMapper.getDownLoadReportFileCountByVisitNumber(visitNumber);
+    }
+
 }

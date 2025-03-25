@@ -23,6 +23,7 @@ import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.service.ICheckReportsService;
 import com.zcc.highmyopia.service.IReportFilesService;
 import com.zcc.highmyopia.util.ThrowUtils;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpPost;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -59,6 +61,8 @@ public class DiagnoseService implements IDiagnoseService {
     @Resource
     private  DataDownloaderProxy dataDownloaderProxy;
     DateTimeFormatter formatterWithSplit = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static DateTimeFormatter formatterNoSplit = DateTimeFormatter.ofPattern("yyyyMMdd");
+
     @Value("${hospital.flask_path}")
     private String flaskPath;
     @PostConstruct
@@ -79,8 +83,9 @@ public class DiagnoseService implements IDiagnoseService {
             queryWrapper.eq(CheckReports::getVisitNumber,visitNumber);
             checkReports = checkReportsService.list(queryWrapper);
         }
-        // 如果数据库中没有找到，则去下载
-        if(checkReports == null || checkReports.isEmpty()){
+        // 如果数据库中没有找到，则去下载, 添加一个如果对应的报告都没有被下载，则去下载。
+        if(checkReports == null || checkReports.isEmpty() ||
+                diagnoseRepository.getDownLoadReportFileCountByVisitNumber(visitNumber) <= 0){
             String curdataSplit = DiagnoseService.parseVisitNumber(visitNumber);
             List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(curdataSplit, curdataSplit, visitNumber);
             checkReports = saveToDataBase.saveCheckReportsByVisitNumber(visitNumber, checkReportsEntities);
@@ -147,10 +152,17 @@ public class DiagnoseService implements IDiagnoseService {
             }
             // 提取 visitNumber 中的日期部分（假设格式为 XXyyyyMMdd...）
             String datePart = visitNumber.substring(2, 10); // 提取从索引2开始的8位字符
+            System.out.println("datePart = " + datePart);
+            LocalDate.parse(datePart,formatterNoSplit);
             return datePart;
         } catch (Exception e) {
             // 如果解析失败或格式不正确，返回当天日期
             return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         }
+    }
+
+    public static void main(String[] args) {
+        String s = parseVisitNumber("MZ202503230147");
+        System.out.println("s = " + s);
     }
 }

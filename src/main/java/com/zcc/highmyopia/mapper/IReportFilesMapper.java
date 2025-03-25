@@ -34,4 +34,6 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     List<ReportFiles> getReportFileByReportID(Long reportId);
 
     List<ReportFiles> getReportFileByVisitNumber(String visitNumber);
+
+    int getDownLoadReportFileCountByVisitNumber(String visitNumber);
 }

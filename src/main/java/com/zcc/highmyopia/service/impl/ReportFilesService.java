@@ -31,4 +31,9 @@ public class ReportFilesService extends ServiceImpl<IReportFilesMapper, ReportFi
     public List<ReportFiles> getReportFileByVisitNumber(String visitNumber) {
         return reportFilesMapper.getReportFileByVisitNumber(visitNumber);
     }
+
+    @Override
+    public int getDownLoadReportFileCountByVisitNumber(String visitNumber) {
+        return reportFilesMapper.getDownLoadReportFileCountByVisitNumber(visitNumber);
+    }
 }

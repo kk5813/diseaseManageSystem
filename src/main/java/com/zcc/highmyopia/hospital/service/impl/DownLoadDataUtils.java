@@ -278,13 +278,27 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
     @Override
     public void DownLoadReportImageBatch() {
         List<ReportFiles> reportFiles = saveToDataBase.getNotDownLoadFiles();
-        reportFiles.forEach(this::DownLoadReportImage);
+        reportFiles.forEach(reportFile->{
+            try{
+                DownLoadReportImage(reportFile);
+            }catch(Exception e){
+                log.error("Error downloading report image for file: {}", reportFile);
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
     public void DownLoadReportImageBatchByVisitNumber(String visitNumber) throws Exception {
         List<ReportFiles> reportFiles = saveToDataBase.getNotDownLoadFilesByVisitNumber(visitNumber);
-        reportFiles.forEach(this::DownLoadReportImage);
+        reportFiles.forEach(reportFile->{
+            try{
+                DownLoadReportImage(reportFile);
+            }catch(Exception e){
+                log.error("Error downloading report image for file: {}", reportFile);
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

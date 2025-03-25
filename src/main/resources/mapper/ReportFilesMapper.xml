@@ -64,5 +64,11 @@
         select * from hospital_db.report_files
         where report_id in (select id from check_reports where visit_number = #{visitNumber} )  and is_down_load = 1;
     </select>
-
+    <select id="getDownLoadReportFileCountByVisitNumber" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM hospital_db.report_files rf
+                 INNER JOIN hospital_db.check_reports cr ON rf.report_id = cr.id
+        WHERE cr.visit_number = #{visitNumber}
+          AND rf.is_down_load = 1
+    </select>
 </mapper>
