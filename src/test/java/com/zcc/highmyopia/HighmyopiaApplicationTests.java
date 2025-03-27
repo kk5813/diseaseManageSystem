@@ -113,20 +113,14 @@ class HighmyopiaApplicationTests {
 
 
 
+    @Resource
+    private IRedisService redisService;
     //测试jedis
     @Test
-    public void JedisTest() {
-        //redis的java客戶端jedis
-        //建立连接
-        Jedis jedis = new Jedis("localhost", 6379);
-        //设置密码
-        jedis.auth("2287996531");
-        //选择库,不选择默认为0
-        jedis.select(0);
-        jedis.set("key1", "string");
-        jedis.del("key1");
-        //释放资源
-        jedis.close();
+    public void RedissionTest() {
+        redissonService.setValue("zcc", "handsome");
+        String value = redissonService.getValue("zcc");
+        System.out.println(value);
     }
 
 
@@ -239,8 +233,6 @@ class HighmyopiaApplicationTests {
         }
     }
 
-    @Resource
-    private IRedisService redisService;
     @Test
     public void redis_serve(){
         String cacheKey = Constants.RedisKey.PATIENTS + "1796037988798971906";

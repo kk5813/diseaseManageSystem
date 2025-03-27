@@ -63,7 +63,7 @@ shiro-redis:
   enabled: true
   redis-manager:
     host: 43.136.178.202:6379
-    password: 93449344       # 用redis-manager的时候也要给到redis的password
+#    password: 93449344       # 用redis-manager的时候也要给到redis的password
 
 highmyopia:
   jwt:
