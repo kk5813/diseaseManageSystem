@@ -48,6 +48,8 @@ public interface IRedisService {
      */
     boolean isExist(String key);
 
+    <T> boolean isExistWithSet(String key, T value, long expired);
+
 
 }
 

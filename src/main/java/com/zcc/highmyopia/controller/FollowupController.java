@@ -2,8 +2,12 @@ package com.zcc.highmyopia.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zcc.highmyopia.common.Constants;
+import com.zcc.highmyopia.common.dto.FollowupBatchDTO;
 import com.zcc.highmyopia.common.dto.FollowupDTO;
+import com.zcc.highmyopia.common.vo.FollowupPatientVO;
 import com.zcc.highmyopia.common.vo.ListFollowupVO;
 import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.Result;
@@ -11,6 +15,7 @@ import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.po.Followup;
 import com.zcc.highmyopia.mapper.IFollowupMapper;
 import com.zcc.highmyopia.service.IFollowupService;
+import com.zcc.highmyopia.service.impl.FollowupService;
 import com.zcc.highmyopia.util.ThrowUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +28,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -81,18 +89,26 @@ public class FollowupController {
     @ApiOperation(value = "模糊查询")
     public Result searchFollowup(@RequestParam(defaultValue = "") String patientId, @RequestParam(defaultValue = "") String dateStart,
                                  @RequestParam(defaultValue = "") String dateEnd, @RequestParam(defaultValue = "") Integer visitResult,
-                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize){
+                                  @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize,
+                                 @RequestParam(defaultValue = "") String deptName, @RequestParam(defaultValue = "") String doctorName,
+                                 @RequestParam(defaultValue = "") String visitNumber
+    ){
         //followupService.SearchFollowup(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize);
-        return Result.succ(followupService.SearchFollowPatient(patientId,dateStart,dateEnd,visitResult,pageNo,pageSize));
+        // 这里的visitNumber 输入为MZ就是门诊了
+        return Result.succ(followupService. SearchFollowPatient(pageNo,pageSize,patientId, visitNumber, visitResult, dateStart, dateEnd, doctorName,deptName));
     }
+    private String addParamsInfo =  "添加随访需要6项参数：{PatientId,PlanVisitDate,VisitPlan,DeptId,DoctorId,visitNumber}";
 
     @PostMapping("/addFollowup")
     @ApiOperation(value = "添加随访记录")
     @RequiresAuthentication
     public Result addFollowup(@RequestBody FollowupDTO followupDTO) {
-        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getPatientId()), new BusinessException(ResultCode.ID_FIELD_MISSING));
-        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getPlanVisitDate()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING));
-        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getVisitPlan()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺失visitPlan!"));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getPatientId()), new BusinessException(ResultCode.ID_FIELD_MISSING, "缺少病人ID，添加随访需要6项参数：" + addParamsInfo));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getPlanVisitDate()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺少计划随访时间PlanVisitDate，"+ addParamsInfo));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getVisitPlan()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺失visitPlan!，"+ addParamsInfo));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getDeptId()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺少deptId部门ID,"+ addParamsInfo));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getDoctorId()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺少doctorId医生ID, "+ addParamsInfo));
+        ThrowUtils.throwIf(StringUtils.isBlank(followupDTO.getVisitNumber()), new BusinessException(ResultCode.PARAMS_FIELD_MISSING, "缺少visitNumber就诊号，"+ addParamsInfo));
         if(StringUtils.isBlank(followupDTO.getVisitDate())){
             followupDTO.setVisitDate(null);
         }
@@ -101,6 +117,63 @@ public class FollowupController {
         followup.setCreateTime(LocalDateTime.now());
         followup.setUpdateTime(LocalDateTime.now());
         followupService.saveOrUpdate(followup);
+        return Result.succ(null);
+    }
+
+    /**
+     * 批量设置已随访，
+     * 哪些要设置，为前端进行刷选，后端只设置状态
+     * 随访状态：已随访还要随访这种，这个接口不实现，如果有需求，单独写一个，因为还要随访的这种需要的参数比较多，而且可以从病历那个模板处添加
+     * 故这里只实现状态设置
+    * */
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    @PostMapping("/setFollowupBatch")
+    @ApiOperation(value = "批量设置已随访")
+    @RequiresAuthentication
+    public Result setFollowupBatch(@RequestBody FollowupBatchDTO followupBatchDTO){
+        if(followupBatchDTO.getFollowupIds() == null || followupBatchDTO.getFollowupIds().isEmpty()){
+            return Result.succ("操作成功", null);
+        }
+        String visitDate = followupBatchDTO.getVisitDate();
+        if(StringUtils.isBlank(visitDate)){
+            visitDate = LocalDate.now().format(formatter);
+        }
+        LocalDate visitDataTime = null;
+        try{
+            visitDataTime = LocalDate.parse(visitDate.trim(), formatter);
+        }catch (DateTimeParseException e){
+            throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR);
+        }
+        final LocalDate finalVisitDataTime = visitDataTime;
+
+        LambdaQueryWrapper<Followup> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.in(Followup::getId, followupBatchDTO.getFollowupIds());
+        List<Followup> list = followupService.list(lambdaQueryWrapper);
+        List<Followup> errorList = new ArrayList<>();
+        List<Followup> collect = list.stream().filter(followup -> {
+            if(followup == null) {
+                return false;
+            }
+            LocalDate planTime = null;
+            try {
+                planTime = LocalDate.parse(followup.getPlanVisitDate().substring(0, 10), formatter);
+            } catch (DateTimeParseException e) {
+                throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR);
+            }
+            // 到访时间不早于计划时间
+            if (finalVisitDataTime.isBefore(planTime)) {
+                errorList.add(followup);
+                return false;
+            }
+            return true;
+        }).peek(followup -> {
+            followup.setVisitResult(Constants.FollowupStatus.FOLLOW_SUCCESS);
+        }).collect(Collectors.toList());
+        followupService.saveOrUpdateBatch(collect);
+        if(!errorList.isEmpty()){
+            return Result.fail("部分随访修改失败，原因设置的到访时间早于了计划时间", errorList);
+        }
         return Result.succ(null);
     }
 
@@ -163,6 +236,16 @@ public class FollowupController {
         }
         if(StringUtils.isNotBlank(followupDTO.getVisitRemark())){
             followup.setVisitRemark(followupDTO.getVisitRemark());
+        }
+        // todo 这里没有保证数据一致性
+        if(StringUtils.isNotBlank(followupDTO.getVisitNumber())){
+            followup.setVisitNumber(followupDTO.getVisitNumber());
+        }
+        if(StringUtils.isNotBlank(followupDTO.getDeptId())){
+            followup.setDeptId(followupDTO.getDeptId());
+        }
+        if(StringUtils.isNotBlank(followupDTO.getDoctorId())){
+            followup.setDoctorId(followupDTO.getDoctorId());
         }
         followupService.saveOrUpdate(followup);
         return Result.succ(null);

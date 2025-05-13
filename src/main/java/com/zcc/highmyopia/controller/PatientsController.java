@@ -1,20 +1,23 @@
 package com.zcc.highmyopia.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.esotericsoftware.minlog.Log;
 import com.zcc.highmyopia.common.Constants;
-import com.zcc.highmyopia.common.dto.ElementShowDTO;
-import com.zcc.highmyopia.common.dto.PatientsDTO;
+import com.zcc.highmyopia.common.dto.*;
 import com.zcc.highmyopia.common.lang.Result;
+import com.zcc.highmyopia.common.lang.ResultCode;
 import com.zcc.highmyopia.common.vo.PatientsVO;
 import com.zcc.highmyopia.mapper.IPatientsMapper;
+import com.zcc.highmyopia.po.Followup;
+import com.zcc.highmyopia.po.FollowupTemplate;
 import com.zcc.highmyopia.po.PatientVisitSummaryView;
 import com.zcc.highmyopia.po.Patients;
-import com.zcc.highmyopia.service.IPatientVisitSummaryService;
-import com.zcc.highmyopia.service.IPatientsService;
-import com.zcc.highmyopia.service.IRedisService;
+import com.zcc.highmyopia.service.*;
+import com.zcc.highmyopia.util.OtherUtils;
+import com.zcc.highmyopia.util.ThrowUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +36,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -178,7 +184,6 @@ public class PatientsController {
         IPage<PatientVisitSummaryView> patientVisitSummaryByPage = patientVisitSummaryService.getPatientVisitSummaryByPage(visitNumber, Long.valueOf(patientId), page);
         return Result.succ(patientVisitSummaryByPage);
     }
-
 //    @GetMapping("a")
 //    @RequiresAuthentication
 //    @ApiOperation(value = "病人计划随访日期时间")

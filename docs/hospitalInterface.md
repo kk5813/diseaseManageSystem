@@ -649,7 +649,9 @@
 | sexName(patients)  | string | 性别名称，"男"或"女"                   |      |
 | name(patients)     | string | 姓名                                   |      |
 | id(patients)       | long   | 个人ID                                 |      |
-| idNumber(patients) | string | 身份证号码                             |      |
+| idNumber(patients) | string | 身份证号码             
+                |      |
+
 
 响应数据样例：
 

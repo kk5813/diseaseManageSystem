@@ -19,6 +19,12 @@ public class FollowupDTO {
 
     private String patientId;  // 病人ID，唯一标识患者
 
+    private String deptId; // 科室ID
+
+    private String doctorId; // 医生ID
+
+    private String visitNumber; // 就诊号
+
     private String planVisitDate;  // 计划随访日期
 
     private String visitPlan;  // 随访计划内容描述
@@ -35,6 +41,9 @@ public class FollowupDTO {
         Followup followup = new Followup();
         followup.setId(followup.getId());
         followup.setPatientId(followupDTO.getPatientId());
+        followup.setDeptId(followupDTO.getDeptId());
+        followup.setDoctorId(followupDTO.getDoctorId());
+        followup.setVisitNumber(followup.getVisitNumber());
         followup.setPlanVisitDate(followupDTO.getPlanVisitDate());
         followup.setVisitPlan(followupDTO.getVisitPlan());
         followup.setVisitResult(followupDTO.getVisitResult());

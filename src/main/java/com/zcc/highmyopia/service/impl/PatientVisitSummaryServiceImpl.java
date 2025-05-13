@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientVisitSummaryServiceImpl extends ServiceImpl<IPatientVisitSummaryViewMapper, PatientVisitSummaryView> implements IPatientVisitSummaryService {
@@ -22,9 +23,11 @@ public class PatientVisitSummaryServiceImpl extends ServiceImpl<IPatientVisitSum
     @Override
     public IPage<PatientVisitSummaryView> getPatientVisitSummaryByPage(
             String visitNumber, Long patientId, Page<PatientVisitSummaryView> page) {
+        // 进行去重
         List<PatientVisitSummaryView> result = patientVisitSummaryMapper
-                .selectByVisitNumberOrPatientId(visitNumber, patientId);
+                .selectByVisitNumberOrPatientId(visitNumber, patientId).stream().distinct().collect(Collectors.toList());
         page.setRecords(result);
+        page.setTotal(result.size());
         return page;
     }
 }

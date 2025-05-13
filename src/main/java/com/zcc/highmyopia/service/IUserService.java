@@ -20,4 +20,6 @@ public interface IUserService extends IService<User> {
     Result getUsersPage(int page, int size);
 
     List<User> SearchUser(User user);
+
+    String getUserBridgeRedis(String userId);
 }

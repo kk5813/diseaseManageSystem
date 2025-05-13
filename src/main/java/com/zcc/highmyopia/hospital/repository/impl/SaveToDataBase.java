@@ -285,7 +285,7 @@ public class SaveToDataBase implements ISaveToDataBase {
             checkResultsList.add(checkResults);
         }
         try {
-            checkResultsList = new ArrayList<>(checkResultsList.stream()
+            checkResultsList = new ArrayList<>(checkResultsList.stream().distinct()
                     .collect(Collectors.toMap(CheckResults::getId, checkResults -> checkResults, (existing, replacement) -> existing))
                     .values());
 
@@ -299,7 +299,8 @@ public class SaveToDataBase implements ISaveToDataBase {
         if (visionEntities == null || visionEntities.isEmpty()) return;
 
         try {
-            List<ElementVision> elementVisions = visionEntities.stream()
+            // 加了一个去重，数据库检索过来，发现导致视图重复的原因的主要试ElementVision传过来的有重复导致的。
+            List<ElementVision> elementVisions = visionEntities.stream().distinct()
                     .map(ElementVisionEntity::entityToPo).collect(Collectors.toList());
             elementVisionService.saveOrUpdateBatch(elementVisions);
         }catch (Exception e){
@@ -311,7 +312,7 @@ public class SaveToDataBase implements ISaveToDataBase {
     public void saveElement(List<ElementEntity> elementEntities) {
         if (elementEntities == null || elementEntities.isEmpty()) return;
         try{
-            List<Element> elements = elementEntities.stream()
+            List<Element> elements = elementEntities.stream().distinct()
                     .map(ElementEntity::entityToPo).collect(Collectors.toList());
             elementService.saveOrUpdateBatch(elements);
         } catch (Exception e) {

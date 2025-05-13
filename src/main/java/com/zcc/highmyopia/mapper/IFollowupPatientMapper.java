@@ -41,4 +41,14 @@ public interface IFollowupPatientMapper extends BaseMapper<FollowupPatientVO> {
                                                       @Param("visitResult") Integer visitResult,
                                                       @Param("dateStart") String dateStart,
                                                       @Param("dateEnd") String dateEnd);
+
+
+    Page<FollowupPatientVO> selectFollowupPatientPageWithMore(Page<?> page,
+                                                              @Param("patientId") String patientId,
+                                                              @Param("visitNumber") String visitNumber,
+                                                              @Param("visitResult") Integer visitResult,
+                                                              @Param("dateStart") String dateStart,
+                                                              @Param("dateEnd") String dateEnd,
+                                                              @Param("doctorName") String doctorName,
+                                                              @Param("deptName") String deptName);
 }

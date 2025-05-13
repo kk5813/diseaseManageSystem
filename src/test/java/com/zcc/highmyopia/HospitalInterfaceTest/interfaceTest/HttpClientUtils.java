@@ -162,7 +162,7 @@ public class HttpClientUtils {
             post.setEntity(new StringEntity(body, Constants.ENCODING));
 
         }
-
+        System.out.println(post.toString());
         return convert(httpClient.execute(post));
     }
 

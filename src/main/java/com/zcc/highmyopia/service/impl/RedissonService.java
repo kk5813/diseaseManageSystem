@@ -47,5 +47,16 @@ public class RedissonService implements IRedisService {
             return true;
         }
     }
+
+    @Override
+    public <T> boolean isExistWithSet(String key, T value, long expired) {
+        RBucket<String>  bucket = redissonClient.getBucket(key);
+        if (bucket == null || !bucket.isExists()) {
+            setValue(key, value, expired);
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 

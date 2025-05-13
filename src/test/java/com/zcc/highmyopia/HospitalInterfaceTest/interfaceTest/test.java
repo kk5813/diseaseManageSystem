@@ -162,9 +162,9 @@ public class test {
         Map<String,String> querys = new HashMap<>();
 //        querys.put("aemr_bdate","2024-06-26");
 //        querys.put("aemr_edate","20240725");
-        querys.put("aemr_bdate","2025-03-06");
-        querys.put("aemr_edate","2025-03-07");
-        querys.put("Visit_number","MZ202503060249");
+        querys.put("aemr_bdate","2025-08-01");
+        querys.put("aemr_edate","2025-08-15");
+        querys.put("Visit_number","MZ202408150129");
 //        querys.put("Visit_number","MZ202407071064");
         String reqJson = JsonUtil.toJson(querys);
         Map<String,String>headers =new HashMap<>();
@@ -233,10 +233,10 @@ public class test {
         Map<String,String> querys = new HashMap<>();
 //        querys.put("checkBdate","2024-06-29");
 //        querys.put("checkEdate","2024-07-08");
-        querys.put("checkBdate","2025-03-06");
-        querys.put("checkEdate","2025-03-07");
+        querys.put("checkBdate","2025-01-20");
+        querys.put("checkEdate","2025-01-20");
         // querys.put("visitNumber","MZ202407070797");
-        querys.put("visitNumber","MZ202503060249");
+        querys.put("visitNumber","MZ202501200351");
         String reqJson = JsonUtil.toJson(querys);
         Map<String,String>headers =new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();

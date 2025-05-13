@@ -2,10 +2,7 @@ package com.zcc.highmyopia.hospital.entity;
 
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.Element;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ElementEntity {
 
     private String id;             // 病历ID

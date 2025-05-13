@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcc.highmyopia.mapper.IFollowupPatientMapper">
+
+    <select id="selectFollowupPatientPageWithMore" resultType="com.zcc.highmyopia.common.vo.FollowupPatientVO">
+        SELECT followup_id, patient_id,doctor_id, dept_id, visit_number, plan_visit_date, visit_plan, visit_result, visit_content, visit_remark, visit_date, patient_name, gender, telephone, id_number
+        FROM followup_patient_view
+        <where>
+            <if test="patientId != null and patientId != ''">
+                AND patient_id = #{patientId}
+            </if>
+
+            <if test="visitNumber != null and visitNumber != ''">
+                AND visit_number like concat(#{visitNumber}, '%')
+            </if>
+
+            <if test="visitResult != null and visitResult != ''">
+                AND visit_result = #{visitResult}
+            </if>
+
+            <if test="dateStart != null and dateStart != ''">
+                AND plan_visit_date &gt;= #{dateStart}
+            </if>
+
+            <if test="dateEnd != null and dateEnd != ''">
+                AND plan_visit_date &lt;= #{dateEnd}
+            </if>
+
+            <if test="doctorName != null and doctorName != ''">
+                AND doctor_id in select id from `doctor` where `doctor_name` like concat(#{doctorName}, '%')
+            </if>
+
+            <if test="deptName != null and deptName != ''">
+                AND dept_id in select id from `dept` where `dept_name` like concat(#{deptName}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

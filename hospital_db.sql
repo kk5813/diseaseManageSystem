@@ -151,6 +151,9 @@ DROP TABLE IF EXISTS `followup`;
 CREATE TABLE `followup`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `patient_id` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '病人id',
+  `doctor_id` bigint(20) NULL DEFAULT NULL COMMENT '医生ID',
+  `dept_id` bigint(20) NULL DEFAULT NULL COMMENT '科室ID',
+  `visit_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '就诊号',
   `plan_visit_date` datetime NULL DEFAULT NULL COMMENT '计划随访时间',
   `visit_plan` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '随访计划安排',
   `visit_result` smallint(6) NOT NULL DEFAULT 0 COMMENT '随访结果，1随访过，0未随访，-1删除',
@@ -413,10 +416,36 @@ CREATE TABLE `visits`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 47638 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- 创建随访模板表，记录各科室的随访计划模板
+-- Table structure for followup_template
+-- ----------------------------
+DROP TABLE IF EXISTS `followup_template`;
+CREATE TABLE `followup_template` (
+ `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '模板ID，主键，自增' ,
+ `template_name` VARCHAR(100) NOT NULL COMMENT '模板名称，唯一' ,
+ `dept_id` BIGINT(20)  NOT NULL COMMENT '所属科室ID' ,
+ `interval_value` INT NOT NULL DEFAULT 7  COMMENT '随访间隔值（整数）单位天' ,
+ `visit_plan` VARCHAR(30) NOT NULL COMMENT '随访计划安排' ,
+ `visit_result` smallint(6) NOT NULL DEFAULT 0 COMMENT '随访结果，1随访过，0未随访，-1删除',
+ `visit_content` VARCHAR(255) NOT NULL COMMENT '随访内容描述' ,
+ `visit_remark` VARCHAR(255) DEFAULT NULL COMMENT '备注说明，可选' ,
+ `is_active` smallint(4) NOT NULL DEFAULT 1 COMMENT '激活状态：1=启用，0=停用' ,
+ `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+ `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+ `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+ `modifier` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+ PRIMARY KEY (`id`) USING BTREE,
+ UNIQUE KEY `uk_template_name` (`template_name`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC COMMENT='随访模板表：存储随访计划';
+
+
+-- ----------------------------
 -- View structure for followup_patient_view
 -- ----------------------------
 DROP VIEW IF EXISTS `followup_patient_view`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `followup_patient_view` AS select `f`.`id` AS `followup_id`,`f`.`patient_id` AS `patient_id`,`f`.`plan_visit_date` AS `plan_visit_date`,`f`.`visit_plan` AS `visit_plan`,`f`.`visit_result` AS `visit_result`,`f`.`visit_content` AS `visit_content`,`f`.`visit_remark` AS `visit_remark`,`f`.`visit_date` AS `visit_date`,`p`.`name` AS `patient_name`,`p`.`sex_name` AS `gender`,`p`.`phone` AS `telephone`,`p`.`id_number` AS `id_number` from (`followup` `f` left join `patients` `p` on((`f`.`patient_id` = `p`.`id`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `followup_patient_view` AS
+select `f`.`id` AS `followup_id`,`f`.`patient_id` AS `patient_id`, `f`.`doctor_id` AS `doctor_id`, `f`.`dept_id` AS `dept_id`, `f`.`visit_number` AS `visit_number`, `f`.`plan_visit_date` AS `plan_visit_date`,`f`.`visit_plan` AS `visit_plan`,`f`.`visit_result` AS `visit_result`,`f`.`visit_content` AS `visit_content`,`f`.`visit_remark` AS `visit_remark`,`f`.`visit_date` AS `visit_date`,`p`.`name` AS `patient_name`,`p`.`sex_name` AS `gender`,`p`.`phone` AS `telephone`,`p`.`id_number` AS `id_number`
+from (`followup` `f` left join `patients` `p` on((`f`.`patient_id` = `p`.`id`)));
 
 -- ----------------------------
 -- View structure for patient_visit_summary_view
@@ -425,3 +454,7 @@ DROP VIEW IF EXISTS `patient_visit_summary_view`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `patient_visit_summary_view` AS select `e`.`visit_number` AS `visit_number`,`e`.`id` AS `element_id`,`e`.`patient_id` AS `patient_id`,`e`.`main_appeal` AS `main_appeal`,`e`.`past_history` AS `past_history`,`e`.`present_illness` AS `present_illness`,`e`.`allergy` AS `allergy`,`e`.`special_os` AS `special_os`,`e`.`special_od` AS `special_od`,`e`.`physical_exam` AS `physical_exam`,`e`.`dispose` AS `dispose`,`v`.`diag_time` AS `diag_time`,`v`.`diag_name` AS `diag_name`,`v`.`diag_code` AS `diag_code`,`ev`.`scd_os` AS `scd_os`,`ev`.`scd_od` AS `scd_od`,`ev`.`scd_os_value` AS `scd_os_value`,`ev`.`scd_od_value` AS `scd_od_value`,`ev`.`ccd_os` AS `ccd_os`,`ev`.`ccd_od` AS `ccd_od`,`ev`.`ccd_os_value` AS `ccd_os_value`,`ev`.`ccd_od_value` AS `ccd_od_value`,`ev`.`iop_os` AS `iop_os`,`ev`.`iop_od` AS `iop_od` from ((`element` `e` left join `visits` `v` on((`e`.`visit_number` = `v`.`visit_number`))) left join `element_vision` `ev` on((`e`.`visit_number` = `ev`.`visit_number`)));
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+

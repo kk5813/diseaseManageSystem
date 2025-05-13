@@ -1,7 +1,6 @@
 package com.zcc.highmyopia.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zcc.highmyopia.common.dto.PatientsDTO;
 import com.zcc.highmyopia.po.OrderDetail;
 import com.zcc.highmyopia.po.Patients;
 import com.zcc.highmyopia.po.Recipe;

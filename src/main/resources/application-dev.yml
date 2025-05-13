@@ -4,14 +4,15 @@ server:
 
 spring:
   redis:
-    host: 172.16.101.17
+    host: 43.136.178.202
     port: 6379
+    # password: 93449344
     database: 0
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://172.16.101.17:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://43.136.178.202:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: cdae@123
+    password: mysql9344!
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -37,7 +38,7 @@ app:
 redis:
   sdk:
     config:
-      host: 172.16.101.17
+      host: 43.136.178.202
       port: 6379
       pool-size: 10
       min-idle-size: 5
@@ -47,6 +48,7 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
+      # password: 93449344
 
 mybatis-plus:
   mapper-locations:
@@ -60,7 +62,8 @@ mybatis-plus:
 shiro-redis:
   enabled: true
   redis-manager:
-    host: 172.16.101.17:6379
+    host: 43.136.178.202:6379
+ #   password: 93449344       # 用redis-manager的时候也要给到redis的password
 
 highmyopia:
   jwt:

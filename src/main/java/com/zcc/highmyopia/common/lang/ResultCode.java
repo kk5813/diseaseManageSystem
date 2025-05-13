@@ -42,6 +42,10 @@ public enum ResultCode {
     VISIT_NUMBER_IS_NULL(40010,"visitNumber 为空，后续操作失败"),
     VISIT_NUMBER_NODATA(40011, "此 visitNumber 获取不到任何数据"),
     VISIR_NUMBER_NODATA_AFTER_DOWNLOAD(40012,"这个visitNumber 经过下载数据后，没有得到任何数据。"),
+    FOLLOWUP_TEMPLATE_INTERVALVALUE(40013, "INTERVALVALUE 必须要大于0"),
+    FOLLOWUP_TEMPLATE_NAME(40014, "NAME已经存在了，必须保证模板ID唯一"),
+    FOLLOWUP_TEMPLATE_ID(40015, "需传入模板ID，且保证为纯数字"),
+    OPERATER_TOO_MUCH(40016,"操作过于频繁或有其他用户也在操作相同数据，请稍等后再试！"),
 
 
     Y_saveByPatientID(80001,"saveByPatientID,发生异常，异常PatientID="),

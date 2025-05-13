@@ -19,9 +19,12 @@ public class PatientVisitSummaryView {
     private String specialOd;
     private String physicalExam;
     private String dispose;
+
+    @EqualsAndHashCode.Exclude
     private String diagTime;
     private String diagName;
     private String diagCode;
+
     private String scdOs;
     private String scdOd;
     private String scdOsValue;

@@ -25,9 +25,13 @@ public class Constants {
 
         public static String DEPT = "dept_";
 
+        public static String USER = "user:";
+
         public static String RULE_TREE_VO_KEY = "rule_tree_vo_";
 
         public static String MODEL_DISEASE = "model_disease";
+
+        public static String REPEAT_SUBMIT = "repeat_submit:";
     }
     public static class FollowupStatus{
         public static int DELETE = -1;

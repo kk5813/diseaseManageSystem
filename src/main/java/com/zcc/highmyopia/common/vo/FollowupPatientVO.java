@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class FollowupPatientVO {
     private Long followupId;
     private String patientId;
+    private String doctorId;
+    private String deptId;
     private String planVisitDate;
     private String visitPlan;
     private Integer visitResult;

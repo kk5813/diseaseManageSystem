@@ -1,9 +1,5 @@
 package com.zcc.highmyopia.po;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -13,38 +9,32 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 /**
- * <p>
- * 
- * </p>
- *
- * @author liangyue
- * @since 2021-03-04
+ * @Author: aigao
+ * @CreateTime: 2025-05-12-21:26
+ * @Description:
+ * @Version: 1.0
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("followup")
 @Builder
+@TableName("followup_template")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Followup implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class FollowupTemplate {
+    private static final long serialVersionUID = 2L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private String patientId;
-
-    // 添加医生和病人ID,visitNumber
-    private String doctorId;
-
     private String deptId;
 
-    private String visitNumber;
+    private String templateName;
 
-    private String planVisitDate; // 计划来访时间
+    private int intervalValue; // 下次来访间隔时间
 
     private String visitPlan; // 计划说明
 
@@ -54,13 +44,18 @@ public class Followup implements Serializable {
 
     private String visitRemark;
 
-    private String visitDate; // 实际来访时间
+    private int isActive;
+
+    private String creator;
+
+    @TableField("modifier")
+    private String modifier;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime  createTime;
+    private LocalDateTime createTime;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -68,4 +63,13 @@ public class Followup implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime  updateTime;
 
+    public static Followup TemplateToLocalFollowup(FollowupTemplate followupTemplate){
+        Followup build = Followup.builder()
+                .visitPlan(followupTemplate.getVisitPlan())
+                .visitResult(followupTemplate.getVisitResult())
+                .visitRemark(followupTemplate.getVisitRemark())
+                .visitContent(followupTemplate.getVisitContent())
+                .build();
+        return build;
+    }
 }

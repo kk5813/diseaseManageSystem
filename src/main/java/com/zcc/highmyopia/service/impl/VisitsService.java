@@ -12,8 +12,10 @@ import com.zcc.highmyopia.common.lang.Result;
 import com.zcc.highmyopia.common.vo.CategoryCountVO;
 import com.zcc.highmyopia.common.vo.CategoryGroupCountVO;
 import com.zcc.highmyopia.mapper.IDeptMapper;
+import com.zcc.highmyopia.mapper.IDoctorMapper;
 import com.zcc.highmyopia.mapper.IVisitsMapper;
 import com.zcc.highmyopia.po.Dept;
+import com.zcc.highmyopia.po.Doctor;
 import com.zcc.highmyopia.po.Visits;
 import com.zcc.highmyopia.service.IDeptService;
 import com.zcc.highmyopia.service.IVisitsService;
@@ -48,6 +50,9 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
 
     @Resource
     private IDeptMapper deptMapper;
+
+    @Resource
+    private IDoctorMapper doctorMapper;
 
     @Override
     public List<CategoryGroupCountVO> categoryCount(CategoryCountDTO categoryCountDTO) {
@@ -115,28 +120,38 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
 //    }
 
     @Override
-    public IPage<Visits> getVisitsPageWithDeptName(int page, int size, String diagName, String startTime, String endTime, Long patientID, @Param("deptName") String deptName) {
+    public IPage<Visits> getVisitsPageWithDeptName(int page, int size, String diagName, String startTime, String endTime, Long patientID, @Param("deptName") String deptName, String doctorName) {
         LambdaQueryWrapper<Visits> visitsLambdaQueryWrapper = Wrappers.lambdaQuery();
         Page<Visits> visitsPage = new Page<>(page, size);
         if (StringUtils.isNotBlank(diagName)) {
-            visitsLambdaQueryWrapper.like(Visits::getDiagName, diagName);
+            visitsLambdaQueryWrapper.like(Visits::getDiagName, diagName.trim());
         }
         if (StringUtils.isNotBlank(startTime)) {
-            visitsLambdaQueryWrapper.ge(Visits::getDiagTime, startTime);
+            visitsLambdaQueryWrapper.ge(Visits::getDiagTime, startTime.trim());
         }
         if (StringUtils.isNotBlank(endTime)) {
-            visitsLambdaQueryWrapper.le(Visits::getDiagTime, endTime);
+            visitsLambdaQueryWrapper.le(Visits::getDiagTime, endTime.trim());
         }
         if (patientID != null && StringUtils.isNotBlank(patientID.toString())) {
             visitsLambdaQueryWrapper.eq(Visits::getPatientId, patientID);
         }
         if(StringUtils.isNotBlank(deptName)){
             LambdaQueryWrapper<Dept> deptLambdaQueryWrapper  = Wrappers.lambdaQuery();
-            deptLambdaQueryWrapper.like(Dept::getDeptName, deptName)
+            deptLambdaQueryWrapper.like(Dept::getDeptName, deptName.trim())
                     .select(Dept::getId);
             List<Dept> depts = deptMapper.selectList(deptLambdaQueryWrapper);
             List<Long> collect = depts.stream().map(x -> x.getId()).distinct().collect(Collectors.toList());
             visitsLambdaQueryWrapper.in(Visits::getDeptId,collect);
+        }
+        if(StringUtils.isNotBlank(doctorName)){
+            LambdaQueryWrapper<Doctor> doctorLambdaQueryWrapper = Wrappers.lambdaQuery();
+            doctorLambdaQueryWrapper.like(Doctor::getDoctorName, doctorName.trim())
+                    .select(Doctor::getId);
+            List<Long> collect = doctorMapper.selectList(doctorLambdaQueryWrapper).stream()
+                    .map(x -> x.getId())
+                    .distinct()
+                    .collect(Collectors.toList());
+            visitsLambdaQueryWrapper.in(Visits::getDoctorId, collect);
         }
         IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
         return visitsIPage;

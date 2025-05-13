@@ -1,10 +1,7 @@
 package com.zcc.highmyopia.hospital.entity;
 
 import com.zcc.highmyopia.po.ElementVision;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @Author zcc
@@ -15,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ElementVisionEntity {
 
     private String visitNumber;  // 就诊号

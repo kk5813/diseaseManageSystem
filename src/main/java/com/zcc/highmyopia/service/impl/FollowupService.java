@@ -72,7 +72,7 @@ public class FollowupService extends ServiceImpl<IFollowupMapper, Followup> impl
     @Autowired
     private IFollowupPatientMapper followupPatientMapper;
     @Override
-    public IPage<FollowupPatientVO> SearchFollowPatient(String patientId, String dateStart, String dateEnd, Integer visitResult, int pageNo, int pageSize) {
+    public IPage<FollowupPatientVO> SearchFollowPatient( int pageNo, int pageSize, String patientId, String visitNumber, Integer visitResult, String dateStart, String dateEnd,String doctorName, String deptName) {
         Page<FollowupPatientVO> page = new Page<>(pageNo, pageSize);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate startDate = null;
@@ -92,7 +92,6 @@ public class FollowupService extends ServiceImpl<IFollowupMapper, Followup> impl
                 throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR, "Invalid end date format");
             }
         }
-
-        return followupPatientMapper.selectFollowupPatientPage(page, patientId, visitResult,startDate == null ? "" : startDate.toString() , endDate == null ? "" : endDate.toString());
+        return followupPatientMapper.selectFollowupPatientPageWithMore(page,patientId,visitNumber,visitResult,startDate == null ? "" : startDate.toString() , endDate == null ? "" : endDate.toString(),doctorName, deptName);
     }
 }
