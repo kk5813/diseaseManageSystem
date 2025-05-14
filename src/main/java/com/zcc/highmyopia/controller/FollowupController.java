@@ -212,7 +212,7 @@ public class FollowupController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate planTime = null;
             try{
-                planTime = LocalDate.parse(followupDTO.getPlanVisitDate().trim(), formatter);
+                planTime = LocalDate.parse(followupDTO.getPlanVisitDate().trim().substring(0,10), formatter);
             }catch (DateTimeParseException e){
                 throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR, "Invalid start date format");
             }
