@@ -155,17 +155,18 @@ public class FollowupController {
             if(followup == null) {
                 return false;
             }
-            LocalDate planTime = null;
-            try {
-                planTime = LocalDate.parse(followup.getPlanVisitDate().substring(0, 10), formatter);
-            } catch (DateTimeParseException e) {
-                throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR);
-            }
+//            LocalDate planTime = null;
+//            try {
+//                planTime = LocalDate.parse(followup.getPlanVisitDate().substring(0, 10), formatter);
+//            } catch (DateTimeParseException e) {
+//                throw new BusinessException(ResultCode.DATE_VARIABLE_ERROR);
+//            }
             // 到访时间不早于计划时间
-            if (finalVisitDataTime.isBefore(planTime)) {
+            if (finalVisitDataTime.isBefore(LocalDate.now())) {
                 errorList.add(followup);
                 return false;
             }
+            followup.setVisitDate(LocalDateTime.now().toString());
             return true;
         }).peek(followup -> {
             followup.setVisitResult(Constants.FollowupStatus.FOLLOW_SUCCESS);

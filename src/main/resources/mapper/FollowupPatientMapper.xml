@@ -27,11 +27,11 @@
             </if>
 
             <if test="doctorName != null and doctorName != ''">
-                AND doctor_id in select id from `doctor` where `doctor_name` like concat(#{doctorName}, '%')
+                AND doctor_id in (select id from `doctor` where `doctor_name` like concat(#{doctorName}, '%') )
             </if>
 
             <if test="deptName != null and deptName != ''">
-                AND dept_id in select id from `dept` where `dept_name` like concat(#{deptName}, '%')
+                AND dept_id in ( select id from `dept` where `dept_name` like concat(#{deptName}, '%') )
             </if>
         </where>
     </select>

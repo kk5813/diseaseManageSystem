@@ -39,7 +39,9 @@ public class Constants {
 
         public static int FOLLOW_SUCCESS = 1;
     }
-
+    public static class FollowupTemplateStatus{
+        public static int DELETE = 0;
+    }
     public static class UserStatus{
         public static int DELETE = -1;
 

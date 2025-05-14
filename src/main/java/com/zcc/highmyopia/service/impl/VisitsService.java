@@ -153,6 +153,7 @@ public class VisitsService extends ServiceImpl<IVisitsMapper, Visits> implements
                     .collect(Collectors.toList());
             visitsLambdaQueryWrapper.in(Visits::getDoctorId, collect);
         }
+        visitsLambdaQueryWrapper.orderByDesc(Visits::getDiagTime);
         IPage<Visits> visitsIPage = visitsMapper.selectPage(visitsPage,visitsLambdaQueryWrapper);
         return visitsIPage;
     }

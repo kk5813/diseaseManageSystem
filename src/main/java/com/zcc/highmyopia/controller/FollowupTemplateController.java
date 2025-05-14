@@ -4,6 +4,7 @@ package com.zcc.highmyopia.controller;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zcc.highmyopia.common.Constants;
 import com.zcc.highmyopia.common.dto.FollowupTemplateDTO;
@@ -86,6 +87,12 @@ public class FollowupTemplateController {
         followupTemplate.setModifier(userName);
         followupTemplate.setIsActive(1);
         // 保证name的唯一性
+        LambdaQueryWrapper<FollowupTemplate> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.eq(FollowupTemplate::getTemplateName, followupTemplateDTO.getTemplateName()).eq(FollowupTemplate::getIsActive,Constants.FollowupTemplateStatus.DELETE);
+        FollowupTemplate template = followupTemplateService.getOne(lambdaQueryWrapper);
+        if(template != null){
+            followupTemplate.setId(template.getId());
+        }
         try{
             followupTemplateService.saveOrUpdate(followupTemplate);
         }catch (RuntimeException e){
