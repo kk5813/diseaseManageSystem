@@ -54,7 +54,8 @@ mybatis-plus:
   mapper-locations:
     - classpath:/mapper/*.xml
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   # map-underscore-to-camel-case: false
 
 
@@ -109,3 +110,7 @@ knife4j:
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
+    org.hibernate.SQL: OFF
+    org.hibernate.type.descriptor.sql.BasicBinder: OFF
+    org.springframework.jdbc.core.JdbcTemplate: OFF
+    org.springframework.jdbc.core.StatementCreatorUtils: OFF

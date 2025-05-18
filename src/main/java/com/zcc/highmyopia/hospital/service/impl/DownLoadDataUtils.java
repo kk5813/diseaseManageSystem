@@ -80,9 +80,10 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
         String reqJson = "";
         Map<String, String> headers = new HashMap<>();
         List<String> signHeaderPrefixList = new ArrayList<>();
-
+        log.info("患者就诊信息下载请求前");
         Response resp = HttpClientUtils.httpPostJson(AHisHost, path, connectTimeOut, headers,
                 query, reqJson, signHeaderPrefixList, appKey, appSecret, hospId);
+        log.info("患者就诊信息下载请求后");
         int statusCode = resp.getStatusCode();
 
         ThrowUtils.throwIf(statusCode !=200, ResultCode.Z_getPatientVisit);

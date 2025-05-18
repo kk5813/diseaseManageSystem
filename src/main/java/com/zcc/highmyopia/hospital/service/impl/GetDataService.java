@@ -40,6 +40,7 @@ public class GetDataService implements IGetDataService {
     private final ISaveRepository repository;
     private IDownLoadDataUtils downLoadDataUtils;
     private final ISaveToDataBase saveToDataBase;
+
     @PostConstruct
     public void init() {
         downLoadDataUtils = dataDownloaderProxy.createProxy();
@@ -75,7 +76,7 @@ public class GetDataService implements IGetDataService {
 //        yesdataNoSplit = yesterday.format(formatterNoSplit);
 //    }
     @Override
-    public State getDataToday()  {
+    public State getDataToday() {
 //        // todo : 测试时注释下就OK
         // todo : 测试时注释下就OK
 //        // 定义目标日期字符串
@@ -95,28 +96,29 @@ public class GetDataService implements IGetDataService {
         curdataNoSplit = current.format(formatterNoSplit);
         yesdataNoSplit = yesterday.format(formatterNoSplit);
 
-        log.info("{}定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中",current.toString());
+        log.info("{}定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中", current.toString());
         // 1.先下载/api/interface/medical/getPatientVisit， 获取患者就诊信息 List<VisitEntity> visits
         List<VisitEntity> visits = null;
-        try{
-            System.out.println(yesterday);
-            System.out.println(curdataNoSplit);
+        try {
+            log.info("当天患者就诊信息下载开始");
             visits = downLoadDataUtils.getVisits(yesdataNoSplit, curdataNoSplit);
-        }catch (Exception e){
-            log.error("当天患者就诊信息下载失败",e);
+            log.info("当天患者就诊信息下载结束");
+        } catch (Exception e) {
+            log.error("当天患者就诊信息下载失败", e);
             return State.ONE_VISIT;
         }
-        if(visits == null || visits.isEmpty()){
+        if (visits == null || visits.isEmpty()) {
             log.warn("未获取到当天的就诊信息");
             return State.SUCCESS_NOVisitData;
         }
         //1.5 存数据表doctor, dept,site
-        try{
+        try {
+            log.info("存数据表doctor, dept,site");
             saveToDataBase.saveDoctorTable(visits);
             saveToDataBase.saveDeptTable(visits);
             saveToDataBase.saveSiteTable(visits);
-        }catch(Exception e){
-            log.error("存数据表doctor, dept,site 发生异常！忽略",e);
+        } catch (Exception e) {
+            log.error("存数据表doctor, dept,site 发生异常！忽略", e);
         }
 
         // 1.8 根据VisitEntity 去重提取出PatientID
@@ -126,52 +128,57 @@ public class GetDataService implements IGetDataService {
         /**
          *  2. 根据VisitEntity的 visitNumber 分布去下载
          */
+        log.info("根据VisitEntity的 visitNumber 分布去下载");
         List<String> visitNumberFailList = new ArrayList<>();
-        saveByVisitNumber(visits,visitNumberFailList);
+        saveByVisitNumber(visits, visitNumberFailList);
 
         /**
          * 3. 根据patientIDList的 patientID 分别去下载
          * */
+        log.info("根据patientIDList的 patientID 分别去下载");
         List<String> patientIDFailList = new ArrayList<>();
-        saveDataByPatientsID(patientIDList,patientIDFailList);
+        saveDataByPatientsID(patientIDList, patientIDFailList);
 
         //4. 下载/api/interface/medical/getOutpRecipe， 获取门诊处方信息
+        log.info("获取门诊处方信息开始");
         boolean recipeFlag = saveRecipeInfo();
 
         //5. 将记录存入失败的patientID,visitNumber重新存取，再失败则记录日志 , Recipe_flag失败，则尝试再存取，失败记录日志
+        log.info("重试机制开始");
         List<String> patientsFailAgain = new ArrayList<>();
         List<String> visitNumberFailAgain = new ArrayList<>();
-        if(!(patientIDFailList == null || patientIDFailList.isEmpty())){
+        if (!(patientIDFailList == null || patientIDFailList.isEmpty())) {
             saveDataByPatientsID(patientIDFailList, patientsFailAgain);
         }
-        if(!(visitNumberFailList == null || visitNumberFailList.isEmpty())){
+        if (!(visitNumberFailList == null || visitNumberFailList.isEmpty())) {
             List<VisitEntity> visitNews = new ArrayList<>();
             int i = 0;
             int len = visitNumberFailList.size();
-            for(VisitEntity visitEntity : visits){
+            for (VisitEntity visitEntity : visits) {
                 String visitNumber = visitEntity.getVisitNumber();
-                if(visitNumberFailList.get(i).equals(visitNumber)){
+                if (visitNumberFailList.get(i).equals(visitNumber)) {
                     visitNews.add(visitEntity);
                     i++;
-                    if(i == len) break;
+                    if (i == len) break;
                 }
             }
-            saveByVisitNumber(visitNews,visitNumberFailAgain);
+            saveByVisitNumber(visitNews, visitNumberFailAgain);
         }
-        if(recipeFlag){
+        if (recipeFlag) {
             recipeFlag = saveRecipeInfo();
         }
         // todo 这里图片下载目录需要优化，pdf转图片好像有问题
         //6. 下载图片到目录下
         /*
-        *  这里改一下：
-        * 1.根据patientID 获取到报告以后，立刻根据patientID，checkTime,itemName
-        * 构建出/{病人ID}/{年}/{月}/{检查项目名称}/{文件名}
-        * */
-        try{
+         *  这里改一下：
+         * 1.根据patientID 获取到报告以后，立刻根据patientID，checkTime,itemName
+         * 构建出/{病人ID}/{年}/{月}/{检查项目名称}/{文件名}
+         * */
+        try {
+            log.info("图片批量下载开始");
             downLoadDataUtils.DownLoadReportImageBatch();
-        }catch (Exception e){
-            log.error("批量导入图片到本地发生异常",e);
+        } catch (Exception e) {
+            log.error("批量导入图片到本地发生异常", e);
         }
 
         //todo 这里更稳妥的做法是 存一个文件或者数据库记录，方便后续再度重试
@@ -188,7 +195,7 @@ public class GetDataService implements IGetDataService {
             // 记录日志：Recipe_flag存储失败
             log.error("Recipe_flag存储失败");
         }
-        log.info("{}下载完成",LocalDateTime.now().toString());
+        log.info("{}下载完成", LocalDateTime.now().toString());
 
         // todo 后续改进：从并发角度，1.x 必须先指向完， 2，3，4可以并行执行， 5需要等待2，3，4执行完， 6需要等待5执行完, 最后打7日志
 
@@ -203,108 +210,111 @@ public class GetDataService implements IGetDataService {
      * 获取当前ID下的 PatientEntity patientEntity ，List<CheckReportsEntity> checkReportsEntities
      * 存数据库表  patients, check_report, report_files
      * 记录失败的patientID
-     * */
-    public void saveDataByPatientsID(List<String> patientIDList, List<String> patientIDFailList){
+     */
+    public void saveDataByPatientsID(List<String> patientIDList, List<String> patientIDFailList) {
         String patientID = null;
-        try{
-            for(String patientid : patientIDList){
+
+        for (String patientid : patientIDList) {
+            try {
                 patientID = patientid;
-                if(!StringUtils.isNotBlank(patientID)){
+                if (!StringUtils.isNotBlank(patientID)) {
                     continue;
                 }
                 PatientEntity patientEntity = null;
                 List<CheckReportsEntity> checkReportsEntities = null;
                 boolean flag = true;
-                try{
+                try {
                     patientEntity = downLoadDataUtils.getPatientInfoByPatientId(patientID);
                     checkReportsEntities = downLoadDataUtils.getCheckReportByPatientId(yesdataSplit, curdataSplit, patientID);
-                }catch (Exception e){
-                    log.error("在获取敏感信息、检查图片时，patientID={}数据下载失败",patientID, e);
+                } catch (Exception e) {
+                    log.error("在获取敏感信息、检查图片时，patientID={}数据下载失败", patientID, e);
                     patientIDFailList.add(patientID);
                     flag = false;
                 }
-                if(flag) {
+                if (flag) {
                     saveToDataBase.saveByPatientID(patientID, patientEntity, checkReportsEntities);
                 }
-            }
-        } catch (Exception e) {
-            log.error("存patientID数据发生错误{}",e.getMessage());
-            if(StringUtils.isNotBlank(patientID)){
-                patientIDFailList.add(patientID);
+            } catch (Exception e) {
+                log.error("存patientID数据发生错误{}", e.getMessage());
+                if (StringUtils.isNotBlank(patientID)) {
+                    patientIDFailList.add(patientID);
+                }
             }
         }
     }
 
     /**
-     *  2. 根据VisitEntity的 visitNumber 分布去下载
-     *  /alis/interface/reportDetail/getReportDetail、
-     /external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber、
-     /api/aemro/outpElement/getOutpElementByCondition
-     *  获取当前visitNumber 下的List<ElementVisionEntity> elementVisionEntities,
-     List<CheckResultsEntity> checkResultsEntities, List<ElementEntity> elementEntities
+     * 2. 根据VisitEntity的 visitNumber 分布去下载
+     * /alis/interface/reportDetail/getReportDetail、
+     * /external-api/avis/interface/deviceDocking/getAutoVisionByVisitNumber、
+     * /api/aemro/outpElement/getOutpElementByCondition
+     * 获取当前visitNumber 下的List<ElementVisionEntity> elementVisionEntities,
+     * List<CheckResultsEntity> checkResultsEntities, List<ElementEntity> elementEntities
      * 存数据库表visits, check_results, element,element_vision
      * 记录失败的visitNumber
      */
-    public void saveByVisitNumber(List<VisitEntity> visits,List<String> visitNumberFailList){
+    public void saveByVisitNumber(List<VisitEntity> visits, List<String> visitNumberFailList) {
         String visitNum = null;
-        try{
-            for(VisitEntity visitEntity : visits){
+            for (VisitEntity visitEntity : visits) {
+                try {
                 visitNum = visitEntity.getVisitNumber();
-                if(!StringUtils.isNotBlank(visitNum)){
+                if (!StringUtils.isNotBlank(visitNum)) {
                     continue;
                 }
                 ElementEntity element = null;
                 List<ElementVisionEntity> elementVisionEntities = null;
                 List<CheckResultsEntity> checkResultsEntities = null;
                 boolean flag = true;
-                try{
+                try {
                     element = downLoadDataUtils.getOutElementByVisitNumber(yesdataSplit, curdataSplit, visitNum);
                     elementVisionEntities = downLoadDataUtils.getElementVisionByVisitNumber(yesdataSplit, curdataSplit, visitNum);
                     checkResultsEntities = downLoadDataUtils.getCheckResultByVisitNumber(yesdataSplit, curdataSplit, visitNum);
                 } catch (Exception e) {
-                    log.error("在获取检查结果（文字）, 门诊病例，视力眼压时，visitNumber={}数据下载失败",visitNum, e);
+                    log.error("在获取检查结果（文字）, 门诊病例，视力眼压时，visitNumber={}数据下载失败", visitNum, e);
                     visitNumberFailList.add(visitNum);
                     flag = false;
                 }
-                if(flag){
+                if (flag) {
                     ArrayList<ElementEntity> elementEntities = new ArrayList<>();
                     elementEntities.add(element);
-                    saveToDataBase.saveByVisitNumber(visitEntity, elementVisionEntities,checkResultsEntities,elementEntities);
+                    saveToDataBase.saveByVisitNumber(visitEntity, elementVisionEntities, checkResultsEntities, elementEntities);
+                }
+                } catch (Exception e) {
+                    log.error(String.valueOf(e));
+                    if (StringUtils.isNotBlank(visitNum)) {
+                        log.error("存入visitNumber={}数据发生错误", visitNum);
+                        visitNumberFailList.add(visitNum);
+                    }
                 }
             }
-        }catch (Exception e) {
-            log.error(String.valueOf(e));
-            if(StringUtils.isNotBlank(visitNum)){
-                log.error("存入visitNumber={}数据发生错误",visitNum);
-                visitNumberFailList.add(visitNum);
-            }
-        }
+
     }
 
-    public boolean saveRecipeInfo(){
+    public boolean saveRecipeInfo() {
         List<RecipeEntity> recipeEntities = null;
         boolean recipeFlag = true;
-        try{
+        try {
             recipeEntities = downLoadDataUtils.getRecipe(yesdataNoSplit, curdataNoSplit);
         } catch (Exception e) {
-            log.error("当天患者门诊处方信息下载失败",e);
+            log.error("当天患者门诊处方信息下载失败", e);
             recipeFlag = false;
         }
         //4.5 存数据库表recipe，order_detail, 记录失败与成功标志Recipe_flag
-        if(recipeFlag){
-            if(recipeEntities == null || recipeEntities.isEmpty()){
+        if (recipeFlag) {
+            if (recipeEntities == null || recipeEntities.isEmpty()) {
                 log.warn("当天未获取到患者门诊处方信息");
-            }else{
+            } else {
                 try {
                     saveToDataBase.saveRecipeAndOrderDetail(recipeEntities);
-                }catch (Exception e){
-                    log.error("存数据库表recipe，order_detail，发生异常！" , e);
+                } catch (Exception e) {
+                    log.error("存数据库表recipe，order_detail，发生异常！", e);
                     recipeFlag = false;
                 }
             }
         }
         return recipeFlag;
     }
+
     @Override
     public void getTodayData() {
         log.info("定时任务，每天凌晨十二点拉取前一整天的数据信息到本地库表中");

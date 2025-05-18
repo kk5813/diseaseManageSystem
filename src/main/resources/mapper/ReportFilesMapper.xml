@@ -30,7 +30,7 @@
 
     <select id="getNotDownLoad" resultType="com.zcc.highmyopia.po.ReportFiles">
         select * from report_files
-        where is_down_load = 0
+        where is_down_load = 0 and create_time >= DATE_SUB(NOW(), INTERVAL 2 DAY)
     </select>
 
     <select id="queryBatch" resultType="com.zcc.highmyopia.po.ReportFiles">
