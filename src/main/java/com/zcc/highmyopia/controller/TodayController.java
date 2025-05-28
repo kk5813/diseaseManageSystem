@@ -184,6 +184,7 @@ public class TodayController {
     @RequiresAuthentication
     public Result categoryCount(@RequestBody CategoryCountDTO categoryCountDTO){
         log.info("收到请求");
+        // todo 写缓存，2h删除的
         List<CategoryGroupCountVO> categoryGroupCountVOList = visitsService.categoryCount(categoryCountDTO);
         return Result.succ(categoryGroupCountVOList);
     }

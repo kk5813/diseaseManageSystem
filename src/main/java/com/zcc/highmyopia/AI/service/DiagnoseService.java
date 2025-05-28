@@ -27,11 +27,18 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpPost;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,6 +63,10 @@ public class DiagnoseService implements IDiagnoseService {
     private IDownLoadDataUtils downLoadDataUtils;
     @Resource
     private ICheckReportsService checkReportsService;
+
+    @Resource
+    private IReportFilesService reportFilesService;
+
     @Resource
     private  ISaveToDataBase saveToDataBase;
     @Resource
@@ -69,6 +80,8 @@ public class DiagnoseService implements IDiagnoseService {
     public void init() {
         downLoadDataUtils = dataDownloaderProxy.createProxy();
     }
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     @Override
     public List<List<DiagnoseResultEntity>> diagnose(DiagnoseEntity diagnoseEntity, String isNeedDownLoad) throws Exception {
@@ -92,7 +105,7 @@ public class DiagnoseService implements IDiagnoseService {
             try{
                 downLoadDataUtils.DownLoadReportImageBatchByVisitNumber(visitNumber);
             }catch (Exception e){
-                log.error("批量导入图片到本地发生异常",e);
+                log.error("此刻下载批量导入图片到本地发生异常",e);
                 throw new BusinessException(ResultCode.Z_DownLoadReportImageBatchByVisitNumber);
             }
         }
@@ -110,11 +123,11 @@ public class DiagnoseService implements IDiagnoseService {
         String input = ruleTreeVO.getInput();
         List<CheckReports> collect = values.stream().filter(e -> input.contains(e.getItemName())).collect(Collectors.toList());
         if (collect.size() != input.split(Constants.SPLIT).length)
-            throw new AppException(400, "用户检查项目不够");
+            throw new AppException(400, "用户检查项目不够1");
         Map<String, String> url = new HashMap<>();
         collect.forEach(e -> {
             List<ReportFiles> reportFiles = diagnoseRepository.getReportFile(e.getId());
-            if (reportFiles == null || reportFiles.isEmpty()) throw new AppException(400, "用户检查项目不够");
+            if (reportFiles == null || reportFiles.isEmpty()) throw new AppException(400, "用户检查项目不够2");
             // todo 多个文件如何选择，暂时选择第一个
             ReportFiles reportFiles1 = reportFiles.get(0);
             String itemName = e.getItemName();
@@ -122,6 +135,35 @@ public class DiagnoseService implements IDiagnoseService {
         });
         // 现在只写一个SLO
         String filePath = url.get("扫描激光眼底检查(SLO)");
+        // 修复路径
+        filePath = filePath.startsWith("\\") ? filePath.substring(1) : filePath;
+        filePath = filePath.replace("\\", "/");
+        // log.info(filePath);
+        Path path = Paths.get(filePath).toAbsolutePath().normalize();
+        if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+            transactionTemplate.execute(status-> {
+                log.info("Starting to delete data for visit number: {}", visitNumber);
+
+                LambdaQueryWrapper<CheckReports> queryWrapper = Wrappers.lambdaQuery();
+                queryWrapper.eq(CheckReports::getVisitNumber, visitNumber);
+
+                List<Object> reportIds = checkReportsService.list(queryWrapper).stream().map(CheckReports::getId
+                ).collect(Collectors.toList());
+
+                log.info("Found {} report IDs for visit number: {}", reportIds.size(), visitNumber);
+
+                if (!reportIds.isEmpty()) {
+                    LambdaQueryWrapper<ReportFiles> reportFilesLambdaQueryWrapper = Wrappers.lambdaQuery();
+                    reportFilesLambdaQueryWrapper.in(ReportFiles::getReportId, reportIds);
+                    reportFilesService.remove(reportFilesLambdaQueryWrapper);
+                    log.info("Deleted report files for visit number: {}", visitNumber);
+                }
+                checkReportsService.remove(queryWrapper);
+                log.info("Deleted check reports for visit number: {}", visitNumber);
+                return null;
+            });
+            throw new BusinessException(400,"本地图片未找到，请重新下载！");
+        }
         // 发送HTTP请求
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("imagePath", filePath);

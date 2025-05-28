@@ -4,15 +4,15 @@ server:
 
 spring:
   redis:
-    host: 43.136.178.202
+    host: 10.0.229.88
     port: 6379
     # password: 93449344
     database: 0
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://43.136.178.202:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://10.0.229.88:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: mysql9344!
+    password: cdae@123 # mysql9344!
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -38,7 +38,7 @@ app:
 redis:
   sdk:
     config:
-      host: 43.136.178.202
+      host: 10.0.229.88
       port: 6379
       pool-size: 10
       min-idle-size: 5
@@ -63,7 +63,7 @@ mybatis-plus:
 shiro-redis:
   enabled: true
   redis-manager:
-    host: 43.136.178.202:6379
+    host: 10.0.229.88:6379
  #   password: 93449344       # 用redis-manager的时候也要给到redis的password
 
 highmyopia:
@@ -76,13 +76,13 @@ highmyopia:
 
 hospital:
   AHisHost: http://acloud.aierchina.com:8010/external-api
-  APacsHost: http://110.185.171.30:8083  # http://10.0.225.6:8083
-  filePath: E:\Download\project
+  APacsHost: http://10.0.225.6:8083 # http://110.185.171.30:8083
+  filePath: /opt/resources/images # E:\Download\project
   # 这个路径是在原来filePath后面+pdfImg,这里加了个后\
   pdf2ImgPath: \pdfImg
   # 本地图片映射路径
   localImage: /images
-  flask_path: http://localhost:4091
+  flask_path: http://10.0.229.88:4091 # http://localhost:4091
 
   hospId: 1824
   appKey: Cdm_1824

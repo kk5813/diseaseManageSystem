@@ -54,7 +54,7 @@ public class ModelDiseaseController {
 
     @PostMapping("diagnose")
     @ApiOperation("模型诊断接口")
-    @RequiresAuthentication
+
     public Result diagnose(@RequestBody DiagnoseEntity diagnose, @RequestParam(defaultValue = "false") String isNeedDownLoad) {
         log.info("诊断接口运行");
         // 1.发http 请求flask接口 pdf 转图片并识别眼别，
@@ -64,7 +64,7 @@ public class ModelDiseaseController {
         try {
             diagnoseResultEntityLists = diagnoseService.diagnose(diagnose, isNeedDownLoad);
         }catch (AppException e){
-            throw new AppException(500, "模型服务请求失败");
+            throw new BusinessException(400, e.getInfo());
         }
         catch (BusinessException e){
             throw e;

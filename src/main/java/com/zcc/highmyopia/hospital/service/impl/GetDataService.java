@@ -282,7 +282,7 @@ public class GetDataService implements IGetDataService {
                 } catch (Exception e) {
                     log.error(String.valueOf(e));
                     if (StringUtils.isNotBlank(visitNum)) {
-                        log.error("存入visitNumber={}数据发生错误", visitNum);
+                        log.error(" 存入visitNumber={}数据发生错误", visitNum);
                         visitNumberFailList.add(visitNum);
                     }
                 }
