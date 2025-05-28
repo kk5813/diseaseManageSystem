@@ -64,12 +64,15 @@ public class ModelDiseaseController {
         try {
             diagnoseResultEntityLists = diagnoseService.diagnose(diagnose, isNeedDownLoad);
         }catch (AppException e){
+            log.info("1error");
             throw new BusinessException(400, e.getInfo());
         }
         catch (BusinessException e){
+            log.info("2error");
             throw e;
         }
         catch (Exception e) {
+            log.info("3error");
             throw new BusinessException(ResultCode.VISIT_NUMBER_NODATA);
         }
         // 诊断接口写库表

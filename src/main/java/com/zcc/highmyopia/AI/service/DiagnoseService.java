@@ -114,6 +114,7 @@ public class DiagnoseService implements IDiagnoseService {
             log.error("数据为空");
             throw new BusinessException(ResultCode.VISIR_NUMBER_NODATA_AFTER_DOWNLOAD);
         }
+        log.info("基本数据已获取到");
         // 暂时多项相同的检查换成第一个
         List<CheckReports> values = new ArrayList<>(checkReports.stream()
                 .collect(Collectors.toMap(CheckReports::getItemName, checkReport -> checkReport, (existing, replacement) -> existing))
