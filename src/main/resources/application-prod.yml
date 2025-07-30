@@ -75,7 +75,7 @@ highmyopia:
 
 hospital:
   AHisHost: http://acloud.aierchina.com:8010/external-api  # http://sit.aierchina.com:8710/external-api
-  APacsHost: http://110.185.171.30:8083  # http://10.0.225.6:8083
+  APacsHost: http://10.0.225.6:8083 # http://10.0.225.6:8083, http://110.185.171.30:8083
   filePath: /opt/resources/images
   # 这个路径是在原来filePath后面+pdfImg
   pdf2ImgPath: \pdfImg

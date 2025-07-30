@@ -84,7 +84,7 @@ public class DownLoadServiceTest {
     @Test
     void test_GetRecipe() throws Exception {
         //downLoadService.getRecipe("20240801", "20241125");
-        downLoadService.getRecipe("20240603", "20240730");
+        downLoadService.getRecipe("20250728", "20250729");
     }
 
     // 检验结果

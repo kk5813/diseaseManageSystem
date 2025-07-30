@@ -225,7 +225,7 @@ public class GetDataService implements IGetDataService {
                 boolean flag = true;
                 try {
                     patientEntity = downLoadDataUtils.getPatientInfoByPatientId(patientID);
-                    checkReportsEntities = downLoadDataUtils.getCheckReportByPatientId(yesdataSplit, curdataSplit, patientID);
+                    checkReportsEntities = downLoadDataUtils.getCheckReportByPatientId(yesdataNoSplit, curdataNoSplit, patientID);
                 } catch (Exception e) {
                     log.error("在获取敏感信息、检查图片时，patientID={}数据下载失败", patientID, e);
                     patientIDFailList.add(patientID);

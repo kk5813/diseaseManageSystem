@@ -455,6 +455,11 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `patient_visit_summary_vi
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-
-
+-- ----------------------------
+-- 医院接口传了奇怪的数值过来，先改成Long类型
+-- ----------------------------
+ALTER TABLE order_detail
+    MODIFY COLUMN creator  bigint(20) NULL DEFAULT NULL COMMENT '创建人ID',
+    MODIFY COLUMN doctor_id bigint(20) NULL DEFAULT NULL COMMENT '医生ID',
+    MODIFY COLUMN modifer  bigint(20) NULL DEFAULT NULL COMMENT '修改人ID';
 

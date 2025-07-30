@@ -1,6 +1,7 @@
 package com.zcc.highmyopia.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("order_detail")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDetail implements Serializable {
 
     @TableId(value = "id", type = IdType.INPUT)
@@ -97,7 +99,7 @@ public class OrderDetail implements Serializable {
 
     private Integer everyNumber;  // 每次数量
 
-    private Integer modifer;  // 修改人ID
+    private Long modifer;  // 修改人ID
 
     private String herbalUseName;  // 中药使用名称
 
@@ -154,7 +156,7 @@ public class OrderDetail implements Serializable {
 
     private String doctorName;  // 医生姓名
 
-    private Integer doctorId;  // 医生ID
+    private Long doctorId;  // 医生ID
 
     private String decocTypeName;  // 煎药类型名称
 
@@ -183,7 +185,7 @@ public class OrderDetail implements Serializable {
 
     private String herbalUse;  // 中药使用
 
-    private Integer creator;  // 创建人ID
+    private Long creator;  // 创建人ID
 
     private Integer chronicDisease;  // 慢性病标识
 

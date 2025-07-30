@@ -2,6 +2,8 @@ package com.zcc.highmyopia.hospital.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 //import com.sun.org.apache.regexp.internal.RE;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zcc.highmyopia.po.CheckReports;
 import com.zcc.highmyopia.po.OrderDetail;
 import com.zcc.highmyopia.po.Recipe;
@@ -23,6 +25,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeEntity {
 
     private String patientName;  // 患者姓名
@@ -34,6 +37,7 @@ public class RecipeEntity {
     private Long patientId;      // 患者ID
     private String billingTime;  // 开方时间
     private Long id;             // 处方ID
+    @JsonProperty("orderdetail")
     private List<OrderDetail> orderDetail; // 处方（医嘱）信息
 
     public static RecipeEntity poToVo(Recipe recipe, String deptName, String doctorName, String patientName, List<OrderDetail> orderDetail){

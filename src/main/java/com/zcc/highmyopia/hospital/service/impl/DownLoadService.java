@@ -1,6 +1,10 @@
 package com.zcc.highmyopia.hospital.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zcc.highmyopia.common.exception.AppException;
 import com.zcc.highmyopia.common.exception.BusinessException;
 import com.zcc.highmyopia.common.lang.ResultCode;
@@ -12,6 +16,7 @@ import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.po.ReportFiles;
 import com.zcc.highmyopia.util.PDFToImg;
 import com.zcc.highmyopia.util.ThrowUtils;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -90,6 +95,11 @@ public class DownLoadService implements IDownLoadService {
         return visitEntities;
     }
 
+    ObjectMapper mapper = new ObjectMapper();
+    {
+        // 忽略未知字段
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
     @Override
     public void getRecipe(String beginData, String endData) throws Exception {
         String path = "/api/interface/medical/getOutpRecipe";
@@ -105,10 +115,21 @@ public class DownLoadService implements IDownLoadService {
         if (statusCode != 200)
             throw new AppException(statusCode, "请求获取患者就诊信息失败");
         String body = resp.getBody();
-        List<RecipeEntity> recipeEntities = JSON.parseArray(
-                JSON.parseObject(body).getJSONArray("data").toString(),
-                RecipeEntity.class);
-
+//        List<RecipeEntity> recipeEntities = JSON.parseArray(
+//                JSON.parseObject(body).getJSONArray("data").toString(),
+//                RecipeEntity.class);
+        // 允许大整数自动转 BigInteger
+        JsonNode root = mapper.readTree(body);
+        JsonNode dataNode = root.get("data");
+        List<RecipeEntity> recipeEntities = null;
+        System.out.println("dataNode = " + dataNode);
+        if (dataNode != null && dataNode.isArray()) {
+            recipeEntities = mapper.convertValue(
+                    dataNode,
+                    new TypeReference<List<RecipeEntity>>() {}
+            );
+        }
+        recipeEntities.forEach(System.out::println);
         saveRepository.saveRecipeAndOrderDetail(recipeEntities);
     }
 

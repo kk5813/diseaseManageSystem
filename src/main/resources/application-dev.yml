@@ -95,7 +95,7 @@ hospital:
 
 
 # 接口文档配置
-# 访问 http://localhost:8081/doc.html
+# 访问 http://localhost:8089/doc.html
 knife4j:
   enable-token: true
   token-header-name: Authorization

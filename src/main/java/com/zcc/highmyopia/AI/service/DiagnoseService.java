@@ -100,7 +100,11 @@ public class DiagnoseService implements IDiagnoseService {
         if(checkReports == null || checkReports.isEmpty() ||
                 diagnoseRepository.getDownLoadReportFileCountByVisitNumber(visitNumber) <= 0){
             String curdataSplit = DiagnoseService.parseVisitNumber(visitNumber);
-            List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(curdataSplit, curdataSplit, visitNumber);
+            // 20250729, 由于医院接口发生变化做以下临时修改
+            LocalDate localDate = LocalDate.parse(curdataSplit, formatterNoSplit);
+            String plusDay = localDate.plusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String minusDay = localDate.minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            List<CheckReportsEntity> checkReportsEntities = downLoadDataUtils.getCheckReportByVisitNumberNew(minusDay, plusDay, visitNumber);
             checkReports = saveToDataBase.saveCheckReportsByVisitNumber(visitNumber, checkReportsEntities);
             try{
                 downLoadDataUtils.DownLoadReportImageBatchByVisitNumber(visitNumber);
@@ -206,6 +210,11 @@ public class DiagnoseService implements IDiagnoseService {
 
     public static void main(String[] args) {
         String s = parseVisitNumber("MZ202503230147");
+        LocalDate localDate = LocalDate.parse(s, formatterNoSplit);
+        String plusDay = localDate.plusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String minusDay = localDate.minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        System.out.println("plusDay = " + plusDay);
+        System.out.println("minusDay = " + minusDay);
         System.out.println("s = " + s);
     }
 }
