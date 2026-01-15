@@ -4,7 +4,7 @@
  Source Server         : 9344
  Source Server Type    : MySQL
  Source Server Version : 50729 (5.7.29-0ubuntu0.18.04.1)
- Source Host           : 43.136.178.202:3306
+ Source Host           : 127.0.0.1:3306
  Source Schema         : hospital_db
 
  Target Server Type    : MySQL

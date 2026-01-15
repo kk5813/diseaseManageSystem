@@ -17,6 +17,9 @@ import java.util.List;
 @Accessors
 public class DiagnoseResultEntity {
 
+    // 最终诊断结果
+    String result;
+
     // 诊断结果描述信息
     String resultInfo;
 

@@ -96,6 +96,7 @@ public class DiagnoseService implements IDiagnoseService {
             queryWrapper.eq(CheckReports::getVisitNumber,visitNumber);
             checkReports = checkReportsService.list(queryWrapper);
         }
+
         // 如果数据库中没有找到，则去下载, 添加一个如果对应的报告都没有被下载，则去下载。
         if(checkReports == null || checkReports.isEmpty() ||
                 diagnoseRepository.getDownLoadReportFileCountByVisitNumber(visitNumber) <= 0){
@@ -128,7 +129,7 @@ public class DiagnoseService implements IDiagnoseService {
         String input = ruleTreeVO.getInput();
         List<CheckReports> collect = values.stream().filter(e -> input.contains(e.getItemName())).collect(Collectors.toList());
         if (collect.size() != input.split(Constants.SPLIT).length)
-            throw new AppException(400, "用户检查项目不够1");
+            throw new AppException(400, "用户检查项目不够");
         Map<String, String> url = new HashMap<>();
         collect.forEach(e -> {
             List<ReportFiles> reportFiles = diagnoseRepository.getReportFile(e.getId());
@@ -138,6 +139,15 @@ public class DiagnoseService implements IDiagnoseService {
             String itemName = e.getItemName();
             url.put(itemName, reportFiles1.getFilePath());
         });
+        // 眼底疾病智能诊断
+        if(diagnoseEntity.getDiseaseId().equals(24)){
+            List<List<DiagnoseResultEntity>> res = new ArrayList<>();
+            DecisionTreeEngine decisionTreeEngine = treeFactory.openLogicTree(ruleTreeVO);
+            List<DiagnoseResultEntity> process =
+                    new ArrayList<>(decisionTreeEngine.process(url, diagnoseEntity.getVisitNumber()));
+            res.add(process);
+            return res;
+        }
         // 现在只写一个SLO
         String filePath = url.get("扫描激光眼底检查(SLO)");
         // 修复路径
@@ -173,7 +183,7 @@ public class DiagnoseService implements IDiagnoseService {
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("imagePath", filePath);
         jsonMap.put("visitNumber", diagnoseEntity.getVisitNumber());
-        String siteUrl = flaskPath + "/api/site";
+        String siteUrl = flaskPath + ":" + "/api/site";
         String body = LogicTreeNode.HttpPOST(siteUrl, jsonMap);
         List<DiagnoseResultEntity> lists = JSON.parseArray(
                 JSON.parseObject(body).getJSONArray("data").toString(),

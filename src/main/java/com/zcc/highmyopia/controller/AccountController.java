@@ -82,6 +82,7 @@ public class AccountController {
                 .put("userId", user.getUserId())
                 .put("userLoginName", user.getUserLoginName())
                 .put("userName", user.getUserName())
+                .put("role", user.getUserStatus())
                 .map()
         );
     }

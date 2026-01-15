@@ -89,7 +89,7 @@ hospital:
   vision-hospId: 9999
   vision-appKey: aviseq_9999
   vision-appSecret: lsj.z4HzPyAA
-  flask_path: http://10.0.229.88:4091
+  flask_path: http://10.0.229.88
 
 
 

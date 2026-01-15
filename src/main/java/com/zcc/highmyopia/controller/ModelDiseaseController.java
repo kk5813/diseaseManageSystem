@@ -73,7 +73,7 @@ public class ModelDiseaseController {
         }
         catch (Exception e) {
             log.info("3error");
-            throw new BusinessException(ResultCode.VISIT_NUMBER_NODATA);
+            throw new BusinessException(500, e.getMessage());
         }
         // 诊断接口写库表
 //        AIModelResult aiModelResult = new AIModelResult();

@@ -40,7 +40,7 @@ public class LogicTreeNode implements ILogicTreeNode {
 
         // 发送API请求后端flask模型服务(模拟并得到结果)
         // 请求参数为filePath
-        String url = flaskPath;
+        String url = flaskPath + ":";
         url += api;
         log.info("url {}", api);
         // 创建请求体，封装 filePath

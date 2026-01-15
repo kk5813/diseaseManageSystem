@@ -1,5 +1,5 @@
 # 基础镜像
-FROM openjdk:8-jdk
+FROM eclipse-temurin:8-jdk
 
 # 时区设置
 RUN ln -sf /usr/share/zoneinfo/PRC /etc/localtime && echo "PRC" > /etc/timezone

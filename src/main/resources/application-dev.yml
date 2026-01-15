@@ -1,18 +1,18 @@
 # DataSource Config
 server:
-  port: 8089
+  port: 8082
 
 spring:
   redis:
-    host: 10.0.229.88
-    port: 6379
+    host: 172.18.198.47
+    port: 16379
     # password: 93449344
     database: 0
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.0.229.88:3306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://172.18.198.47:13306/hospital_db?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: cdae@123 # mysql9344!
+    password: 123456
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -38,8 +38,8 @@ app:
 redis:
   sdk:
     config:
-      host: 10.0.229.88
-      port: 6379
+      host: 172.18.198.47
+      port: 16379
       pool-size: 10
       min-idle-size: 5
       idle-timeout: 30000
@@ -63,7 +63,7 @@ mybatis-plus:
 shiro-redis:
   enabled: true
   redis-manager:
-    host: 10.0.229.88:6379
+    host: 172.18.198.47:16379
  #   password: 93449344       # 用redis-manager的时候也要给到redis的password
 
 highmyopia:
@@ -82,7 +82,7 @@ hospital:
   pdf2ImgPath: \pdfImg
   # 本地图片映射路径
   localImage: /images
-  flask_path: http://10.0.229.88:4091 # http://localhost:4091
+  flask_path: http://172.18.198.47 # http://localhost:4091
 
   hospId: 1824
   appKey: Cdm_1824
