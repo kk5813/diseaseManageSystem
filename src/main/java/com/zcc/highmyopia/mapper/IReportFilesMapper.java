@@ -36,4 +36,11 @@ public interface IReportFilesMapper extends BaseMapper<ReportFiles> {
     List<ReportFiles> getReportFileByVisitNumber(String visitNumber);
 
     int getDownLoadReportFileCountByVisitNumber(String visitNumber);
+
+    /**
+     * 得到所有的报告文件，包括下载和没有下载的
+     * @param visitNumber
+     * @return
+     */
+    List<ReportFiles> getReportFilesByVisitNumberAndNameAndCheckTime(String visitNumber, String itemName, String checkTime);
 }

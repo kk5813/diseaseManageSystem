@@ -33,4 +33,6 @@ public interface ISaveToDataBase {
 
     List<CheckReports> saveCheckReportsByVisitNumber(String visitNumber, List<CheckReportsEntity> checkReportsEntities);
 
+    List<ReportFiles> saveCheckReportsByEntity(CheckReportsEntity checkReportsEntities);
+
 }

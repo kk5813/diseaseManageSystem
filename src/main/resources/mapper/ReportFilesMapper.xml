@@ -71,4 +71,8 @@
         WHERE cr.visit_number = #{visitNumber}
           AND rf.is_down_load = 1
     </select>
+    <select id="getReportFilesByVisitNumberAndNameAndCheckTime" resultType="com.zcc.highmyopia.po.ReportFiles">
+        select * from hospital_db.report_files
+        where report_id in (select id from check_reports where visit_number = #{visitNumber} and item_name = #{itemName} and check_time = #{checkTime});
+    </select>
 </mapper>

@@ -36,4 +36,8 @@ public interface IDownLoadDataUtils {
 
     void DownLoadReportImage(ReportFiles reportFile);
 
+    void processReportFileDownload(List<ReportFiles> reportFile);
+
+    void updateFileStatusInDb(ReportFiles reportFile);
+
 }

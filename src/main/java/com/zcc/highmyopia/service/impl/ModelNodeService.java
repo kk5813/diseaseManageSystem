@@ -27,4 +27,9 @@ public class ModelNodeService extends ServiceImpl<IModelNodeMapper, ModelNode> i
         return modelNodeMapper.selectList(new LambdaQueryWrapper<ModelNode>()
                 .eq(ModelNode::getDiseaseId, diseaseId));
     }
+
+    @Override
+    public ModelNode getModelNodeByStartId(Integer startId) {
+        return modelNodeMapper.selectById(startId);
+    }
 }

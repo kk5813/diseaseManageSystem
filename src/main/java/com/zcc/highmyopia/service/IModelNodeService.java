@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface IModelNodeService extends IService<ModelNode> {
     List<ModelNode> getModelNodeByDiseaseId(Integer diseaseId);
+
+    ModelNode getModelNodeByStartId(Integer startId);
 }

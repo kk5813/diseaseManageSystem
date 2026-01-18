@@ -44,4 +44,8 @@ public class ThrowUtils {
         throwIf(condition, new BusinessException(errorCode, message));
     }
 
+    public static void throwIf(boolean condition, int code, String message) {
+        throwIf(condition, new BusinessException(code, message));
+    }
+
 }

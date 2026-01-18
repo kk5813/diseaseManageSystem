@@ -10,6 +10,7 @@ import com.zcc.highmyopia.hospital.repository.ISaveRepository;
 import com.zcc.highmyopia.hospital.repository.ISaveToDataBase;
 import com.zcc.highmyopia.hospital.service.IDownLoadDataUtils;
 import com.zcc.highmyopia.hospital.utils.HttpClientUtils;
+import com.zcc.highmyopia.hospital.utils.HttpMethod;
 import com.zcc.highmyopia.hospital.utils.Response;
 import com.zcc.highmyopia.mapper.IReportFilesMapper;
 import com.zcc.highmyopia.po.ReportFiles;
@@ -20,16 +21,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -332,6 +338,87 @@ public class DownLoadDataUtils implements IDownLoadDataUtils {
             //throw new RuntimeException("文件保存失败", e);
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    // 重写DownLoadReportImage的逻辑
+    @Override
+    public void processReportFileDownload(List<ReportFiles> reportFiles) {
+        for(ReportFiles reportFile: reportFiles){
+            String urls = APacsHost + reportFile.getUrl();  // 获取文件的URL
+            String targetPath = reportFile.getFilePath();
+            try {
+                // 步骤 A: 下载文件到磁盘 (耗时操作，无数据库交互)
+                downloadFileToDisk(urls, targetPath);
+                // 步骤 B: 更新数据库状态 (快速操作，开启事务)
+                updateFileStatusInDb(reportFile);
+            } catch (Exception e) {
+                // 捕获所有异常，记录日志，但不中断主流程（如果是批量下载场景）
+                log.error("处理文件下载失败: fileId={}, url={}", reportFile.getId(), urls, e);
+                // 可以在这里做一些补偿机制，比如删除下载了一半的残损文件
+                deleteQuietly(new File(targetPath));
+            }
+        }
+    }
+
+    /**
+     * 2. 【原子操作】纯粹的文件下载逻辑
+     * 只负责把网络流写入磁盘，不涉及任何数据库操作
+     */
+    private void downloadFileToDisk(String urls, String localPath) {
+        // 使用 Resource 配合 copy，或者流式处理，比 byte[] 更省内存
+        // 这里沿用 RestTemplate，但建议使用 execute 方法进行流式下载防 OOM
+        File targetFile = new File(localPath);
+
+        // 确保目录存在
+        if (!targetFile.getParentFile().exists()) {
+            boolean mkdirs = targetFile.getParentFile().mkdirs();
+            if (!mkdirs) {
+                throw new BusinessException(4050, "无法创建目录: " + targetFile.getParent());
+            }
+        }
+        restTemplate.execute(
+                urls,
+                org.springframework.http.HttpMethod.valueOf(HttpMethod.GET),
+                null,
+                // 【关键】在这里加上 (ClientHttpResponse response)
+                (ClientHttpResponse response) -> {
+                    // 现在输入 response. 应该会有提示了
+                    if (response.getStatusCode() != HttpStatus.OK) {
+                        throw new BusinessException(ResultCode.Z_gdownloadPage);
+                    }
+
+                    File finaltargetFile = new File(localPath);
+
+                    // 这里的 try-with-resources 依然只负责文件流
+                    try (FileOutputStream out = new FileOutputStream(finaltargetFile)) {
+                        StreamUtils.copy(response.getBody(), out);
+                    } catch (IOException e) {
+                        throw new BusinessException(4010, "写入失败");
+                    }
+                    return null;
+                }
+        );
+        log.info("文件下载成功: {}", localPath);
+    }
+    /**
+     * 3. 【原子操作】数据库事务
+     * 只负责更新状态，速度极快
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateFileStatusInDb(ReportFiles reportFile) {
+        reportFile.setIsDownLoad(1);
+        saveToDataBase.updateReportFiles(reportFile);
+    }
+
+    // 辅助方法：安静删除文件
+    private void deleteQuietly(File file) {
+        if (file != null && file.exists()) {
+            try {
+                file.delete();
+            } catch (Exception ignored) {
+
+            }
         }
     }
 }
