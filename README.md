@@ -104,3 +104,6 @@ contentManagerSystem是一个自由软件，您可以自由分发、修改其中
 ```
 项目截图演示
 -----------------------------------
+# 本机部署
+# docker run -d -p 8082:8082 --restart=always -v /opt/resources/images:/opt/resources/images --name app crpi-zm140fqn1cizrn23.cn-chengdu.personal.cr.aliyuncs.com/kk0708/swjtu:hosApp
+# docker run -d -p 8082:8082 --restart=always -v /opt/resources/images:/opt/resources/images --name app crpi-zm140fqn1cizrn23.cn-chengdu.personal.cr.aliyuncs.com/kk0708/swjtu:hosApp

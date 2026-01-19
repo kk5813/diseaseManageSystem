@@ -90,7 +90,7 @@ public class AIDiagnoseServiceImpl implements AIDiagnoseService {
             String itemName = entry.getKey();
             Map<String,String> config = new HashMap<>();
             config.put("OCTType", Constants.OCTToType.get(String.valueOf(diseaseId)));
-            List<String> reportFilePaths = filterFilesContext.executeFilter(itemName, entry.getValue(), config);
+            List<String> reportFilePaths = filterFilesContext.executeFilter(Constants.ItemNameToType.get(itemName), entry.getValue(), config);
             filteredReportFiles.put(Constants.ItemNameToType.get(itemName), reportFilePaths);
         }
 

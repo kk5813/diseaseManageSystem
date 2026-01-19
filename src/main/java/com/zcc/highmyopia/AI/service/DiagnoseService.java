@@ -183,7 +183,7 @@ public class DiagnoseService implements IDiagnoseService {
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("imagePath", filePath);
         jsonMap.put("visitNumber", diagnoseEntity.getVisitNumber());
-        String siteUrl = flaskPath + ":" + "/api/site";
+        String siteUrl = flaskPath + ":" + "4091/api/site";
         String body = LogicTreeNode.HttpPOST(siteUrl, jsonMap);
         List<DiagnoseResultEntity> lists = JSON.parseArray(
                 JSON.parseObject(body).getJSONArray("data").toString(),
