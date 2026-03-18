@@ -111,7 +111,7 @@ public class ModelConfigController {
         boolean b = modelNodeService.saveOrUpdate(modelNode);
         return b ? Result.succ(null) : Result.fail(null);
     }
-    @GetMapping("add_line")
+    @PostMapping("add_line")
     @RequiresAuthentication
     public Result addModelLine(@RequestBody ModelLine modelLine){
         boolean b = modelLineService.saveOrUpdate(modelLine);

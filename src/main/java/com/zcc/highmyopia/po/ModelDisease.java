@@ -30,6 +30,8 @@ public class ModelDisease {
 
     private Integer startNode;
 
+    private Integer isEnable;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
